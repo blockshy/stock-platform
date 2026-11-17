@@ -16,9 +16,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.LongUnaryOperator;
 import java.util.function.Supplier;
@@ -45,6 +51,10 @@ public final class BaoStockClient implements AutoCloseable {
     private static final int PORT = 10030;
     private static final int HEADER_LENGTH = 21;
     private static final int PAGE_SIZE = 2000;
+    /** 防止错误响应或压缩炸弹让客户端无限分配内存；全市场单日响应远小于此上限。 */
+    private static final int MAX_RESPONSE_BYTES = 32 * 1024 * 1024;
+    /** 官方 0.9.4 明确列出的压缩响应；批量接口与旧版历史日线使用同一种 zlib 帧。 */
+    private static final Set<String> COMPRESSED_TYPES = Set.of("96", "99", "9B", "9D");
     private static final int MAX_ATTEMPTS = 3;
     private static final long RETRY_BACKOFF_MILLIS = 2000;
     private static final long MAX_RETRY_BACKOFF_MILLIS = 8000;
@@ -155,21 +165,107 @@ public final class BaoStockClient implements AutoCloseable {
         }
     }
 
-    /** 查询交易日历，返回区间内所有交易日（is_trading_day=1），升序。 */
+    /**
+     * 供覆盖缓存和验证探针使用的严格证券名单查询。既有普通接口保留兼容，缓存路径必须使用本方法。
+     * 每页同时检查外层请求回显与内层字段/记录，不允许缺 record、缺列或重复代码伪装成合法空名单。
+     */
+    public List<Map<String, String>> queryAllStockVerified(LocalDate date) {
+        return queryAllStockVerified(date, false);
+    }
+
+    /**
+     * 仅用于独立源验证的历史名单快照：保留缺失显示名，但身份、交易状态、字段和分页仍全部严格。
+     * 2023-11-17 的公开历史名单实测存在非项目范围基金 code_name=""，不代表证券身份无效。
+     * 此结果不能用来更新生产 stock_info.name；生产元数据查询必须继续调用 queryAllStockVerified。
+     */
+    public List<Map<String, String>> queryAllStockSnapshot(LocalDate date) {
+        return queryAllStockVerified(date, true);
+    }
+
+    /** 两种用途共用完整协议与分页实现，唯一差异是审计快照是否允许缺显示名称。 */
+    private List<Map<String, String>> queryAllStockVerified(LocalDate date, boolean allowMissingNames) {
+        Objects.requireNonNull(date, "证券名单日期不能为空");
+        List<Map<String, String>> rows = new ArrayList<>();
+        Set<String> codes = new HashSet<>();
+        for (int page = 1; page <= 100; page++) {
+            Response response = request("35", String.join(SEP, "query_all_stock", userId,
+                    String.valueOf(page), String.valueOf(PAGE_SIZE), date.toString()));
+            response.requireEnvelope("36", "query_all_stock", userId, 8);
+            if (!String.valueOf(page).equals(response.parts().get(4))
+                    || !String.valueOf(PAGE_SIZE).equals(response.parts().get(5))
+                    || !date.toString().equals(response.parts().get(7))) {
+                throw new IllegalStateException("BaoStock 证券名单页码或日期与请求不一致");
+            }
+            List<Map<String, String>> pageRows = BaoStockBatchValidator.decodeStockList(objectMapper,
+                    response.parts().get(6), response.parts().get(8), PAGE_SIZE, allowMissingNames);
+            for (Map<String, String> row : pageRows) {
+                if (!codes.add(row.get("code"))) throw new IllegalStateException("BaoStock 证券名单跨页代码重复");
+            }
+            rows.addAll(pageRows);
+            requireNotInterrupted();
+            if (pageRows.size() < PAGE_SIZE) return List.copyOf(rows);
+        }
+        throw new IllegalStateException("BaoStock 证券名单分页超过安全上限，结果未返回");
+    }
+
+    /**
+     * 兼容原有交易日列表调用方；先确认完整自然日日历，再筛选交易日并保持升序。
+     * 缺失的日历行不能解释为休市，因此这里不再使用宽松的通用 rows() 解析器。
+     */
     public List<LocalDate> queryTradeDates(LocalDate from, LocalDate to) {
-        // 消息体与官方 Python 客户端一致：query_trade_dates + userId + 页码 + 每页条数 + 起止日期。
-        // 区间很短（一次任务只查最近 31 天），单页即可返回全部，无需分页循环。
-        Response response = request("33", String.join(SEP,
-                "query_trade_dates", userId, "1", String.valueOf(PAGE_SIZE),
-                from.toString(), to.toString()));
-        response.requireSuccess();
-        List<LocalDate> days = new ArrayList<>();
-        for (Map<String, String> row : response.rows(6, 9)) {
-            if ("1".equals(row.getOrDefault("is_trading_day", ""))) {
-                days.add(LocalDate.parse(row.get("calendar_date")));
+        return queryTradeCalendar(from, to).entrySet().stream()
+                .filter(Map.Entry::getValue).map(Map.Entry::getKey).toList();
+    }
+
+    /**
+     * 获取可安全持久化的完整自然日日历：每一天都必须由上游明确返回 0/1，缺一天即整批失败。
+     * 官方区间日历采用 2000 条分页，必须与按日批量接口区别处理；恰好满页时继续查终止页。
+     * 返回按日期升序的只读映射。上层只能在整个方法成功后保存，禁止边翻页边补造休市日。
+     */
+    public Map<LocalDate, Boolean> queryTradeCalendar(LocalDate from, LocalDate to) {
+        Objects.requireNonNull(from, "日历开始日期不能为空");
+        Objects.requireNonNull(to, "日历结束日期不能为空");
+        long expectedDays = ChronoUnit.DAYS.between(from, to) + 1;
+        // 限制调用错误引起的超大分配和无限分页；20 万天已远超当前证券市场可查询历史。
+        if (expectedDays <= 0 || expectedDays > 200_000) {
+            throw new IllegalArgumentException("BaoStock 日历日期范围不正确或超过安全上限");
+        }
+        Map<LocalDate, Boolean> calendar = new LinkedHashMap<>();
+        long maxPages = expectedDays / PAGE_SIZE + 1;
+        for (int page = 1; page <= maxPages; page++) {
+            Response response = request("33", String.join(SEP, "query_trade_dates", userId,
+                    String.valueOf(page), String.valueOf(PAGE_SIZE), from.toString(), to.toString()));
+            response.requireEnvelope("34", "query_trade_dates", userId, 9);
+            if (!String.valueOf(page).equals(response.parts().get(4))
+                    || !String.valueOf(PAGE_SIZE).equals(response.parts().get(5))
+                    || !from.toString().equals(response.parts().get(7))
+                    || !to.toString().equals(response.parts().get(8))) {
+                throw new IllegalStateException("BaoStock 日历响应页码或日期范围与请求不一致");
+            }
+            Map<LocalDate, Boolean> pageRows = BaoStockTradeCalendarValidator.decode(objectMapper,
+                    response.parts().get(6), response.parts().get(9), from, to, PAGE_SIZE);
+            for (Map.Entry<LocalDate, Boolean> entry : pageRows.entrySet()) {
+                if (calendar.putIfAbsent(entry.getKey(), entry.getValue()) != null) {
+                    throw new IllegalStateException("BaoStock 日历跨页重复日期，拒绝保存不可靠日历");
+                }
+            }
+            requireNotInterrupted();
+            if (pageRows.size() < PAGE_SIZE) {
+                if (calendar.size() != expectedDays) {
+                    throw new IllegalStateException("BaoStock 日历未覆盖请求的每个自然日：期望 "
+                            + expectedDays + " 天，实际 " + calendar.size() + " 天");
+                }
+                Map<LocalDate, Boolean> ordered = new LinkedHashMap<>();
+                for (long offset = 0; offset < expectedDays; offset++) {
+                    LocalDate date = from.plusDays(offset);
+                    Boolean trading = calendar.get(date);
+                    if (trading == null) throw new IllegalStateException("BaoStock 日历缺少日期 " + date);
+                    ordered.put(date, trading);
+                }
+                return Collections.unmodifiableMap(ordered);
             }
         }
-        return days;
+        throw new IllegalStateException("BaoStock 日历分页超过请求范围，结果未返回");
     }
 
     /** 查询一只证券一段日期的日线；58 ETF 使用独立字段集合，返回源数据的实际复权标记。 */
@@ -186,6 +282,141 @@ public final class BaoStockClient implements AutoCloseable {
             rows.addAll(pageRows);
             if (pageRows.size() < PAGE_SIZE) return rows;
         }
+    }
+
+    /**
+     * 严格历史查询：只有完整且口径与请求一致的整段结果才能用于断点覆盖。
+     * 空 JSON、缺列、越界日期、非有限数、重复日线和复权标记不符均使整段失败；不返回已读部分页。
+     * 本方法不变更行情值或算法，ETF 仍只请求原有行情字段，个股仍保留估值和 ST 字段。
+     */
+    public List<Map<String, String>> queryHistoryVerified(String secid, LocalDate from, LocalDate to,
+                                                         String adjustFlag) {
+        Objects.requireNonNull(secid, "历史证券代码不能为空");
+        Objects.requireNonNull(from, "历史开始日期不能为空");
+        Objects.requireNonNull(to, "历史结束日期不能为空");
+        String code = secid.toLowerCase(Locale.ROOT);
+        if (!code.matches("(?:sh|sz|bj)\\.[0-9]{6}") || from.isAfter(to)
+                || adjustFlag == null || !Set.of("1", "2", "3").contains(adjustFlag)) {
+            throw new IllegalArgumentException("BaoStock 历史代码、日期或复权标记不正确");
+        }
+        boolean etf = code.matches("sh\\.58[0-9]{4}");
+        String fields = etf ? ETF_HISTORY_FIELDS : HISTORY_FIELDS;
+        List<Map<String, String>> rows = new ArrayList<>();
+        Set<String> dates = new HashSet<>();
+        for (int page = 1; page <= 100; page++) {
+            Response response = request("95", String.join(SEP, "query_history_k_data_plus", userId,
+                    String.valueOf(page), String.valueOf(PAGE_SIZE), code, fields, from.toString(),
+                    to.toString(), "d", adjustFlag));
+            response.requireEnvelope("96", "query_history_k_data_plus", userId, 12);
+            if (!String.valueOf(page).equals(response.parts().get(4))
+                    || !String.valueOf(PAGE_SIZE).equals(response.parts().get(5))
+                    || !code.equals(response.parts().get(7))
+                    || !from.toString().equals(response.parts().get(9))
+                    || !to.toString().equals(response.parts().get(10))
+                    || !"d".equals(response.parts().get(11)) || !adjustFlag.equals(response.parts().get(12))) {
+                throw new IllegalStateException("BaoStock 历史响应页码、证券、日期或复权口径与请求不一致");
+            }
+            List<Map<String, String>> pageRows = BaoStockBatchValidator.decodeHistory(objectMapper,
+                    response.parts().get(6), response.parts().get(8), fields,
+                    etf ? BaoStockBatchValidator.Kind.ETF : BaoStockBatchValidator.Kind.A_STOCK,
+                    code, from, to, adjustFlag, PAGE_SIZE);
+            for (Map<String, String> row : pageRows) {
+                if (!dates.add(row.get("date"))) throw new IllegalStateException("BaoStock 历史跨页日期重复");
+            }
+            rows.addAll(pageRows);
+            requireNotInterrupted();
+            if (pageRows.size() < PAGE_SIZE) return List.copyOf(rows);
+        }
+        throw new IllegalStateException("BaoStock 历史分页超过安全上限，结果未返回");
+    }
+
+    /**
+     * 获取指定交易日全市场 A 股原始日线，包含估值、ST 与停牌状态。
+     * 官方批量接口只有日期参数，返回的原始行情必须为 adjustflag=3；本方法不伪造前复权。
+     * 调用方应在拿到完整结果后再按项目支持的 00/30/60 前缀过滤，不能将本地过滤条数当作源覆盖数。
+     */
+    public List<Map<String, String>> queryDailyAStock(LocalDate date) {
+        return queryDaily("98", "99", "query_daily_history_k_AStock", date,
+                BaoStockBatchValidator.Kind.A_STOCK);
+    }
+
+    /**
+     * 获取指定日期全市场 ETF 原始日线。兼容文档中的 13/14 列与公共节点实测的 18 列版本。
+     * 18 列包含估值与 isST 原始值，仅保留供源审计；调用方必须继续按 ETF 语义隔离这些个股字段。
+     */
+    public List<Map<String, String>> queryDailyEtf(LocalDate date) {
+        return queryDaily("9A", "9B", "query_daily_history_k_ETF", date,
+                BaoStockBatchValidator.Kind.ETF);
+    }
+
+    /**
+     * 获取当日发生除权除息的证券因子，而非全市场每日因子快照。
+     * 成功空表表示没有事件；调用方不能据此把所有证券的因子设为 1，也不能删除已有因子。
+     */
+    public List<Map<String, String>> queryDailyAdjustFactors(LocalDate date) {
+        return queryDaily("9C", "9D", "query_daily_adjust_factor", date,
+                BaoStockBatchValidator.Kind.FACTOR);
+    }
+
+    /**
+     * 获取单只证券指定区间的除权事件因子，供历史初始化或受影响证券的复权基准刷新使用。
+     * 与按日批量不同，该接口采用官方普通分页布局；每页重试仍共享现有的三次有界预算。
+     * 不在本层计算复权价格或修改模型输入，所有因子保留源字符串及精度。
+     */
+    public List<Map<String, String>> queryAdjustFactors(String secid, LocalDate from, LocalDate to) {
+        Objects.requireNonNull(secid, "证券代码不能为空");
+        Objects.requireNonNull(from, "开始日期不能为空");
+        Objects.requireNonNull(to, "结束日期不能为空");
+        String code = secid.toLowerCase(Locale.ROOT);
+        if (!code.matches("(?:sh|sz|bj)\\.[0-9]{6}") || from.isAfter(to)) {
+            throw new IllegalArgumentException("BaoStock 复权因子查询代码或日期范围不正确");
+        }
+        List<Map<String, String>> rows = new ArrayList<>();
+        Set<String> dates = new HashSet<>();
+        // 一只证券一天至多一个聚合除权事件；额外设页数上限，防止服务端重复满页造成无限请求。
+        for (int page = 1; page <= 100; page++) {
+            Response response = request("15", String.join(SEP, "query_adjust_factor", userId,
+                    String.valueOf(page), String.valueOf(PAGE_SIZE), code, from.toString(), to.toString()));
+            response.requireEnvelope("16", "query_adjust_factor", userId, 10);
+            if (!String.valueOf(page).equals(response.parts().get(4))
+                    || !String.valueOf(PAGE_SIZE).equals(response.parts().get(5))
+                    || !code.equals(response.parts().get(7))
+                    || !from.toString().equals(response.parts().get(8))
+                    || !to.toString().equals(response.parts().get(9))) {
+                throw new IllegalStateException("BaoStock 复权因子响应页码、证券或日期范围与请求不一致");
+            }
+            List<Map<String, String>> pageRows = BaoStockBatchValidator.decode(objectMapper,
+                    response.parts().get(6), response.parts().get(10), BaoStockBatchValidator.Kind.FACTOR,
+                    from, to, code);
+            if (pageRows.size() > PAGE_SIZE) {
+                throw new IllegalStateException("BaoStock 复权因子分页响应超出请求条数");
+            }
+            for (Map<String, String> row : pageRows) {
+                if (!dates.add(row.get("dividOperateDate"))) {
+                    throw new IllegalStateException("BaoStock 复权因子跨页出现重复日期，停止以避免重复覆盖");
+                }
+            }
+            rows.addAll(pageRows);
+            requireNotInterrupted();
+            if (pageRows.size() < PAGE_SIZE) return List.copyOf(rows);
+        }
+        throw new IllegalStateException("BaoStock 复权因子分页超过安全上限，结果未返回");
+    }
+
+    /**
+     * 0.9.4 批量响应专用布局：错误码、说明、方法、会话、JSON、字段列表。
+     * 三个请求没有页码参数，不能沿用 Python 通用 next() 的“恰好 2000 条再翻页”判断；
+     * 本方法只发送一个请求并验证整帧，2000 条与超过 2000 条都一次返回。
+     */
+    private List<Map<String, String>> queryDaily(String requestType, String responseType, String method,
+                                                LocalDate date, BaoStockBatchValidator.Kind kind) {
+        Objects.requireNonNull(date, "查询日期不能为空");
+        Response response = request(requestType, String.join(SEP, method, userId, date.toString()));
+        response.requireEnvelope(responseType, method, userId, 5);
+        List<Map<String, String>> rows = BaoStockBatchValidator.decode(objectMapper,
+                response.parts().get(4), response.parts().get(5), kind, date, date, null);
+        requireNotInterrupted();
+        return rows;
     }
 
     /**
@@ -256,8 +487,16 @@ public final class BaoStockClient implements AutoCloseable {
             String headerText = new String(responseHeader, StandardCharsets.UTF_8);
             int firstSeparator = headerText.indexOf('\1');
             int secondSeparator = headerText.indexOf('\1', firstSeparator + 1);
-            if (firstSeparator < 0 || secondSeparator < 0) throw new IOException("BaoStock 响应头格式错误");
+            if (firstSeparator != 7 || secondSeparator != 10
+                    || !headerText.substring(11).matches("[0-9]{10}")) {
+                throw new IOException("BaoStock 响应头格式错误");
+            }
             String responseType = headerText.substring(firstSeparator + 1, secondSeparator);
+            long declaredLength = Long.parseLong(headerText.substring(11));
+            if (!responseType.matches("[0-9A-F]{2}") || declaredLength <= 0
+                    || declaredLength > MAX_RESPONSE_BYTES) {
+                throw new IOException("BaoStock 响应类型或声明长度不合法");
+            }
             /*
              * BaoStock Python 客户端不是按 header 中的长度读取响应，而是一直读到
              * <![CDATA[]]>\n。原因是部分非压缩响应的长度按字符数计算，中文股票名称
@@ -271,14 +510,14 @@ public final class BaoStockClient implements AutoCloseable {
             }
             byte[] bodyBytesResponse = Arrays.copyOf(framedBody,
                     framedBody.length - COMPRESSED_END.length);
-            boolean compressed = "96".equals(responseType);
+            boolean compressed = COMPRESSED_TYPES.contains(responseType);
             if (compressed) {
                 bodyBytesResponse = inflate(bodyBytesResponse);
             }
             String responseBody = new String(bodyBytesResponse, StandardCharsets.UTF_8);
             List<String> parts = List.of(responseBody.split(SEP, -1));
             requireNotInterrupted();
-            return new Response(responseType, parts, objectMapper);
+            return new Response(responseType, parts, objectMapper, headerText);
         } catch (IOException | NumberFormatException ex) {
             // 传输层异常后流的位置不可知，连接必须丢弃，由上层重连。
             closeSilently();
@@ -289,7 +528,15 @@ public final class BaoStockClient implements AutoCloseable {
     private byte[] inflate(byte[] compressed) throws IOException {
         try (InflaterInputStream input = new InflaterInputStream(new ByteArrayInputStream(compressed));
              ByteArrayOutputStream output = new ByteArrayOutputStream()) {
-            input.transferTo(output);
+            byte[] buffer = new byte[8192];
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                requireNotInterrupted();
+                if (output.size() > MAX_RESPONSE_BYTES - count) {
+                    throw new IOException("BaoStock 解压响应超过安全大小上限");
+                }
+                output.write(buffer, 0, count);
+            }
             return output.toByteArray();
         }
     }
@@ -315,6 +562,9 @@ public final class BaoStockClient implements AutoCloseable {
             int count = input.read(buffer);
             if (count < 0) throw new IOException("BaoStock 连接提前关闭");
             for (int index = 0; index < count; index++) {
+                if (output.size() >= MAX_RESPONSE_BYTES) {
+                    throw new IOException("BaoStock 响应超过安全大小上限或缺少结束标记");
+                }
                 byte current = buffer[index];
                 output.write(current);
                 if (current == marker[matched]) {
@@ -400,7 +650,7 @@ public final class BaoStockClient implements AutoCloseable {
         }
     }
 
-    private record Response(String messageType, List<String> parts, ObjectMapper objectMapper) {
+    private record Response(String messageType, List<String> parts, ObjectMapper objectMapper, String wireHeader) {
         /** 保留服务器的原始错误码；响应不完整时不猜测为可恢复的认证错误。 */
         private String errorCode() {
             return parts.isEmpty() ? "" : parts.getFirst();
@@ -412,6 +662,83 @@ public final class BaoStockClient implements AutoCloseable {
                 throw new IllegalStateException("BaoStock 返回错误："
                         + (parts.isEmpty() ? "unknown" : parts.get(0)) + " " + message);
             }
+        }
+
+        /**
+         * 新接口在解析任何行情前先验证专用信封，完整业务错误仍保留上游精确错误码。
+         * 命令或会话不符时拒绝结果，防止连接错位的旧响应被误入库；不将其当作成功空表。
+         */
+        private void requireEnvelope(String expectedType, String expectedMethod, String expectedUser,
+                                     int lastRequiredIndex) {
+            requireSuccess();
+            if (!expectedType.equals(messageType) || parts.size() <= lastRequiredIndex
+                    || !expectedMethod.equals(parts.get(2)) || !expectedUser.equals(parts.get(3))) {
+                throw new IllegalStateException("BaoStock 批量/因子响应类型、方法、会话或字段布局不匹配");
+            }
+            // 2026-11-18 独立只读探针确认：非压缩日历尾段为 CRC32(原始响应头 + 必需正文)。
+            // 只接受紧邻最后业务字段的单个无符号 CRC，且必须实际计算匹配；其它非空尾段仍失败。
+            // 旧版无 CRC 响应可保留空白/换行尾段。不能把“看起来是数字”误当作已校验的 CRC。
+            boolean crcAccepted = hasVerifiedResponseCrc(lastRequiredIndex);
+            for (int i = lastRequiredIndex + 1; i < parts.size(); i++) {
+                if (crcAccepted && i == lastRequiredIndex + 1) continue;
+                if (!parts.get(i).isBlank()) {
+                    throw new IllegalStateException("BaoStock 响应包含未知尾段：" + tailShape(lastRequiredIndex));
+                }
+            }
+        }
+
+        /** 完整正文的 CRC 可区分合法协议尾段与串帧/正文损坏；不对源数值或字段做任何归一化。 */
+        private boolean hasVerifiedResponseCrc(int lastRequiredIndex) {
+            int crcIndex = lastRequiredIndex + 1;
+            if (crcIndex >= parts.size()) return false;
+            String value = parts.get(crcIndex).strip();
+            if (!isUnsignedCrc(value)) return false;
+            String body = String.join(SEP, parts.subList(0, crcIndex));
+            return Long.parseLong(value) == crc32(wireHeader + body);
+        }
+
+        /**
+         * 仅报告最多三个尾段的索引、长度、类型和 CRC 候选匹配结果，不返回任何原文/哈希/会话。
+         * 仅 wireHeader+正文 已获在线证据并成为放行条件；其它候选只辅助核对压缩版本差异，仍不放行。
+         */
+        private String tailShape(int lastRequiredIndex) {
+            String body = String.join(SEP, parts.subList(0, lastRequiredIndex + 1));
+            List<String> descriptions = new ArrayList<>();
+            int first = lastRequiredIndex + 1;
+            for (int i = first; i < parts.size() && i < first + 3; i++) {
+                String raw = parts.get(i);
+                String trimmed = raw.strip();
+                boolean unsigned32 = isUnsignedCrc(trimmed);
+                String description = "index=" + i + ",chars=" + raw.length() + ",blank=" + raw.isBlank()
+                        + ",uint32=" + unsigned32;
+                if (unsigned32) {
+                    long value = Long.parseLong(trimmed);
+                    description += ",zero=" + (value == 0)
+                            + ",crcHeaderBody=" + (value == crc32(wireHeader + body))
+                            + ",crcBody=" + (value == crc32(body))
+                            + ",crcHeaderBodySep=" + (value == crc32(wireHeader + body + SEP))
+                            + ",crcBodySep=" + (value == crc32(body + SEP))
+                            + ",crcPlainBytesHeader=" + (value == crc32(logicalHeader(body.getBytes(StandardCharsets.UTF_8).length) + body))
+                            + ",crcPlainCharsHeader=" + (value == crc32(logicalHeader(body.length()) + body));
+                }
+                descriptions.add("[" + description + "]");
+            }
+            return "type=" + messageType + ",extraParts=" + (parts.size() - first) + "," + descriptions;
+        }
+
+        /** 仅诊断压缩前声明长度的可能取法；不会据此接受尚未经真实响应验证的 CRC 规则。 */
+        private String logicalHeader(int bodyLength) {
+            return wireHeader.substring(0, 11) + String.format("%010d", bodyLength);
+        }
+
+        private static boolean isUnsignedCrc(String value) {
+            return value.matches("(?:0|[1-9][0-9]{0,9})") && Long.parseLong(value) <= 0xffff_ffffL;
+        }
+
+        private static long crc32(String text) {
+            CRC32 crc = new CRC32();
+            crc.update(text.getBytes(StandardCharsets.UTF_8));
+            return crc.getValue();
         }
 
         private List<Map<String, String>> rows(int dataIndex, int fieldsIndex) {

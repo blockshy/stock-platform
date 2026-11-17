@@ -2,12 +2,14 @@ package com.li.stock.service;
 
 import com.li.stock.common.BizException;
 import com.li.stock.domain.query.CrawlTaskRequest;
-import com.li.stock.domain.vo.CrawlerDateRangeVO;
+import com.li.stock.crawl.CrawlCoveragePlanner.Coverage;
+import com.li.stock.crawl.CrawlCoveragePlanner.Range;
 import com.li.stock.domain.vo.StockDailyVO;
 import com.li.stock.domain.vo.StockInfoVO;
 import com.li.stock.integration.BaoStockMemorySocket;
 import com.li.stock.mapper.StockDailyMapper;
 import com.li.stock.repository.StockDailyRepository;
+import com.li.stock.repository.CrawlCheckpointRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,8 +42,9 @@ class CrawlTaskServiceEtfTest {
     private static final LocalDate TO = LocalDate.of(2026, 11, 16);
     private final List<List<StockDailyVO>> savedBatches = new ArrayList<>();
     private final List<String> savedTables = new ArrayList<>();
-    private final CrawlTaskService service = new CrawlTaskService(null, null,
-            new StockDailyRepository(recordingMapper()), null);
+    private final StockDailyRepository daily = new StockDailyRepository(recordingMapper());
+    private final MemoryCheckpoints checkpoints = new MemoryCheckpoints();
+    private final CrawlTaskService service = new CrawlTaskService(null, null, daily, null, checkpoints);
 
     @AfterEach
     void shutdownUnusedExecutor() {
@@ -91,13 +97,13 @@ class CrawlTaskServiceEtfTest {
 
         BaoStockMemorySocket socket = new BaoStockMemorySocket();
         var client = socket.client();
-        invoke("crawlOneStock", client, stock, FROM, TO, config, Map.of());
-        invoke("crawlOneStock", client, etf, FROM, TO, config, Map.of());
+        crawl(client, stock, config);
+        crawl(client, etf, config);
 
         assertEquals(List.of(2, 3, 3), socket.queries().stream().map(BaoStockMemorySocket.Query::adjustFlag).toList());
-        assertEquals(List.of("stock_daily_00", "stock_daily_58"), savedTables);
-        assertEquals(2, savedBatches.getFirst().size());
-        StockDailyVO etfRow = savedBatches.get(1).getFirst();
+        assertEquals(List.of("stock_daily_00", "stock_daily_00", "stock_daily_58"), savedTables);
+        assertEquals(1, savedBatches.getFirst().size(), "每个复权口径独立原子提交，不能等下一口径成功才保存");
+        StockDailyVO etfRow = savedBatches.get(2).getFirst();
         assertEquals(3, etfRow.adjustFlag());
         assertEquals(1, savedBatches.getFirst().getFirst().isSt(), "股票仍保留上游 ST 字段");
         assertNull(etfRow.isSt());
@@ -128,14 +134,15 @@ class CrawlTaskServiceEtfTest {
         Object config = invoke("normalize", request("58", 0, false, FROM, TO));
         StockInfoVO etf = security("588000", "SH", "ETF");
         BaoStockMemorySocket later = new BaoStockMemorySocket();
-        invoke("crawlOneStock", later.client(), etf, FROM, TO, config,
-                Map.of("588000#3", new CrawlerDateRangeVO("588000", 3, TO.plusDays(10), TO.plusDays(20))));
+        checkpoints.existing.put("588000#3", Set.of(TO.plusDays(10), TO.plusDays(20)));
+        crawl(later.client(), etf, config);
         assertEquals(FROM, later.queries().getFirst().from());
         assertEquals(TO, later.queries().getFirst().to(), "历史前段补齐不能越过显式 to");
 
         BaoStockMemorySocket earlier = new BaoStockMemorySocket();
-        invoke("crawlOneStock", earlier.client(), etf, FROM, TO, config,
-                Map.of("588000#3", new CrawlerDateRangeVO("588000", 3, FROM.minusDays(20), FROM.minusDays(10))));
+        checkpoints.completed.clear();
+        checkpoints.existing.put("588000#3", Set.of(FROM.minusDays(20), FROM.minusDays(10)));
+        crawl(earlier.client(), etf, config);
         assertEquals(FROM, earlier.queries().getFirst().from(), "增量后段补齐不能早于显式 from");
         assertEquals(TO, earlier.queries().getFirst().to());
     }
@@ -144,12 +151,107 @@ class CrawlTaskServiceEtfTest {
     void existingRawEtfCoverageSkipsNetworkRegardlessOfRequestedStockFlag() throws Exception {
         Object config = invoke("normalize", request("58", 1, true, FROM, TO));
         StockInfoVO etf = security("588000", "SH", "ETF");
-        Map<String, CrawlerDateRangeVO> ranges = Map.of("588000#3", new CrawlerDateRangeVO("588000", 3, FROM, TO));
-        assertEquals(false, invoke("needsHistory", etf, TO, FROM, config, ranges));
+        checkpoints.existing.put("588000#3", Set.of(FROM, TO));
         BaoStockMemorySocket socket = new BaoStockMemorySocket();
-        invoke("crawlOneStock", socket.client(), etf, FROM, TO, config, ranges);
+        crawl(socket.client(), etf, config);
         assertTrue(socket.queries().isEmpty());
         assertTrue(savedBatches.isEmpty());
+    }
+
+    @Test
+    void failureInSecondFlagPreservesFirstFlagButSameDayResumeRechecksAdjustedWindow() throws Exception {
+        Object config = invoke("normalize", request("00", 1, true, FROM, TO));
+        StockInfoVO stock = security("000001", "SZ", "主板");
+        checkpoints.failFlag = 3;
+        BaoStockMemorySocket first = new BaoStockMemorySocket();
+        assertThrows(IllegalStateException.class, () -> crawl(first.client(), stock, config));
+        assertEquals(List.of(2), savedBatches.stream().flatMap(List::stream).map(StockDailyVO::adjustFlag).toList());
+        checkpoints.failFlag = -1;
+        BaoStockMemorySocket resumed = new BaoStockMemorySocket();
+        invoke("crawlOneStock", resumed.client(), 2L, stock, config, Set.of(FROM, TO), LocalDate.now());
+        assertEquals(List.of(2, 3), resumed.queries().stream().map(BaoStockMemorySocket.Query::adjustFlag).toList(),
+                "恢复任务编号变化后，不能因日期相同而跳过上一轮前复权行情");
+        assertEquals(FROM, resumed.queries().getFirst().from());
+        assertEquals(TO, resumed.queries().getFirst().to(), "新轮次必须重新确认整个前复权请求窗口");
+    }
+
+    @Test
+    void rawSuccessfulCoverageIncludingCertifiedEmptyDatesRemainsReusableAcrossAttempts() throws Exception {
+        Object config = invoke("normalize", request("58", 0, false, FROM, TO));
+        StockInfoVO etf = security("588000", "SH", "ETF");
+        BaoStockMemorySocket first = new BaoStockMemorySocket();
+        crawl(first.client(), etf, config);
+        // 内存源只返回FROM，TO由完整响应确认空结果；换新任务后两种证据都仍可复用。
+        assertEquals(1, first.queries().size());
+        BaoStockMemorySocket nextAttempt = new BaoStockMemorySocket();
+        invoke("crawlOneStock", nextAttempt.client(), 2L, etf, config, Set.of(FROM, TO), LocalDate.now());
+        assertTrue(nextAttempt.queries().isEmpty());
+        assertEquals(1, savedBatches.size());
+    }
+
+    @Test
+    void pauseIsObservedAfterTheSuccessfulFlagWasPersisted() throws Exception {
+        Object config = invoke("normalize", request("00", 1, true, FROM, TO));
+        checkpoints.pauseAfterSave = true;
+        BaoStockMemorySocket socket = new BaoStockMemorySocket();
+        assertThrows(RuntimeException.class, () -> crawl(socket.client(), security("000001", "SZ", "主板"), config));
+        assertEquals(List.of(2), socket.queries().stream().map(BaoStockMemorySocket.Query::adjustFlag).toList());
+        assertEquals(1, savedBatches.size(), "暂停不能丢弃已收到的成功响应");
+        assertEquals(1, checkpoints.completed.size());
+    }
+
+    @Test
+    void normalizedParametersRoundTripWithoutRecomputingRelativeDates() throws Exception {
+        Object config = invoke("normalize", request("00,58", 2, true, FROM, TO));
+        String json = (String) invoke("configJson", config);
+        Object restored = invoke("configFromJson", json);
+        assertEquals(FROM, component(restored, "from"));
+        assertEquals(TO, component(restored, "to"));
+        assertEquals(List.of(2, 0), component(restored, "fqTypes"));
+        assertThrows(IllegalStateException.class, () -> invoke("configFromJson", "{\"schemaVersion\":2}"));
+    }
+
+    private Object crawl(com.li.stock.integration.BaoStockClient client, StockInfoVO stock, Object config) throws Exception {
+        return invoke("crawlOneStock", client, 1L, stock, config, Set.of(FROM, TO), LocalDate.now());
+    }
+
+    /** 只替代断点存储；日线仍通过真实仓储路由到记录型 Mapper，不触碰数据库。 */
+    private final class MemoryCheckpoints extends CrawlCheckpointRepository {
+        private final Map<String, Set<LocalDate>> existing = new HashMap<>();
+        private final Map<String, List<Coverage>> completed = new HashMap<>();
+        private int failFlag = -1;
+        private boolean pauseAfterSave;
+        private boolean paused;
+
+        private MemoryCheckpoints() {
+            super(null, new org.springframework.transaction.PlatformTransactionManager() {
+                public org.springframework.transaction.TransactionStatus getTransaction(org.springframework.transaction.TransactionDefinition definition) {
+                    return new org.springframework.transaction.support.SimpleTransactionStatus();
+                }
+                public void commit(org.springframework.transaction.TransactionStatus status) {}
+                public void rollback(org.springframework.transaction.TransactionStatus status) {}
+            }, CrawlTaskServiceEtfTest.this.daily, null);
+        }
+
+        @Override public boolean pauseRequested(long taskId) { return paused; }
+        @Override public Set<LocalDate> existingDates(String code, String market, int flag, Range range) {
+            return existing.getOrDefault(code + "#" + flag, Set.of());
+        }
+        @Override public List<Coverage> coverage(String code, String market, int flag, String basis, Range range) {
+            return completed.getOrDefault(code + "#" + flag + "#" + basis, List.of());
+        }
+        @Override public int saveCompleted(long taskId, String code, String market, int flag, String basis, Range range, List<StockDailyVO> rows) {
+            if (flag == failFlag) throw new IllegalStateException("模拟第二口径提交失败");
+            int count = CrawlTaskServiceEtfTest.this.daily.saveCrawlerBatch(rows);
+            Set<LocalDate> returned = new HashSet<>();
+            rows.forEach(row -> returned.add(row.tradeDate()));
+            Set<LocalDate> updated = new HashSet<>(existing.getOrDefault(code + "#" + flag, Set.of()));
+            updated.addAll(returned);
+            existing.put(code + "#" + flag, updated);
+            completed.computeIfAbsent(code + "#" + flag + "#" + basis, ignored -> new ArrayList<>()).add(new Coverage(range, returned));
+            if (pauseAfterSave) paused = true;
+            return count;
+        }
     }
 
     /** 只替代 SQL 执行，不替代生产仓储的分表路由和数据组装逻辑。 */

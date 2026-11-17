@@ -207,6 +207,12 @@ try {
         }
     }
     $passed++
+    # 流水线状态机另有专用纯内存回归；子脚本只提取函数，不执行真实采集、进程或数据库入口。
+    & (Join-Path $PSScriptRoot 'Test-MarketPipeline.ps1')
+    $passed++
+    # 覆盖门禁使用独立日历，专用回归全部采用内存 SQL 替身，不能访问正在采集的数据库。
+    & (Join-Path $PSScriptRoot 'Test-CoverageAudit.ps1')
+    $passed++
     Write-Host "PASS: $passed 组离线部署回归；没有启动/停止服务、连接数据库或运行模型。"
 } finally {
     # 仅删除本测试创建的GUID目录，先验证规范化路径属于固定测试根。

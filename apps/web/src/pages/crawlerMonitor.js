@@ -4,7 +4,21 @@
  * 请求结束后才安排下一次轮询，避免慢请求被固定间隔反复作废。
  */
 export const isCrawlerRunning = (task) => task?.status === 'running';
-export const isCrawlerFinished = (task) => ['done', 'failed'].includes(task?.status);
+export const isCrawlerFinished = (task) => ['done', 'failed', 'paused'].includes(task?.status);
+
+/**
+ * 暂停请求被接受后，任务仍可能在完成当前查询，不能把它提前显示为已停止。
+ * 操作能力同时依赖服务版本与当前任务真实断点；没有固定参数的旧日志不能猜测续采。
+ */
+export function crawlerControls(task, capabilities, hasRunningTask = false) {
+    const checkpoint = task?.checkpoint;
+    const ownsLatest = checkpoint && String(checkpoint.latestTaskId) === String(task.id);
+    return {
+        pause: Boolean(capabilities?.safePause && ownsLatest && isCrawlerRunning(task) && !checkpoint.pauseRequested),
+        resume: Boolean(capabilities?.durableResume && ownsLatest && checkpoint.resumable && !hasRunningTask),
+        pausing: Boolean(ownsLatest && isCrawlerRunning(task) && checkpoint.pauseRequested),
+    };
+}
 
 /** 首次进入优先恢复后台运行任务；本次手选历史之后，不再自动改变选择。 */
 export function selectCrawlerTask(records, selectedId, manuallySelected = false) {

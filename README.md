@@ -88,7 +88,8 @@ npm.cmd run test:deployment
 - [测试说明](docs/testing.md)：离线、隔离数据库和浏览器验证。
 - [常见问题](docs/troubleshooting.md)：任务进度、榜单数量及环境问题。
 - [远端部署规划](docs/remote-deployment-plan.md)：已分析的方案与尚未实施的工作。
-- [免费数据源方案](docs/free-data-source-plan.md)：同源批量优化与免费行情替代候选；等待确认后验证，尚未切换采集来源。
+- [免费数据源方案](docs/free-data-source-plan.md)：同源批量优化与免费行情替代候选；方案 A 已确认验证，尚未切换采集来源。
+- [采集断点与批量验证](docs/data-collection-validation.md)：安全暂停/继续、持久覆盖、独立取样和切换验收门槛。
 - [Java 引擎迁移评估](docs/java-engine-migration-plan.md)：可行性、数值兼容风险与分阶段验收；迁移暂时搁置，仍使用 Python 引擎。
 - [资料公开边界](docs/publication-policy.md)：公开源码与仅本地资料的分工。
 - [来源说明](docs/sources.md)：原项目和版本追溯。

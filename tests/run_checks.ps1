@@ -3,7 +3,7 @@
 统一运行平台离线验收，不启动应用服务、采集或模型任务。
 .DESCRIPTION
 依次检查前端任务观察器、主题与请求策略、界面规则、Python 等效性、Java 单元契约及部署脚本。
-Java 显式排除需要真实 Spring/数据库的两个集成类；Maven 使用 -o，缺少缓存时失败，
+Java 显式排除需要真实 Spring/数据库的集成类；Maven 使用 -o，缺少缓存时失败，
 依赖准备应在安装阶段完成。部署脚本只做语法解析及内存替身测试。
 .PARAMETER SkipJava
 由协调者正在构建同一 target 目录时使用，避免并发 Maven。使用后报告标记 PARTIAL，
@@ -81,6 +81,12 @@ try {
         Invoke-CheckedNative $python @('-X','utf8','tests/run_probability_acceptance.py') $ProjectRoot
     }
 
+    Invoke-OfflineCheck '批量采集离线快照与反例比较' {
+        # 只读取合成临时快照，不登录 BaoStock、不连接数据库、不触发模型训练。
+        $python = Join-Path $ProjectRoot 'engines\probability\.venv\Scripts\python.exe'
+        Invoke-CheckedNative $python @('-X','utf8','-m','unittest','discover','-s','tests/batch_validation','-p','test_*.py','-v') $ProjectRoot
+    }
+
     if ($SkipJava) {
         $checks.Add([pscustomobject]@{name='Java 离线单元与进程契约';status='SKIPPED';seconds=0;message='由调用者显式跳过，不能视为完整验收。'})
     } else {
@@ -93,10 +99,11 @@ try {
             $mavenRepository = Join-Path ([IO.Path]::GetFullPath($dataPath)) 'maven'
             $userSettings = Join-Path $ProjectRoot 'deployment\maven-settings.xml'
             $globalSettings = Join-Path $ProjectRoot 'deployment\maven-global-settings.xml'
-            # 这两个类会创建真实 Spring 上下文，必须由隔离数据库集成入口另行运行。
+            # 前两个类会创建真实 Spring 上下文；断点数据库测试需显式环境开关和隔离账号。
+            # 离线入口始终排除三者，避免调用者误留环境开关时连接真实数据库。
             # 其余测试使用 mock/内存对象；单一过滤参数防止 PowerShell 将逗号拆为参数。
             Invoke-CheckedNative $maven @('-o','-s',$userSettings,'-gs',$globalSettings,
-                "-Dmaven.repo.local=$mavenRepository",'-Dtest=*,!GaApiContractTest,!StockApplicationTests','test') `
+                "-Dmaven.repo.local=$mavenRepository",'-Dtest=*,!GaApiContractTest,!StockApplicationTests,!CrawlCheckpointDatabaseTest','test') `
                 (Join-Path $ProjectRoot 'apps\api')
         }
     }

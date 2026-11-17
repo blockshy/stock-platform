@@ -22,9 +22,11 @@ npm.cmd run check:ui
 npm.cmd run test:deployment
 ```
 
-完整入口不启动应用、采集或训练，也不连接真实生产数据库。Java 检查显式排除需要真实 Spring/数据库环境的两个集成测试类；部署脚本测试使用内存替身和专属临时目录。
+完整入口不启动应用、采集或训练，也不连接真实生产数据库。Java 检查显式排除需要真实 Spring/数据库环境的三个集成测试类；部署脚本测试使用内存替身和专属临时目录。批量快照比较器的合成反例测试也纳入统一入口。
 
 前端离线测试包含系统主题变化、跨标签同步、存储异常、图表交互保留、GET 总预算与 `Retry-After`、取消及写请求只发送一次。Java BaoStock 测试使用内存 Socket，验证连接清理、三次共享尝试、会话恢复、中断和成功分页不重发，不登录真实行情源。
+
+采集改造另覆盖批量边界、完整自然日日历、残缺响应拒绝、内部缺口、合法空区间、逐复权口径提交、安全暂停和固定参数恢复。`CrawlCheckpointDatabaseTest` 仅在显式 `STOCK_CHECKPOINT_DB_TEST=true` 且独立验收账号匹配时验证真实 MySQL 事务，统一离线入口始终排除它。操作步骤与在线取样守卫见[采集验证说明](data-collection-validation.md)。
 
 报告保存在 `.local/runtime/verification/reports/offline-checks.json`，属于本地文件，不提交 Git。判断结果时同时检查进程退出码、报告生成时间和 `status`：
 

@@ -3,6 +3,7 @@ package com.li.stock.integration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.DeflaterOutputStream;
 
 /**
  * 测试用纯内存 BaoStock 传输层：保留真实客户端的请求编码、响应解码与字段映射，
@@ -64,11 +66,21 @@ public final class BaoStockMemorySocket extends Socket {
                 Map<String, String> values = sourceValues(query);
                 List<String> row = query.fields().stream().map(name -> values.getOrDefault(name, "")).toList();
                 String json = mapper.writeValueAsString(Map.of("record", List.of(row)));
-                String body = String.join(SEP, "0", "success", "", "", "", "", json, "", parts[5]);
-                String header = "00.9.40" + SEP + "95" + SEP
-                        + String.format("%010d", body.getBytes(StandardCharsets.UTF_8).length);
-                response = new ByteArrayInputStream((header + body + "<![CDATA[]]>\n")
-                        .getBytes(StandardCharsets.UTF_8));
+                // 使用官方历史响应布局和 96/zlib 类型，使严格缓存校验与旧字段映射走同一真实协议。
+                // 样本行情仍保持原值；这里只补齐方法、会话、分页、代码、日期、周期与复权参数回显。
+                String body = String.join(SEP, "0", "success", parts[0], parts[1], parts[2], parts[3],
+                        json, parts[4], parts[5], parts[6], parts[7], parts[8], parts[9]);
+                ByteArrayOutputStream compressed = new ByteArrayOutputStream();
+                try (DeflaterOutputStream zip = new DeflaterOutputStream(compressed)) {
+                    zip.write(body.getBytes(StandardCharsets.UTF_8));
+                }
+                byte[] payload = compressed.toByteArray();
+                String header = "00.9.40" + SEP + "96" + SEP + String.format("%010d", payload.length);
+                ByteArrayOutputStream frame = new ByteArrayOutputStream();
+                frame.write(header.getBytes(StandardCharsets.UTF_8));
+                frame.write(payload);
+                frame.write("<![CDATA[]]>\n".getBytes(StandardCharsets.UTF_8));
+                response = new ByteArrayInputStream(frame.toByteArray());
             }
         };
     }

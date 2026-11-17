@@ -7,6 +7,7 @@ import com.li.stock.domain.vo.CrawlerDateRangeVO;
 import com.li.stock.domain.vo.StockDailyVO;
 import com.li.stock.domain.vo.StockInfoVO;
 import com.li.stock.integration.BaoStockClient;
+import com.li.stock.integration.BaoStockAccessGate;
 import com.li.stock.repository.CrawlTaskRepository;
 import com.li.stock.repository.StockDailyRepository;
 import com.li.stock.repository.StockInfoRepository;
@@ -193,7 +194,9 @@ public class DailyKlineScheduledCrawler {
         int success = 0;
         int fail = 0;
         List<String> errors = new ArrayList<>();
-        try (BaoStockClient client = new BaoStockClient(objectMapper, 10000, 60000)) {
+        // 手动任务与定时任务共用会话租约；资源逆序关闭，确保先登出，再允许下一会话登录。
+        try (BaoStockAccessGate.Lease lease = BaoStockAccessGate.acquire();
+             BaoStockClient client = new BaoStockClient(objectMapper, 10000, 60000)) {
             LocalDate today = LocalDate.now();
             List<String> prefixes = List.of(prefix);
             List<StockInfoVO> stocks = stockInfoRepository.crawlerStocks(prefixes, 0);

@@ -3,7 +3,9 @@
 等待全市场历史行情采集完成，核验覆盖范围后串行执行三种计算。
 .DESCRIPTION
 这是本次用户授权任务的持久化执行器，不注册计划任务或开机自启。
-接续指定的采集任务；股票失败时最多执行三轮有界增量补采，再核验覆盖范围，避免把部分结果报告为完成。
+接续指定的采集任务；失败时优先沿持久断点最多执行三轮，暂停必须由用户显式继续。
+旧任务只有提供经过核对的固定请求文件才允许创建补采任务；提交结果不明时停止，不重发写请求。
+本脚本不部署、不重启后端；应先部署并验收需要使用的服务版本。
 全部进度保存在 .local/market-pipeline，凭据仅由公共数据库和启动脚本读取。
 #>
 param(
@@ -11,6 +13,8 @@ param(
     [Parameter(Mandatory=$true)][ValidatePattern('^\d{4}-\d{2}-\d{2}$')][string]$AsOf,
     [ValidatePattern('^\d{4}-\d{2}-\d{2}$')][string]$HistoryStart='2023-11-17',
     [switch]$IncludeEtf58,
+    [switch]$ContinuePaused,
+    [string]$LegacyCrawlRequestPath='',
     [ValidateSet('production')][string]$Profile='production',
     [string]$ConfigPath=''
 )
@@ -22,6 +26,10 @@ $eventsPath = Join-Path $pipelineDir 'events.jsonl'
 $guardPath = Join-Path $pipelineDir 'runner.lock'
 $guard = $null
 $keepAwake = $false
+$script:continuePausedConsumed = $false
+$script:preservePreviousStateOnFailure = $false
+$script:crawlerCapabilitiesLoaded = $false
+$script:durableResumeSupported = $false
 $state = [ordered]@{ status='RUNNING'; stage='CRAWL'; crawlTaskId=$CrawlTaskId; crawlRootTaskId=$CrawlTaskId; crawlAttempts=@(); asOf=$AsOf; historyStart=$HistoryStart; startedAt=[DateTimeOffset]::Now.ToString('o') }
 if ($IncludeEtf58) {
     # ETF 使用独立任务、独立不复权分表和独立覆盖验收，不改变原股票任务的 4,605 只计数。
@@ -41,7 +49,7 @@ function Save-PipelineState {
 
 function Invoke-ProjectApi {
     <# 只访问固定的本机后端；POST 超时设为一小时，允许同步的全市场评分/短期计算完成。 #>
-    param([string]$Path, [string]$Method='Get', [object]$Body=$null)
+    param([string]$Path, [string]$Method='Get', [object]$Body=$null, [switch]$AllowNotFound)
     $timeout = if ($Method -eq 'Get') { 30 } else { 3600 }
     $arguments = @{ Uri="http://127.0.0.1:$ApiPort$Path"; Method=$Method; TimeoutSec=$timeout }
     if ($null -ne $Body) { $arguments.ContentType='application/json'; $arguments.Body=$Body | ConvertTo-Json -Compress }
@@ -50,11 +58,64 @@ function Invoke-ProjectApi {
     $attempts = if ($Method -eq 'Get') { 3 } else { 1 }
     for ($attempt=1; $attempt -le $attempts; $attempt++) {
         try { $http = Invoke-WebRequest @arguments -UseBasicParsing; break }
-        catch { if ($attempt -eq $attempts) { throw }; Start-Sleep -Seconds 5 }
+        catch {
+            # 只有明确的 404 才视为旧服务不具备该只读接口；500、超时、网络故障不能降级成新建任务。
+            if ($AllowNotFound -and $Method -eq 'Get' -and $_.Exception.PSObject.Properties['Response'] -and $_.Exception.Response -and
+                [int]$_.Exception.Response.StatusCode -eq 404) { return $null }
+            if ($attempt -eq $attempts) { throw }
+            Start-Sleep -Seconds 5
+        }
     }
     $response = [Text.Encoding]::UTF8.GetString($http.RawContentStream.ToArray()) | ConvertFrom-Json
     if ($response.code -ne 0) { throw "接口 $Path 返回错误：$($response.message)" }
     return $response.data
+}
+
+function Get-CrawlCheckpoint {
+    <# 能力探测只读且每次执行器启动只做一次；旧日志没有快照时返回 null，不猜测旧请求。 #>
+    param([long]$TaskId)
+    if (!$script:crawlerCapabilitiesLoaded) {
+        $capabilities = Invoke-ProjectApi '/api/data-crawler/capabilities' -AllowNotFound
+        $script:durableResumeSupported = $null -ne $capabilities -and
+            $null -ne $capabilities.PSObject.Properties['durableResume'] -and $capabilities.durableResume -eq $true
+        $script:crawlerCapabilitiesLoaded = $true
+    }
+    if (!$script:durableResumeSupported) { return $null }
+    return Invoke-ProjectApi "/api/data-crawler/tasks/$TaskId/checkpoint"
+}
+
+function Assert-CrawlCheckpointPlan {
+    <# 日期、前缀、复权口径和限速必须与本流水线一致；实际证券快照继续由服务端保存和恢复。 #>
+    param([object]$Checkpoint, [ValidateSet('stock','etf')][string]$Kind)
+    $prefixes = (@([string]$Checkpoint.codePrefixes -split ',' | ForEach-Object { $_.Trim() } | Sort-Object -Unique) -join ',')
+    $flags = (@($Checkpoint.fqTypes | Sort-Object -Unique) -join ',')
+    $expectedPrefixes = if ($Kind -eq 'stock') { '00,30,60' } else { '58' }
+    $expectedFlags = if ($Kind -eq 'stock') { '0,1' } else { '0' }
+    if ($Checkpoint.from -ne $HistoryStart -or $Checkpoint.to -ne $AsOf -or
+        $prefixes -cne $expectedPrefixes -or $flags -cne $expectedFlags -or $Checkpoint.requestDelayMillis -ne 1500) {
+        throw '任务持久参数与本流水线的日期、前缀、复权口径或 1500ms 限速不符，未提交继续任务。'
+    }
+}
+
+function Get-ExplicitLegacyCrawlRequest {
+    <# 旧日志不能还原请求。必须由调用者提供核对后的完整固定参数，并保持现有证券名单，不偷偷刷新。 #>
+    if (!$LegacyCrawlRequestPath) {
+        throw '旧任务没有持久断点；请核对原请求后显式提供 -LegacyCrawlRequestPath，或新建固定参数任务并传入新 ID。'
+    }
+    $request = Get-Content -LiteralPath $LegacyCrawlRequestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    foreach ($field in @('limit','codePrefixes','fqType','storeRawPrices','requestDelayMillis','refreshStockList','from','to')) {
+        if (!$request.PSObject.Properties[$field]) { throw "旧任务固定请求缺少 $field，未提交补采。" }
+    }
+    $prefixes = (@([string]$request.codePrefixes -split ',' | ForEach-Object { $_.Trim() } | Sort-Object -Unique) -join ',')
+    if ($request.from -ne $HistoryStart -or $request.to -ne $AsOf -or $prefixes -cne '00,30,60' -or
+        $request.limit -ne 0 -or $request.fqType -ne 1 -or $request.requestDelayMillis -ne 1500 -or
+        $request.storeRawPrices -isnot [bool] -or !$request.storeRawPrices -or
+        $request.refreshStockList -isnot [bool] -or $request.refreshStockList) {
+        throw '旧任务固定请求必须明确为本窗口的全量 00/30/60、前复权及原始价、1500ms、沿用已有证券名单。'
+    }
+    # 只发送白名单字段，拒绝通过额外 JSON 字段改变服务器默认行为；from/to 固定，不使用滚动 daysBack。
+    return @{limit=0;codePrefixes='00,30,60';fqType=1;storeRawPrices=$true;requestDelayMillis=1500;
+        refreshStockList=$false;from=$HistoryStart;to=$AsOf}
 }
 
 function Restore-StockCrawlState {
@@ -67,8 +128,21 @@ function Restore-StockCrawlState {
     $savedFrom = $Previous.PSObject.Properties['historyStart']
     if (!$savedId -or !$savedAsOf -or !$savedFrom) { return }
     $rootId = if ($savedRoot) { [long]$savedRoot.Value } else { [long]$savedId.Value }
-    if (($CrawlTaskId -ne [long]$savedId.Value -and $CrawlTaskId -ne $rootId) -or
-        $savedAsOf.Value -ne $AsOf -or $savedFrom.Value -ne $HistoryStart) { return }
+    if ($CrawlTaskId -ne [long]$savedId.Value -and $CrawlTaskId -ne $rootId) { return }
+    if ($savedAsOf.Value -ne $AsOf -or $savedFrom.Value -ne $HistoryStart) {
+        $script:preservePreviousStateOnFailure = $true
+        throw '同一任务链不能更换固定日期；请保留原日期或传入另行创建的新任务 ID。'
+    }
+    if ($Previous.PSObject.Properties['etfPlan'] -and !$IncludeEtf58) {
+        $script:preservePreviousStateOnFailure = $true
+        throw '此前任务链包含 ETF，请继续保留 -IncludeEtf58；不能默默跳过已授权的独立 ETF 阶段。'
+    }
+    # 外部验收暂停与计算提交均不是可自动重放阶段。保留原状态，避免一次失败启动覆盖人工核验依据。
+    if (($Previous.PSObject.Properties['status'] -and $Previous.status -eq 'PAUSED_FOR_BATCH_VALIDATION') -or
+        ($Previous.PSObject.Properties['stage'] -and $Previous.stage -in @('SCORE','SHORT_TERM','PROBABILITY','COMPLETE','RESTART_BACKEND','BUILD_BACKEND'))) {
+        $script:preservePreviousStateOnFailure = $true
+        throw '此前任务链处于人工验收暂停或已进入部署/计算阶段，请先核对记录；本次不自动续跑或重放写请求。'
+    }
     $state.crawlTaskId = [long]$savedId.Value
     $state.crawlRootTaskId = $rootId
     $savedAttempts = $Previous.PSObject.Properties['crawlAttempts']
@@ -77,20 +151,36 @@ function Restore-StockCrawlState {
         $property = $Previous.PSObject.Properties[$name]
         if ($property) { $state[$name] = $property.Value }
     }
+    foreach ($name in @('etfCrawlTaskId','etfCrawl','etfPlan','etfSubmissionStatus')) {
+        $property = $Previous.PSObject.Properties[$name]
+        if ($property) { $state[$name] = $property.Value }
+    }
     # POST 超时或进程在返回 ID 前退出时，服务器可能已经创建任务；禁止自动再次提交。
     # 保留已知任务链及未确认状态，供只读核对任务列表后再恢复，避免产生重复采集任务。
-    if ($state.Contains('crawlRetryStatus') -and
-        $state.crawlRetryStatus -in @('SUBMITTING','SUBMISSION_UNCONFIRMED')) {
+    if (($state.Contains('crawlRetryStatus') -and $state.crawlRetryStatus -in @('SUBMITTING','SUBMISSION_UNCONFIRMED')) -or
+        ($state.Contains('etfSubmissionStatus') -and $state.etfSubmissionStatus -in @('SUBMITTING','SUBMISSION_UNCONFIRMED'))) {
+        $script:preservePreviousStateOnFailure = $true
         throw '上次增量补采提交结果尚未确认，请先核对采集任务列表；本次未重复提交。'
     }
 }
 
 function Wait-StockCrawlWithRetries {
-    <# 原任务计为第一轮；仅在上一轮结束且已取得股票池后补采，最多再补两轮。 #>
+    <# 原任务计为第一轮；失败后优先继续同一断点链，最多三轮。用户暂停不消耗失败重试额度。 #>
     $maxRounds = 3
     while ($true) {
         $activeTaskId = [long]$state.crawlTaskId
         $state.stage = 'CRAWL'
+        $checkpoint = Get-CrawlCheckpoint $activeTaskId
+        if ($null -ne $checkpoint) {
+            Assert-CrawlCheckpointPlan $checkpoint 'stock'
+            $state.crawlRootTaskId = [long]$checkpoint.rootTaskId
+            # 用户可能已从页面继续过旧日志，只跟随服务端同一固定任务链的最新 ID，不能再提交第二次继续。
+            if ([long]$checkpoint.latestTaskId -ne $activeTaskId) {
+                $state.crawlTaskId = [long]$checkpoint.latestTaskId
+                Save-PipelineState -Event
+                continue
+            }
+        }
         while ($true) {
             $currentCrawl = Invoke-ProjectApi "/api/data-crawler/tasks/$activeTaskId"
             $state.crawl = $currentCrawl | Select-Object id,totalCount,successCount,failCount,status,startTime,endTime,remark
@@ -104,39 +194,88 @@ function Wait-StockCrawlWithRetries {
         $completed = $currentCrawl | Select-Object id,totalCount,successCount,failCount,status,startTime,endTime,remark
         $state.crawlAttempts = @($state.crawlAttempts | Where-Object { [long]$_.id -ne $activeTaskId }) + @($completed)
         Save-PipelineState -Event
+        $checkpoint = Get-CrawlCheckpoint $activeTaskId
+        if ($null -ne $checkpoint) {
+            Assert-CrawlCheckpointPlan $checkpoint 'stock'
+            if ([long]$checkpoint.latestTaskId -ne $activeTaskId) {
+                $state.crawlTaskId = [long]$checkpoint.latestTaskId
+                Save-PipelineState -Event
+                continue
+            }
+        }
+        $explicitPauseContinue = $false
+        if ($currentCrawl.status -eq 'paused' -or ($null -ne $checkpoint -and $checkpoint.status -eq 'paused')) {
+            if (!$ContinuePaused -or $script:continuePausedConsumed) {
+                $state.status = 'PAUSED'
+                $state.stage = 'CRAWL_PAUSED'
+                $state.crawlRetryStatus = 'PAUSED'
+                Save-PipelineState -Event
+                return $null
+            }
+            if ($null -eq $checkpoint -or !$checkpoint.resumable) {
+                throw '已暂停任务没有可继续的持久参数，请核对任务记录；未新建替代任务。'
+            }
+            # 显式继续仅适用于启动时遇到的这一次暂停；本进程随后再次遇到暂停仍必须尊重用户选择。
+            $script:continuePausedConsumed = $true
+            $explicitPauseContinue = $true
+        }
         if ($currentCrawl.totalCount -gt 0 -and $currentCrawl.status -eq 'done' -and
-            $currentCrawl.failCount -eq 0 -and $currentCrawl.successCount -eq $currentCrawl.totalCount) {
+            $currentCrawl.failCount -eq 0 -and $currentCrawl.successCount -eq $currentCrawl.totalCount -and
+            ($null -eq $checkpoint -or $checkpoint.status -eq 'done')) {
             $state.crawlRetryStatus = 'COMPLETE'
             Save-PipelineState -Event
             return $currentCrawl
         }
-        # 未建立股票池、异常状态或连续三轮失败都保留原始原因，不盲目启动新的全量抓取。
-        if ($currentCrawl.totalCount -le 0 -or $currentCrawl.status -notin @('done','failed')) {
+        # 持久断点可恢复“尚未取得证券池”的失败；旧版只有已知证券池和明确参数才允许新建补采。
+        if (!$explicitPauseContinue -and ($currentCrawl.status -notin @('done','failed') -or
+            ($null -eq $checkpoint -and $currentCrawl.totalCount -le 0))) {
             throw "采集任务 $activeTaskId 未取得有效股票池或状态异常：$($currentCrawl.remark)"
         }
-        if ($state.crawlAttempts.Count -ge $maxRounds) {
+        $failedRounds = @($state.crawlAttempts | Where-Object { $_.status -ne 'paused' }).Count
+        if (!$explicitPauseContinue -and $failedRounds -ge $maxRounds) {
             throw "股票增量采集已达到 $maxRounds 轮上限，任务 $activeTaskId 仍未完整成功：$($currentCrawl.remark)"
         }
-
-        # 每轮补采前退避 60 秒；截止时刻持久化，watcher 重启不会丢失这段等待状态。
-        if (!$state.Contains('crawlRetryStatus') -or $state.crawlRetryStatus -ne 'WAITING') {
-            $state.crawlRetryNotBefore = [DateTimeOffset]::UtcNow.AddSeconds(60).ToString('o')
+        $legacyRequest = $null
+        if ($null -ne $checkpoint) {
+            if (!$checkpoint.resumable) { throw '服务端断点当前不可继续，未创建其它任务替代。' }
+        } else {
+            $legacyRequest = Get-ExplicitLegacyCrawlRequest
         }
-        $state.crawlRetryStatus = 'WAITING'
-        $state.stage = 'CRAWL_RETRY_WAIT'
-        Save-PipelineState -Event
-        $remaining = [Math]::Max(0, [Math]::Ceiling(([DateTimeOffset]$state.crawlRetryNotBefore - [DateTimeOffset]::UtcNow).TotalSeconds))
-        if ($remaining -gt 0) { Start-Sleep -Seconds ([int]$remaining) }
+
+        # 自动失败重试保留 60 秒轮间退避；人工继续立即交给后端，逐证券 1500ms 的礼貌限速保持不变。
+        if (!$explicitPauseContinue) {
+            if (!$state.Contains('crawlRetryStatus') -or $state.crawlRetryStatus -ne 'WAITING') {
+                $state.crawlRetryNotBefore = [DateTimeOffset]::UtcNow.AddSeconds(60).ToString('o')
+            }
+            $state.crawlRetryStatus = 'WAITING'
+            $state.stage = 'CRAWL_RETRY_WAIT'
+            Save-PipelineState -Event
+            $remaining = [Math]::Max(0, [Math]::Ceiling(([DateTimeOffset]$state.crawlRetryNotBefore - [DateTimeOffset]::UtcNow).TotalSeconds))
+            if ($remaining -gt 0) { Start-Sleep -Seconds ([int]$remaining) }
+            if ($null -ne $checkpoint) {
+                # 轮间等待期间用户可能已从页面继续；再次只读核对，避免基于旧 ID 提交续跑。
+                $checkpoint = Get-CrawlCheckpoint $activeTaskId
+                if ($null -eq $checkpoint) { throw '等待期间持久断点不可见，停止补采。' }
+                Assert-CrawlCheckpointPlan $checkpoint 'stock'
+                if ([long]$checkpoint.latestTaskId -ne $activeTaskId) {
+                    $state.crawlTaskId = [long]$checkpoint.latestTaskId
+                    Save-PipelineState -Event
+                    continue
+                }
+                if (!$checkpoint.resumable) { throw '等待期间任务状态已变化，未提交继续。' }
+            }
+        }
         $state.crawlRetryStatus = 'SUBMITTING'
         Save-PipelineState -Event
         try {
-            # 服务端已修复 fqType 与 adjustflag 的范围映射：完整区间会跳过请求，只补缺失前后段。
-            # 固定原来的股票池与日期；不刷新名单、不改限速、不把 ETF 混入该重试链。
-            $nextCrawl = Invoke-ProjectApi '/api/data-crawler/tasks' 'Post' @{
-                limit=0;codePrefixes='00,30,60';fqType=1;storeRawPrices=$true;requestDelayMillis=1500
-                refreshStockList=$false;from=$HistoryStart;to=$AsOf
+            if ($null -ne $checkpoint) {
+                # 服务端沿用固定日期/参数/证券快照；原始价补精确缺口，复权价格每个新 attempt 保守全窗重验。
+                $nextCrawl = Invoke-ProjectApi "/api/data-crawler/tasks/$activeTaskId/resume" 'Post'
+            } else {
+                # 旧版无可证明的成功区间和固定证券快照；只使用调用者明确核对过的固定请求降级新建。
+                $nextCrawl = Invoke-ProjectApi '/api/data-crawler/tasks' 'Post' $legacyRequest
             }
-            if ($null -eq $nextCrawl -or !$nextCrawl.PSObject.Properties['id'] -or [long]$nextCrawl.id -le 0) {
+            if ($null -eq $nextCrawl -or !$nextCrawl.PSObject.Properties['id'] -or [long]$nextCrawl.id -le 0 -or [long]$nextCrawl.id -eq $activeTaskId) {
                 throw '增量补采接口没有返回有效任务 ID。'
             }
         } catch {
@@ -149,6 +288,89 @@ function Wait-StockCrawlWithRetries {
         $state.crawlRetryStatus = 'SUBMITTED'
         $state.stage = 'CRAWL'
         Save-PipelineState -Event
+    }
+}
+
+function Wait-EtfCrawl {
+    <# ETF 单独建任务且仅保存真实原始价；恢复执行器时复用已保存任务，不重复 POST 新任务。 #>
+    $state.stage = 'ETF_CRAWL'
+    $state.etfPlan.status = 'RUNNING'
+    if (!$state.Contains('etfCrawlTaskId')) {
+        if ($state.Contains('etfSubmissionStatus') -and $state.etfSubmissionStatus -in @('SUBMITTING','SUBMISSION_UNCONFIRMED')) {
+            throw 'ETF 提交结果未确认，请先核对任务列表；本次未重发。'
+        }
+        $state.etfSubmissionStatus = 'SUBMITTING'
+        Save-PipelineState -Event
+        try {
+            $created = Invoke-ProjectApi '/api/data-crawler/tasks' 'Post' @{
+                limit=0;codePrefixes='58';fqType=0;storeRawPrices=$false;requestDelayMillis=1500
+                refreshStockList=$true;from=$HistoryStart;to=$AsOf
+            }
+            if ($null -eq $created -or !$created.PSObject.Properties['id'] -or [long]$created.id -le 0) {
+                throw 'ETF 接口没有返回有效任务 ID。'
+            }
+            $state.etfCrawlTaskId = [long]$created.id
+            $state.etfSubmissionStatus = 'SUBMITTED'
+            Save-PipelineState -Event
+        } catch {
+            $state.etfSubmissionStatus = 'SUBMISSION_UNCONFIRMED'
+            Save-PipelineState -Event
+            throw "ETF 提交结果未确认，请先核对任务列表，未自动重发：$($_.Exception.Message)"
+        }
+    }
+    while ($true) {
+        $taskId = [long]$state.etfCrawlTaskId
+        $checkpoint = Get-CrawlCheckpoint $taskId
+        if ($null -ne $checkpoint) {
+            Assert-CrawlCheckpointPlan $checkpoint 'etf'
+            if ([long]$checkpoint.latestTaskId -ne $taskId) {
+                $state.etfCrawlTaskId = [long]$checkpoint.latestTaskId
+                Save-PipelineState -Event
+                continue
+            }
+        }
+        $current = Invoke-ProjectApi "/api/data-crawler/tasks/$taskId"
+        $state.etfCrawl = $current | Select-Object id,totalCount,successCount,failCount,status,startTime,endTime,remark
+        Save-PipelineState
+        if ($current.status -eq 'running') { Start-Sleep -Seconds 30; continue }
+        # 查询日志与查询断点不是同一个事务快照；取得终态后重新读断点，避免刚完成暂停时仍使用旧 running 摘要。
+        $checkpoint = Get-CrawlCheckpoint $taskId
+        if ($null -ne $checkpoint) {
+            Assert-CrawlCheckpointPlan $checkpoint 'etf'
+            if ([long]$checkpoint.latestTaskId -ne $taskId) {
+                $state.etfCrawlTaskId = [long]$checkpoint.latestTaskId
+                Save-PipelineState -Event
+                continue
+            }
+        }
+        if ($current.status -eq 'paused' -or ($null -ne $checkpoint -and $checkpoint.status -eq 'paused')) {
+            if (!$ContinuePaused -or $script:continuePausedConsumed) {
+                $state.status='PAUSED';$state.stage='ETF_CRAWL_PAUSED';$state.etfPlan.status='PAUSED'
+                Save-PipelineState -Event
+                return $null
+            }
+            if ($null -eq $checkpoint -or !$checkpoint.resumable) { throw 'ETF 暂停任务没有可继续的持久参数。' }
+            $script:continuePausedConsumed = $true
+            $state.etfSubmissionStatus = 'SUBMITTING'
+            Save-PipelineState -Event
+            try {
+                $next = Invoke-ProjectApi "/api/data-crawler/tasks/$taskId/resume" 'Post'
+                if ($null -eq $next -or !$next.PSObject.Properties['id'] -or [long]$next.id -le 0 -or [long]$next.id -eq $taskId) { throw 'ETF 继续接口没有返回有效任务 ID。' }
+                $state.etfCrawlTaskId = [long]$next.id
+                $state.etfSubmissionStatus = 'SUBMITTED'
+                Save-PipelineState -Event
+            } catch {
+                $state.etfSubmissionStatus = 'SUBMISSION_UNCONFIRMED'
+                Save-PipelineState -Event
+                throw "ETF 继续结果未确认，请先核对任务列表，未自动重发：$($_.Exception.Message)"
+            }
+            continue
+        }
+        if ($current.status -ne 'done' -or $current.totalCount -le 0 -or $current.failCount -gt 0 -or
+            $current.successCount -ne $current.totalCount -or ($null -ne $checkpoint -and $checkpoint.status -ne 'done')) {
+            throw "ETF 采集未完整成功，任务 ${taskId}：$($current.remark)"
+        }
+        return $current
     }
 }
 
@@ -178,6 +400,8 @@ namespace StockLocalDeployment {
     $state.preventAutomaticSleep = $keepAwake
     Save-PipelineState -Event
     $crawl = Wait-StockCrawlWithRetries
+    # 已暂停是正常、可持久恢复的终态；释放 watcher 锁后等待用户继续，不误报失败也不启动模型。
+    if ($null -eq $crawl) { return }
 
     $state.stage='VALIDATE_DATA'
     Save-PipelineState -Event
@@ -191,45 +415,10 @@ namespace StockLocalDeployment {
         throw '行情存在两种复权日期不匹配或交易日收盘价无效的记录，需要检查覆盖报告。'
     }
 
-    # 采集结束后才重启，以加载全市场批量写入修复和调整后的 Java 内存配置。
-    # Stop.ps1 会拒绝中断用户另行启动的计算任务；本执行器不会强制结束其它任务。
-    $state.stage='RESTART_BACKEND'
-    Save-PipelineState -Event
-    & (Join-Path $PSScriptRoot 'Stop.ps1') -Profile $Profile -ConfigPath $ConfigPath
-    $state.stage='BUILD_BACKEND'
-    Save-PipelineState -Event
-    # Java 退出后才能在 Windows 安全替换正在运行的 JAR；源码与单元测试已提前验证。
-    Push-Location $ApiRoot
-    try {
-        & mvn.cmd -B -ntp -s (Join-Path $PSScriptRoot 'maven-settings.xml') `
-            -gs (Join-Path $PSScriptRoot 'maven-global-settings.xml') `
-            "-Dmaven.repo.local=$(Join-Path $LocalRoot 'maven')" -DskipTests package
-        if ($LASTEXITCODE -ne 0) { throw '后端打包失败，请检查 runner.out.log；尚未开始评分或预测。' }
-    } finally { Pop-Location }
-    & (Join-Path $PSScriptRoot 'Start.ps1') -Profile $Profile -ConfigPath $ConfigPath
-
     if ($IncludeEtf58) {
-        $state.stage='ETF_CRAWL'
-        $state.etfPlan.status='RUNNING'
-        Save-PipelineState -Event
-        # 新 JAR 才支持 58 分表与显式起止日；等股票任务结束后顺序接入，不中断原采集连接。
-        # 数据源对 ETF 前复权请求仍返回 adjustflag=3，因此只请求和保存真实的不复权日线。
-        $etfStarted = Invoke-ProjectApi '/api/data-crawler/tasks' 'Post' @{
-            limit=0;codePrefixes='58';fqType=0;storeRawPrices=$false;requestDelayMillis=1500
-            refreshStockList=$true;from=$HistoryStart;to=$AsOf
-        }
-        $state.etfCrawlTaskId = [long]$etfStarted.id
-        Save-PipelineState -Event
-        while ($true) {
-            $etfCrawl = Invoke-ProjectApi "/api/data-crawler/tasks/$($state.etfCrawlTaskId)"
-            $state.etfCrawl = $etfCrawl | Select-Object id,totalCount,successCount,failCount,status,startTime,endTime,remark
-            Save-PipelineState
-            if ($etfCrawl.status -ne 'running') { break }
-            Start-Sleep -Seconds 30
-        }
-        if ($etfCrawl.status -ne 'done' -or $etfCrawl.totalCount -le 0 -or $etfCrawl.failCount -gt 0 -or $etfCrawl.successCount -ne $etfCrawl.totalCount) {
-            throw "ETF 采集未完整成功，任务 $($state.etfCrawlTaskId)：$($etfCrawl.remark)"
-        }
+        # ETF 与股票串行共享 BaoStock 连接租约；与已部署服务直接协作，不再隐式构建或重启后端。
+        $etfCrawl = Wait-EtfCrawl
+        if ($null -eq $etfCrawl) { return }
         $state.stage='VALIDATE_ETF'
         Save-PipelineState -Event
         $state.etfCoverage = & (Join-Path $PSScriptRoot 'Measure-EtfCoverage.ps1') -HistoryStart $HistoryStart -AsOf $AsOf -OutputDirectory $pipelineDir -Profile $Profile -ConfigPath $ConfigPath
@@ -323,7 +512,7 @@ FROM per_stock;
     Save-PipelineState -Event
 } catch {
     # 错误只写可读原因；不输出接口的完整响应、环境变量或连接凭据。
-    if ($guard) {
+    if ($guard -and !$script:preservePreviousStateOnFailure) {
         $state.status='FAILED'
         if ($IncludeEtf58 -and $state.etfPlan.status -eq 'RUNNING') { $state.etfPlan.status='FAILED' }
         $state.error=$_.Exception.Message

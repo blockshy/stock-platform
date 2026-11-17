@@ -85,6 +85,8 @@ import { Card, Metric, Button } from '../shared/ui/UI.jsx';
 6. `crawlerMonitor`、`runMonitor`、API client 和全局 `useApi` 不因换肤改写。采集计数仍按后端实际上报，最近查询时间不能称为后台心跳。
 7. 旧模型预测仍受 `VITE_ENABLE_LEGACY_FORECAST` 控制。本次整体项目不因此引入额外的 `stock-predict` 或 `stock-fetch`。
 
+持久断点改造是独立获授权的行为扩展：`api/dataCrawler.js` 新增能力/断点查询与暂停/继续写入口，`crawlerMonitor.js` 新增真实 `paused` 终态及任务归属门禁。两份保护摘要已在独立源码审查、离线状态测试和模拟接口浏览器验收后更新；其他请求、默认范围、行情单位和模型算法不因本扩展改变。旧服务缺少能力时不显示或发送固定日期及恢复操作。
+
 ## 开发示例与验收
 
 开发服务器访问 `/dev/ui`，可以查看主要/次要/危险/禁用/加载按钮、表单、指标、语义色、表格分页、图表以及空态和错误提示。该入口仅在 `import.meta.env.DEV` 为真时注册；生产构建没有此路由和导航。

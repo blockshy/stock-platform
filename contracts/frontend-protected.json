@@ -6,7 +6,7 @@
       "path": "api/client.js"
     },
     {
-      "sha256": "e58b76a6bc022815c1f77f290508aeb733bf8d40d55dbe36672d2719bd0393df",
+      "sha256": "15989f5463427cb662ccb2ce289b9705779cbf8a1301123f4fb2021bcf497032",
       "path": "api/dataCrawler.js"
     },
     {
@@ -106,7 +106,7 @@
       "path": "prob/runMonitor.js"
     },
     {
-      "sha256": "ec832ac34c3c6e39b2395add4e9ff29a59454e07664c25e4421fe912f6b2560f",
+      "sha256": "9e6c9fec0656a3dd6bc4120df3b69c6272a5444de08c847edc75b08d02634260",
       "path": "pages/crawlerMonitor.js"
     },
     {

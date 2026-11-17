@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { usePersistedState } from '../hooks/usePersistedState.js';
 import { dataCrawlerApi } from '../api/dataCrawler.js';
-import { createCrawlerMonitor, isCrawlerRunning, matchingCrawlerDetail, selectCrawlerTask } from './crawlerMonitor.js';
+import { crawlerControls, createCrawlerMonitor, isCrawlerRunning, matchingCrawlerDetail, selectCrawlerTask } from './crawlerMonitor.js';
 import DecimalInput from '../components/DecimalInput.jsx';
 import ErrorBanner from '../components/ErrorBanner.jsx';
 import Panel from '../components/Panel.jsx';
@@ -16,15 +16,19 @@ const defaultForm = {
     codePrefixes: '00,30,60',
     requestDelayMillis: 1500,
     refreshStockList: false,
+    // 可选固定日期供历史补缺/旧任务接续；空值保持原有“提交当天减回看天数”的行为。
+    from: '',
+    to: '',
 };
 
 const statusText = {
     running: '运行中',
     done: '已完成',
     failed: '失败',
+    paused: '已暂停',
 };
 
-const statusClass = (status) => status === 'running' ? 'crawler-running' : status === 'done' ? 'crawler-done' : 'crawler-failed';
+const statusClass = (status) => status === 'running' ? 'crawler-running' : status === 'done' ? 'crawler-done' : status === 'paused' ? 'crawler-paused' : 'crawler-failed';
 
 const formatTime = (value) => value ? String(value).replace('T', ' ') : '-';
 // 此时间仅表示浏览器成功收到查询结果，不代表后台刚处理了一只证券。
@@ -36,6 +40,9 @@ export default function DataCrawler() {
     const [starting, setStarting] = useState(false);
     const [message, setMessage] = useState('');
     const [actionError, setActionError] = useState('');
+    const [capabilities, setCapabilities] = useState(null);
+    const [pendingControl, setPendingControl] = useState('');
+    const capabilitiesRef = useRef(null);
 
     const [tasks, setTasks] = useState({ data: [], loading: true, error: null, updatedAt: 0 });
     const [activeTask, setActiveTask] = useState({ id: '', data: null, loading: false, error: null, updatedAt: 0 });
@@ -50,7 +57,13 @@ export default function DataCrawler() {
         // 自动恢复读取返回时的最新选择；本次手选历史后仍更新列表，但不再抢回任务。
         const monitor = createCrawlerMonitor({
             readTasks: () => dataCrawlerApi.recent(20),
-            readTask: (id) => dataCrawlerApi.detail(id),
+            readTask: async (id) => {
+                const detail = await dataCrawlerApi.detail(id);
+                // 与任务详情共用同一串行观察器，慢断点查询不会被下一轮轮询重复叠加。
+                if (!capabilitiesRef.current?.durableResume) return detail;
+                try { return { ...detail, checkpoint: await dataCrawlerApi.checkpoint(id) }; }
+                catch (error) { return { ...detail, checkpointError: error.message || '断点查询失败' }; }
+            },
             getSelectedId: () => selectedIdRef.current,
             restoreSelection(records) {
                 const next = selectCrawlerTask(records, selectedIdRef.current, manuallySelectedRef.current);
@@ -64,6 +77,13 @@ export default function DataCrawler() {
         });
         monitorRef.current = monitor;
         void monitor.refresh();
+        // 旧服务没有该入口时仍正常查看和启动原任务，不显示无法执行的暂停/续采按钮。
+        dataCrawlerApi.capabilities().then((value) => {
+            if (monitorRef.current !== monitor) return;
+            capabilitiesRef.current = value;
+            setCapabilities(value);
+            void monitor.refresh();
+        }).catch(() => { /* 查询失败时不推断服务支持写操作，后续重新进入页面可再次探测。 */ });
         return () => {
             monitor.stop();
             if (monitorRef.current === monitor) monitorRef.current = null;
@@ -74,8 +94,9 @@ export default function DataCrawler() {
     const selectedTask = selectedDetail || tasks.data.find((item) => String(item.id) === String(activeTaskId));
     const currentRunning = tasks.data.filter(isCrawlerRunning);
     const selectedQuery = String(activeTask.id) === String(activeTaskId) ? activeTask : null;
-    const startDisabled = starting || !tasks.updatedAt || Boolean(tasks.error)
+    const startDisabled = starting || Boolean(pendingControl) || !tasks.updatedAt || Boolean(tasks.error)
         || currentRunning.length > 0 || isCrawlerRunning(selectedDetail);
+    const controls = crawlerControls(selectedTask, capabilities, currentRunning.length > 0);
     const progress = useMemo(() => {
         const total = Number(selectedTask?.totalCount || 0);
         const completed = Number(selectedTask?.successCount || 0) + Number(selectedTask?.failCount || 0);
@@ -108,6 +129,8 @@ export default function DataCrawler() {
                 daysBack: Number(form.daysBack),
                 fqType: Number(form.fqType),
                 requestDelayMillis: Number(form.requestDelayMillis),
+                from: capabilities?.fixedDateRange ? form.from || undefined : undefined,
+                to: capabilities?.fixedDateRange ? form.to || undefined : undefined,
             });
             if (monitorRef.current !== monitor) return;
             manuallySelectedRef.current = false;
@@ -124,6 +147,35 @@ export default function DataCrawler() {
     };
 
     const refresh = () => { void monitorRef.current?.refresh(); };
+    const control = async (action) => {
+        const monitor = monitorRef.current;
+        if (!monitor || startingRef.current || !selectedTask || !controls[action]) return;
+        startingRef.current = true;
+        setPendingControl(action);
+        setActionError('');
+        setMessage('');
+        try {
+            const task = await dataCrawlerApi[action](selectedTask.id);
+            if (monitorRef.current !== monitor) return;
+            if (action === 'resume') {
+                manuallySelectedRef.current = false;
+                selectedIdRef.current = String(task.id);
+                setActiveTaskId(String(task.id));
+                setMessage(`续采任务 #${task.id} 已创建，沿用原日期和证券范围，跳过已确认完整的原始行情；前后复权重新核验。`);
+            } else {
+                setMessage('暂停请求已提交，当前查询和入库结束后才会显示“已暂停”；请等待状态确认。');
+            }
+        } catch (error) {
+            if (monitorRef.current === monitor) setActionError(error.message || '任务操作失败');
+        } finally {
+            startingRef.current = false;
+            if (monitorRef.current === monitor) {
+                setPendingControl('');
+                // 即使写响应超时也只查询真实状态，不自动再提交一次写操作。
+                void monitor.refresh();
+            }
+        }
+    };
     const selectTask = (id) => {
         manuallySelectedRef.current = true;
         selectedIdRef.current = String(id);
@@ -153,6 +205,12 @@ export default function DataCrawler() {
                     <label className="field">回看自然日
                         <DecimalInput value={form.daysBack} onChange={(value) => update('daysBack', value)}/>
                     </label>
+                    {capabilities?.fixedDateRange ? <><label className="field">固定起始日（可选）
+                        <input type="date" value={form.from || ''} onChange={(e) => update('from', e.target.value)}/>
+                    </label>
+                    <label className="field">固定截止日（可选）
+                        <input type="date" value={form.to || ''} onChange={(e) => update('to', e.target.value)}/>
+                    </label></> : null}
                     <label className="field">主抓取复权
                         <select value={form.fqType} onChange={(e) => update('fqType', e.target.value)}>
                             <option value={1}>前复权</option>
@@ -185,7 +243,8 @@ export default function DataCrawler() {
                 </div>
                 <div className="forecast-note crawler-note">
                     默认采集 00、30、60 开头股票；填写 58 可单独采集该前缀 ETF，也可用逗号组合前缀。
-                    回看天数按自然日计算，最多证券数为 0 表示不限数量。ETF 当前仅保存数据源返回的不复权日线，
+                    回看天数按自然日计算。{capabilities?.fixedDateRange ? '填写固定起始日后优先使用该日期，截止日留空使用提交当天。' : ''}
+                    最多证券数为 0 表示不限数量。ETF 当前仅保存数据源返回的不复权日线，
                     独立存储，不会自动进入现有个股评分或预测；上方复权选项仅对 00、30、60 开头股票生效。
                 </div>
             </Panel>
@@ -207,7 +266,7 @@ export default function DataCrawler() {
             <div className="stat-grid">
                 <StatCard label="当前任务" value={selectedTask ? `#${selectedTask.id}` : '-'} hint={selectedTask ? statusText[selectedTask.status] || selectedTask.status : activeTaskId ? '正在读取任务状态' : tasks.loading ? '正在查询后台任务' : '尚未选择任务'}/>
                 <StatCard label="已处理（成功+失败）" value={progress.percent !== null ? `${progress.percent.toFixed(1)}%` : '-'} hint={selectedTask ? `${progress.completed}/${progress.total || '-'} 只` : '等待任务'}/>
-                <StatCard tone="success" label="成功证券" value={selectedTask?.successCount ?? '-'} hint="完成日线查询并入库"/>
+                <StatCard tone="success" label="成功证券" value={selectedTask?.successCount ?? '-'} hint="含已确认完整并跳过的证券"/>
                 <StatCard tone="danger" label="失败证券" value={selectedTask?.failCount ?? '-'} hint="可查看任务备注定位"/>
             </div>
 
@@ -220,6 +279,24 @@ export default function DataCrawler() {
                     </div>
                     <div className="crawler-progress"><span style={{ width: `${progress.percent ?? 0}%` }}/></div>
                     <div className="crawler-remark">{selectedTask.remark || '暂无任务备注'}</div>
+                    {capabilities?.durableResume ? <div className="crawler-actions">
+                        {controls.pause || controls.pausing ? <button type="button" className="ghost"
+                            disabled={!controls.pause || Boolean(pendingControl) || starting}
+                            onClick={() => control('pause')}>{controls.pausing || pendingControl === 'pause' ? '等待安全暂停…' : '安全暂停'}</button> : null}
+                        {controls.resume ? <button type="button" className="score-rebuild"
+                            disabled={Boolean(pendingControl) || starting} onClick={() => control('resume')}>
+                            {pendingControl === 'resume' ? '恢复中…' : '继续采集'}</button> : null}
+                        <span className="muted">{selectedTask.checkpoint
+                            ? `固定区间：${selectedTask.checkpoint.from} 至 ${selectedTask.checkpoint.to}`
+                            : selectedTask.checkpointError || '此历史任务没有可恢复的固定参数，请按原日期范围重新提交采集。'}</span>
+                    </div> : null}
+                    {selectedTask.checkpoint?.lastCode ? <p className="crawler-note">
+                        {/* 断点每次事务提交都会更新，能反映两次证券计数刷新之间的真实进展；不表示当前网络请求已完成。 */}
+                        最近已确认区间：{selectedTask.checkpoint.lastCode} ·
+                        {{ 1: '后复权', 2: '前复权', 3: '不复权' }[selectedTask.checkpoint.lastAdjustFlag] || '未知口径'} ·
+                        {selectedTask.checkpoint.lastFrom} 至 {selectedTask.checkpoint.lastTo}。
+                        已确认的原始行情可跳过；前后复权在每轮继续时重新核验。
+                    </p> : null}
                 </Panel>
             ) : null}
 
@@ -249,7 +326,9 @@ export default function DataCrawler() {
                 <div className="metric-explain-grid crawler-explain-grid">
                     <div><strong>主抓取复权</strong><span>00、30、60 开头股票默认前复权，可切换后复权或不复权；58 开头 ETF 当前仅保存数据源返回的不复权日线。</span></div>
                     <div><strong>不复权价格</strong><span>股票勾选后额外保存原始市场价格；ETF 只采集一次不复权行情，不会因勾选产生额外复权记录。</span></div>
-                    <div><strong>增量续抓</strong><span>根据本地行情的最早和最新日期，补齐缺失的历史前段或最新后段；可在任务备注中查看处理结果。</span></div>
+                    <div><strong>增量续抓</strong><span>{capabilities?.durableResume
+                        ? '按已确认区间及逐日记录补缺，成功入库后保存断点；继续采集沿用原日期和证券范围。复权基准无法确认时会重新核验，避免混用价格。'
+                        : '当前服务根据本地行情的最早和最新日期补齐前后缺失段；持久断点和安全暂停将在服务更新后启用。'}</span></div>
                     <div><strong>证券范围</strong><span>00、30、60 对应当前支持的股票范围，58 对应 ETF。默认仍为股票范围，采集 ETF 时请主动填写 58。</span></div>
                     <div><strong>独立存储</strong><span>股票按 00、30、60 分表保存；58 开头 ETF 使用独立行情存储，不会自动加入现有个股评分、训练或预测股票池。</span></div>
                     <div><strong>数据字段</strong><span>包含行情源提供的 OHLC、成交量、成交额等字段；股票与 ETF 的可用字段不同，ETF 不沿用个股估值或 ST 含义。</span></div>

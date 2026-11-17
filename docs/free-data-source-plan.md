@@ -1,6 +1,6 @@
 # 免费行情采集优化与替代方案
 
-> 2026-11-18 调研方案，等待确认后实施。尚未切换数据源、调整生产采集参数或执行新接口采集。Python 迁移暂时搁置，继续使用现有引擎。
+> 2026-11-18 已完成方案 A 与方案 B 的代表样本验证，持久断点和暂停续采已实现。生产批量通道仍关闭：全市场完整输入及评分/预测 A/B 重算尚未验收。在线采样须取得独占会话；具体入口和状态边界见[采集断点与批量验证](data-collection-validation.md)。Python 迁移暂时搁置。
 
 ## 推荐结论
 
@@ -25,7 +25,7 @@
 
 ## 方案 A：同源按日批量，优先验证
 
-BaoStock 官方提供 `query_daily_history_k_AStock`、`query_daily_history_k_ETF` 和 `query_daily_adjust_factor`，均按日期查询。官方股票批量字段包含既有日线的估值、ST 与交易状态，示例使用普通登录；没有发现这三项仅限 VIP 的声明。本次未实测公共节点权限或吞吐。[官方每日更新说明](https://baostock.com/mainContent?file=DailyUpdates.md)、[平台介绍](https://baostock.com/mainContent?file=home.md)
+BaoStock 官方提供 `query_daily_history_k_AStock`、`query_daily_history_k_ETF` 和 `query_daily_adjust_factor`，均按日期查询。官方股票批量字段包含既有日线的估值、ST 与交易状态，示例使用普通登录；当前实例的普通登录已取得三类响应，但不保证所有节点和日期永久可用。[官方每日更新说明](https://baostock.com/mainContent?file=DailyUpdates.md)、[平台介绍](https://baostock.com/mainContent?file=home.md)
 
 推荐流程：
 
@@ -36,7 +36,7 @@ BaoStock 官方提供 `query_daily_history_k_AStock`、`query_daily_history_k_ET
 
 批量股票接口没有复权选择参数，示例返回 `adjustflag=3`。不能把这些原始价格直接写为模型使用的前复权 `2`；除权发生后也不能仅补当天一行而不维护历史基准。[官方本地复权教程](https://baostock.com/mainContent?file=localdatafactorInfo.md)
 
-预期优势是减少日更时的逐证券往返，保留估值及状态字段的供应方。实际提速、首次回补耗时和数值等效尚未测量。官方文档与 SDK 的批量分页说明存在不一致，必须专项校验完整行数和边界，不能照搬现有逐股解析。访问仍须遵守官方单连接及每日请求限制，不通过并发连接提速。[访问规则](https://baostock.com/blacklist)、[官方 SDK](https://pypi.org/project/baostock/0.9.4/)
+预期优势是减少日更时的逐证券往返，保留估值及状态字段的供应方。样本已取得历史起点和最新日的完整支持证券集合，并完成代表股票前后复权的完整窗口对照；整市场三年补缺和计算结果的端到端提速仍未验收。历史日期的响应可能明显慢于最新日，不能用最新日耗时外推三年。官方文档与 SDK 的批量分页说明存在不一致，必须专项校验完整行数和边界，不能照搬现有逐股解析。访问仍须遵守官方单连接及每日请求限制，不通过并发连接提速。[访问规则](https://baostock.com/blacklist)、[官方 SDK](https://pypi.org/project/baostock/0.9.4/)
 
 ## 方案 B：免费多源行情候选
 
@@ -51,7 +51,9 @@ AKShare 是数据接口库，实际来源仍是腾讯、新浪、东方财富等
 
 接口字段依据：[AKShare 股票行情](https://akshare.akfamily.xyz/data/stock/stock_quote.html)、[ETF 历史行情](https://akshare.akfamily.xyz/data/fund/fund_public.html)、[估值接口](https://akshare.akfamily.xyz/data/stock/stock_valuation.html)。Tushare 权限依据：[频次与权限表](https://tushare.pro/document/2?doc_id=290)、[每日指标](https://tushare.pro/document/2?doc_id=32)、[ETF 日线](https://tushare.pro/document/2?doc_id=127)。积分也可通过贡献取得，但不能据此保证新账号立即获得全部接口。
 
-腾讯和新浪当前换手率为比值，东方财富股票换手率为百分数；不能统一直接入库。ETF 接口文档没有完整标明所有单位，必须对照可核验样本。历史 ST、停牌与现金流估值口径是本方案的切换门槛，不能通过丢弃字段或重设模型参数解决。
+供应方原始端点与适配库输出可能使用不同单位，不能统一直接入库。本轮直连腾讯 `newfqkline` 的换手率为百分数，成交量为手、金额为万元；东财历史端点的量为手、额为元、换手率为百分数。ETF 单位不能未经核验推广到其它基金品种。历史 ST、停牌与现金流估值口径仍是切换门槛，不能通过丢弃字段或重设模型参数解决。[腾讯当前实现](https://github.com/akfamily/akshare/blob/main/akshare/stock/quote/stock_hist_tx.py)、[量额单位实现](https://github.com/akfamily/akshare/blob/main/akshare/index/index_stock_zh.py)、[东财 ETF 实现](https://github.com/akfamily/akshare/blob/main/akshare/fund/fund_etf_em.py)
+
+本轮腾讯、东方财富的原始历史样本返回较快，日期和 OHLC 与既有源对齐，但成交量、成交额或换手率仍有差异，且缺少完整历史估值、ST 与停牌状态。因此保留为候选旁路，未启用生产替换，也未把缺失字段补零。请求耗时与逐字段证据仅保存在本地，不能把少量成功请求当作全市场稳定性结论。
 
 东方财富并非无限访问。维护者近期已删除旧文档中的无限制说法，实际接口有频率限制。因此每个上游应分别限速、退避与熔断；不能反复重试被限制的源，也不能预先承诺腾讯或新浪一定更快。[维护者更新说明](https://akshare.akfamily.xyz/changelog.html#v1-20-64)
 
@@ -67,4 +69,4 @@ AKShare 是数据接口库，实际来源仍是腾讯、新浪、东方财富等
 
 采集适配继续放在既有 Java 后端，Python 概率引擎保持现状。用户的评分、短期预测和概率任务入口保持不变；数据完整性未通过时应明确报告，不能把部分行情标成全量完成后继续计算。
 
-当前无须提供付费账号、API key 或额外服务器。下一步需要确认的是是否按“先同源批量验证，必要时再多源替换”的顺序实施；本文不是已完成数据源切换的交付说明。
+当前无须提供付费账号、API key 或额外服务器。实施顺序已确认为“先同源批量验证，必要时再多源替换”；本文不是已完成数据源切换的交付说明，任何切换仍以完整性、复权、计算结果及性能验收为前提。

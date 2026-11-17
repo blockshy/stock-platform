@@ -525,6 +525,9 @@ button.ghost {
     background: var(--ui-success-soft);
 }
 
+/* 暂停是可恢复状态，采用中性配色，避免与采集失败混淆。 */
+.crawler-paused { background: var(--ui-surface-subtle); color: var(--ui-muted); }
+
 .crawler-failed {
     color: var(--ui-danger);
     background: var(--ui-danger-soft);

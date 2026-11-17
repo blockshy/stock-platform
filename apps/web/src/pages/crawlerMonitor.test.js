@@ -6,10 +6,27 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createCrawlerMonitor, matchingCrawlerDetail, selectCrawlerTask } from './crawlerMonitor.js';
+import { crawlerControls, createCrawlerMonitor, isCrawlerFinished, matchingCrawlerDetail, selectCrawlerTask } from './crawlerMonitor.js';
 
 const running = { id: 5, status: 'running', successCount: 10 };
 const history = { id: 1, status: 'done', successCount: 5 };
+
+test('只有当前断点允许暂停；请求暂停期间继续视为运行中', () => {
+    const task = { ...running, checkpoint: { latestTaskId: 5, pauseRequested: true } };
+    assert.deepEqual(crawlerControls(task, { safePause: true }), { pause: false, resume: false, pausing: true });
+    assert.equal(isCrawlerFinished(task), false);
+    assert.equal(crawlerControls(running, { safePause: true }).pause, false);
+});
+
+test('已暂停可续采，但旧日志、旧服务和其他在途任务均不允许误提交', () => {
+    const task = { id: 5, status: 'paused', checkpoint: { latestTaskId: 5, resumable: true } };
+    const caps = { durableResume: true };
+    assert.equal(isCrawlerFinished(task), true);
+    assert.equal(crawlerControls(task, caps).resume, true);
+    assert.equal(crawlerControls(task, caps, true).resume, false);
+    assert.equal(crawlerControls(task, null).resume, false);
+    assert.equal(crawlerControls({ ...task, id: 1 }, caps).resume, false);
+});
 
 /** 暴露完成与失败控制权，模拟列表或详情长时间未返回，而不使用真实定时器。 */
 function deferred() {
