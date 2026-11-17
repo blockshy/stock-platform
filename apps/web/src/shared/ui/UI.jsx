@@ -11,7 +11,8 @@ export function Card({ title, extra, children, className = '', flush = false, ti
             <Title className={styles.cardTitle}>{title}</Title>
             {extra ? <div className={styles.cardExtra}>{extra}</div> : null}
         </header> : null}
-        {Children.toArray(children).length ? <div className={cx(styles.cardBody, flush && styles.flush)}>{children}</div> : null}
+        {/* 稳定的内容边界供兼容层定位块级说明；不暴露编译后的局部类名，也不改变子节点结构。 */}
+        {Children.toArray(children).length ? <div data-ui="card-body" className={cx(styles.cardBody, flush && styles.flush)}>{children}</div> : null}
     </section>;
 }
 

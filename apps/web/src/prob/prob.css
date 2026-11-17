@@ -24,7 +24,9 @@
 /* ---------------------------------------------------------------- 通用块 */
 .prob-muted { color: var(--ga-muted, var(--ui-muted)); font-size: 12px; }
 .prob-small { font-size: 11.5px; color: var(--ga-muted, var(--ui-muted)); line-height: 1.5; }
-.prob-note { margin: 10px 0 0; font-size: 12px; color: var(--ga-muted, var(--ui-muted)); line-height: 1.75; }
+/* 说明可能位于图表之后，也可能位于筛选条/任务统计之前；两侧都留白，避免只设上边距时正文贴住下一块。
+   卡片及其异步内容首尾由工作台边界规则收口，字段内提示仍使用 prob-small/prob-muted，不受此规则影响。 */
+.prob-note { margin: 12px 0; font-size: 12px; color: var(--ga-muted, var(--ui-muted)); line-height: 1.75; }
 .prob-onboard {
     margin-top: 12px; padding: 12px 14px; border-radius: 8px;
     background: var(--ui-primary-soft); border: 1px solid var(--ui-primary-border); color: var(--ui-primary);

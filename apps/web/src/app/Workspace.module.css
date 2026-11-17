@@ -16,6 +16,17 @@
 .root :global(.ga-page), .root :global(.quant-stack) { --ui-filter-margin-bottom: 0px; }
 .root [data-ui="card"] { --ui-filter-margin-bottom: 12px; }
 
+/* 旧模块的块级说明共享卡片内容间距，不再依靠类声明顺序决定按钮/说明/表格是否贴边。
+   仅处理卡片内容区及其一层异步包装的直接子级：卡片外沿用页面 gap，嵌套表格、字段提示、按钮组和网格不受影响。
+   ga-busy 只包装加载状态，不提供布局间距，因此其首尾说明也按同一内容边界处理。
+   首尾外边距归零后，卡片 padding 是唯一边缘留白；中间说明前后各 12px，由普通文档流合并相邻 margin。 */
+.root [data-ui="card-body"] > :where(:global(.forecast-note), :global(.prob-note), :global(.ga-note)),
+.root [data-ui="card-body"] > :global(.ga-busy) > :where(:global(.forecast-note), :global(.prob-note), :global(.ga-note)) { margin-block: 0; }
+.root [data-ui="card-body"] > :where(:global(.forecast-note), :global(.prob-note), :global(.ga-note)):not(:first-child),
+.root [data-ui="card-body"] > :global(.ga-busy) > :where(:global(.forecast-note), :global(.prob-note), :global(.ga-note)):not(:first-child) { margin-top: 12px; }
+.root [data-ui="card-body"] > :where(:global(.forecast-note), :global(.prob-note), :global(.ga-note)):not(:last-child),
+.root [data-ui="card-body"] > :global(.ga-busy) > :where(:global(.forecast-note), :global(.prob-note), :global(.ga-note)):not(:last-child) { margin-bottom: 12px; }
+
 /* 统一页面标题层级，模块原有导航、刷新、说明和公式入口保持在原位置。 */
 .root :global(.page-intro), .root :global(.ga-head), .root :global(.quant-head), .root :global(.tlab-page-head) {
     padding: 16px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius-lg);

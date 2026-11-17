@@ -5,9 +5,14 @@
 .cardExtra { margin-left: auto; min-width: 0; max-width: 100%; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--ui-muted); }
 .cardBody { padding: 16px; min-width: 0; }
 .cardBody.flush { padding: 0; }
-/* 内容边缘只保留卡片自身留白，避免段落默认外边距与卡片 padding 重复叠加。 */
+/* 只清理内容与卡片边缘之间的外边距；块级说明和相邻正文之间的间距由各自规则负责。
+   不能给全部子节点统一 gap：表格、分页和图表的组合可能有自身连续边界。 */
 .cardBody > :first-child { margin-top: 0; }
 .cardBody > :last-child { margin-bottom: 0; }
+/* 共享提示作为卡片内独立块时，与前后内容保持 12px；位于首尾时仍只保留卡片 padding。
+   只限定直接子级，避免与调用方已有的 flex/grid gap 叠加，也不影响提示内部的标题与正文。 */
+.cardBody > .alert:not(:first-child) { margin-top: 12px; }
+.cardBody > .alert:not(:last-child) { margin-bottom: 12px; }
 .metric[data-ui="metric"] { padding: var(--ui-metric-padding, 14px 16px); background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: var(--ui-radius-lg); min-width: 0; box-shadow: var(--ui-shadow); }
 /* 长术语需要整体换行，不能把前面的中文标签挤成逐字竖排。 */
 .metricLabel { color: var(--ui-muted); font-size: 12px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; line-height: 1.5; }
