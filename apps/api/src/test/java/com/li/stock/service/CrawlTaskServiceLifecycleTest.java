@@ -11,7 +11,12 @@ import com.li.stock.integration.BaoStockMemorySocket;
 import com.li.stock.mapper.CrawlTaskMapper;
 import com.li.stock.repository.CrawlCheckpointRepository;
 import com.li.stock.repository.CrawlTaskRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.parallel.ResourceLock;
+import org.junit.jupiter.api.parallel.Resources;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -19,6 +24,7 @@ import org.springframework.transaction.support.SimpleTransactionStatus;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,8 +44,34 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** 后台任务生命周期回归：使用内存 Socket、内存日志和断点，不创建数据库连接或额外 BaoStock 登录。 */
+@ResourceLock(Resources.SYSTEM_PROPERTIES)
 class CrawlTaskServiceLifecycleTest {
     private static final LocalDate DAY = LocalDate.of(2026, 11, 16);
+    private static final String LOCK_PROPERTY = "stock.baostock.lock-file";
+
+    @TempDir
+    Path temporaryDirectory;
+
+    private String previousLockFile;
+
+    /**
+     * 生命周期测试会执行真实的跨进程锁逻辑，但传输层完全在内存中，因此必须使用独立锁文件。
+     * 每例临时目录避免碰触正在采集的生产会话；系统属性资源锁防止 JUnit 并行执行时相互覆盖。
+     * 只调整当前测试 JVM 的属性，不更改启动配置，也不释放或删除生产进程持有的锁。
+     */
+    @BeforeEach
+    void isolateSimulatedSessionLock() {
+        previousLockFile = System.getProperty(LOCK_PROPERTY);
+        System.setProperty(LOCK_PROPERTY, temporaryDirectory.resolve("simulated-baostock-session.lock")
+                .toAbsolutePath().toString());
+    }
+
+    /** 各例先在 finally 中等待后台线程退出，再恢复原属性；原先未设置时须清除，不能写入空值。 */
+    @AfterEach
+    void restoreSessionLockProperty() {
+        if (previousLockFile == null) System.clearProperty(LOCK_PROPERTY);
+        else System.setProperty(LOCK_PROPERTY, previousLockFile);
+    }
 
     @Test
     void pauseStaysRunningUntilSafeBoundaryAndResumeKeepsOriginalParametersAndUniverse() throws Exception {
@@ -85,7 +117,7 @@ class CrawlTaskServiceLifecycleTest {
             assertEquals(1, checkpoints.savedRows);
         } finally {
             releaseClient.countDown();
-            service.shutdown();
+            shutdownAndAwait(service);
         }
     }
 
@@ -117,7 +149,7 @@ class CrawlTaskServiceLifecycleTest {
             assertEquals(1, checkpoints.savedRows, "失败证券不能生成成功覆盖，后续成功证券仍应提交");
             assertEquals(2, socket.queries().size());
         } finally {
-            service.shutdown();
+            shutdownAndAwait(service);
         }
     }
 
@@ -142,7 +174,7 @@ class CrawlTaskServiceLifecycleTest {
             assertTrue(service.checkpoint(started.id()).resumable());
             assertEquals(1, checkpoints.savedRows);
         } finally {
-            service.shutdown();
+            shutdownAndAwait(service);
         }
     }
 
@@ -187,6 +219,14 @@ class CrawlTaskServiceLifecycleTest {
     private void awaitExecutor(CrawlTaskService service) throws Exception {
         Field field = CrawlTaskService.class.getDeclaredField("executor"); field.setAccessible(true);
         ((ExecutorService) field.get(service)).submit(() -> {}).get(3, TimeUnit.SECONDS);
+    }
+
+    /** 确保异步清理与临时锁释放完成，避免测试失败路径在恢复 JVM 属性后仍遗留后台任务。 */
+    private void shutdownAndAwait(CrawlTaskService service) throws Exception {
+        service.shutdown();
+        Field field = CrawlTaskService.class.getDeclaredField("executor"); field.setAccessible(true);
+        assertTrue(((ExecutorService) field.get(service)).awaitTermination(3, TimeUnit.SECONDS),
+                "测试后台线程须在恢复会话锁配置前退出");
     }
 
     private static CrawlTaskVO view(CrawlTask task) {
