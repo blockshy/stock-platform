@@ -1,0 +1,46 @@
+# 本地实例、凭据、构建缓存与运行产物不属于源码仓库。
+.local/
+**/node_modules/
+**/.venv/
+**/target/
+**/dist/
+**/dist-ssr/
+**/artifacts/
+**/logs/
+**/__pycache__/
+**/*.py[cod]
+**/*.local
+**/.env.local
+**/.idea/
+**/.vscode/
+**/_p2/
+**/_p3/
+*.log
+
+# 私有文档、机器配置与发布前的完整历史仅保存在本机，不能进入公共仓库。
+private-docs/
+docs/private/
+docs/local/
+**/*.local.json
+**/*.local.yaml
+**/*.local.yml
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+**/secrets.json
+**/client.ini
+*.bundle
+
+# 凭据、证书私钥、数据库快照与训练结果均通过独立的本地备份管理。
+*.pem
+*.key
+*.p12
+*.pfx
+*.sql.gz
+*.dump
+*.sqlite
+*.sqlite3
+*.pkl
+*.pickle
+*.joblib

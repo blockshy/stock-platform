@@ -1,0 +1,4 @@
+/* 图表只约束容器外观；高度仍由各业务页面传入，不改变数据缩放与交易单位。 */
+.chart { position: relative; width: 100%; min-width: 0; background: var(--ui-surface); border-radius: var(--ui-radius-sm); }
+.canvas { width: 100%; min-width: 0; }
+.mask { position: absolute; inset: 0; display: grid; place-items: center; background: var(--ui-chart-mask); border-radius: inherit; }

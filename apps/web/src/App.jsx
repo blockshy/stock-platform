@@ -1,0 +1,106 @@
+import workspace from './app/Workspace.module.css';
+import { pageGroup, pageTitle } from './app/navigation.js';
+import ComponentGallery from './dev/ComponentGallery.jsx';
+import { useEffect, useState } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import Sidebar, { StockSearch } from './components/Header.jsx';
+import CurrentStockPicker from './components/CurrentStockPicker.jsx';
+import LimitUpTicker from './components/LimitUpTicker.jsx';
+import { useCurrentStock } from './context/CurrentStockContext.jsx';
+import MarketDashboard from './pages/MarketDashboard.jsx';
+import StockList from './pages/StockList.jsx';
+import StockDetail from './pages/StockDetail.jsx';
+import ScoreRanking from './pages/ScoreRanking.jsx';
+import ShortTermForecast from './pages/ShortTermForecast.jsx';
+import ForecastDashboard from './pages/ForecastDashboard.jsx';
+import TTradingSimulator from './pages/TTradingSimulator.jsx';
+import TLabPage from './tlab/TLabPage.jsx';
+import DataCrawler from './pages/DataCrawler.jsx';
+import GaApp from './ga/GaApp.jsx';
+import QuantApp from './quant/QuantApp.jsx';
+import ProbApp from './prob/ProbApp.jsx';
+
+
+function NotFound() {
+    return (
+        <div className="panel">
+            <h2>页面不存在</h2>
+            <p className="muted">请从左侧导航选择「市场看板」「股票列表」或「量化评分」。</p>
+        </div>
+    );
+}
+
+export default function App() {
+    const location = useLocation();
+    const { setCurrentStock } = useCurrentStock();
+    // 宽屏默认展开侧栏，窄屏默认收起为抽屉
+    const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth > 960);
+    const title = pageTitle(location.pathname);
+
+    // 任何入口（榜单、搜索、涨停播报、直达链接）进入个股详情，都把该股票同步为全站当前股票
+    useEffect(() => {
+        const matched = /^\/stocks\/(\d{6})\/?$/.exec(location.pathname);
+        if (matched) setCurrentStock(matched[1]);
+    }, [location.pathname, setCurrentStock]);
+
+    const closeOnMobile = () => {
+        if (window.innerWidth <= 960) setSidebarOpen(false);
+    };
+
+    return (
+        <div className={`${workspace.root} app${sidebarOpen ? ' sidebar-open' : ''}`}>
+            <Sidebar onNavigate={closeOnMobile}/>
+            <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)}/>
+            <div className="app-main">
+                <header className="topbar">
+                    <button
+                        type="button"
+                        className="icon-btn"
+                        onClick={() => setSidebarOpen((v) => !v)}
+                        aria-label="展开或收起侧边栏"
+                        title="展开或收起侧边栏"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+                            <path d="M4 7h16 M4 12h16 M4 17h16"/>
+                        </svg>
+                    </button>
+                    <div className="topbar-location">
+                        <span className="crumb">{pageGroup(location.pathname)}</span>
+                        <span className="crumb-sep">/</span>
+                        <strong>{title}</strong>
+                    </div>
+                    <div className="topbar-actions">
+                        <CurrentStockPicker/>
+                        <StockSearch/>
+                        <span className="topbar-badge">仅供研究</span>
+                    </div>
+                </header>
+                {/* 全站涨停播报：挂在路由之外，切页不卸载、参数与滚动状态保持 */}
+                <LimitUpTicker/>
+                <main className="container">
+                    <Routes>
+                        <Route path="/" element={<MarketDashboard/>}/>
+                        <Route path="/stocks" element={<StockList/>}/>
+                        <Route path="/stocks/:code" element={<StockDetail/>}/>
+                        <Route path="/scores" element={<ScoreRanking/>}/>
+                        <Route path="/short-term" element={<ShortTermForecast/>}/>
+                        <Route path="/forecast" element={<ForecastDashboard/>}/>
+                        <Route path="/t-trading" element={<TTradingSimulator/>}/>
+                        <Route path="/t-lab" element={<TLabPage/>}/>
+                        <Route path="/data-crawler" element={<DataCrawler/>}/>
+                        {/* GA 模块自带二级相对路由，父路由必须带 * splat */}
+                        <Route path="/ga/*" element={<GaApp/>}/>
+                        <Route path="/quant" element={<QuantApp/>}/>
+                        <Route path="/prob" element={<ProbApp/>}/>
+                        {import.meta.env.DEV ? <Route path="/dev/ui" element={<ComponentGallery/>}/> : null}
+                        <Route path="*" element={<NotFound/>}/>
+                    </Routes>
+                </main>
+                <footer className="app-footer">
+                    基于本地历史数据开展量化研究 · 仅供研究参考，不构成投资建议
+                </footer>
+            </div>
+        </div>
+    );
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "dataRoot": "../.local",
+  "legacyRoot": "..",
+  "mysqlBase": ".local/tools/mysql-8.0.35-winx64",
+  "databasePort": 13306,
+  "profiles": {
+    "production": { "database": "stock_eastmoney", "apiPort": 8080, "webPort": 5173, "runtimeRoot": ".local/runtime/production", "applicationSecretsFile": "../.local/secrets.json", "javaMaxHeap": "6g", "scoreScheduleEnabled": true },
+    "verification": { "database": "stock_platform_verify", "apiPort": 18080, "webPort": 15173, "runtimeRoot": ".local/runtime/verification", "applicationSecretsFile": ".local/runtime/verification/secrets.json", "javaMaxHeap": "3g", "scoreScheduleEnabled": false }
+  }
+}

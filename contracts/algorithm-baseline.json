@@ -1,0 +1,487 @@
+{
+  "formatVersion": 1,
+  "description": "当前已修复版本的迁移基线；非远程原始版本。",
+  "note": "修改期望摘要必须重新人工审查，不允许测试自动接受新摘要。",
+  "files": [
+    {
+      "path": "engines/probability/engine/__init__.py",
+      "legacyPath": "stock-probability-engine/engine/__init__.py",
+      "baselineSha256": "2701cbaaa89c7b811e3fa4b6fa35b004f0c9974c7aea076cc92fb2e4ad393aa8",
+      "expectedSha256": "2701cbaaa89c7b811e3fa4b6fa35b004f0c9974c7aea076cc92fb2e4ad393aa8",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/backtest.py",
+      "legacyPath": "stock-probability-engine/engine/backtest.py",
+      "baselineSha256": "a4930cc974304e3b9f02040070fc33b37986e2ae9ac931fa5d547d4e5ee7d9e1",
+      "expectedSha256": "a4930cc974304e3b9f02040070fc33b37986e2ae9ac931fa5d547d4e5ee7d9e1",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/checkpoint.py",
+      "legacyPath": "stock-probability-engine/engine/checkpoint.py",
+      "baselineSha256": "8f2e234f9c474154e1d222ace261297508e39d4143b641180ea6ccfce76c83b6",
+      "expectedSha256": "8f2e234f9c474154e1d222ace261297508e39d4143b641180ea6ccfce76c83b6",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/cli.py",
+      "legacyPath": "stock-probability-engine/engine/cli.py",
+      "baselineSha256": "2d851523a2daff85f041450d4d8046930dfe571476ed30497538c00d452c0519",
+      "expectedSha256": "2d851523a2daff85f041450d4d8046930dfe571476ed30497538c00d452c0519",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/config.py",
+      "legacyPath": "stock-probability-engine/engine/config.py",
+      "baselineSha256": "31fdba163fd7e4fae1a315cef98018bf0c720d5fab2c71f0efca3e8e791b9ea4",
+      "expectedSha256": "f69fffc49f49855f49884771b0b8211aa6cbca69af079b8bb87c91ec3144e331",
+      "policy": "runtime-path-adapter",
+      "rationale": "新增运行目录/特征环境解析；不改 cfg 参数及 model_version 算法。"
+    },
+    {
+      "path": "engines/probability/engine/data.py",
+      "legacyPath": "stock-probability-engine/engine/data.py",
+      "baselineSha256": "15944b0f52d6ae3351de5aeb1f2f15215a10d7c3bc41819d3f2d86ce4c61248e",
+      "expectedSha256": "15944b0f52d6ae3351de5aeb1f2f15215a10d7c3bc41819d3f2d86ce4c61248e",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/db.py",
+      "legacyPath": "stock-probability-engine/engine/db.py",
+      "baselineSha256": "a9783af191fae35dcd30c28eeeeac60c0cedf1b3267554c802a457a9d078cc98",
+      "expectedSha256": "a9783af191fae35dcd30c28eeeeac60c0cedf1b3267554c802a457a9d078cc98",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/evaluation.py",
+      "legacyPath": "stock-probability-engine/engine/evaluation.py",
+      "baselineSha256": "061bc1f3be50628eab7d884ff107afaed6ed4ae4eccb306bf15a2c20bd81c92c",
+      "expectedSha256": "061bc1f3be50628eab7d884ff107afaed6ed4ae4eccb306bf15a2c20bd81c92c",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/features.py",
+      "legacyPath": "stock-probability-engine/engine/features.py",
+      "baselineSha256": "c3b5e219049927fe0ebb69c3b9a3a89949f545ad339a48556fabe9cd23ced311",
+      "expectedSha256": "c3b5e219049927fe0ebb69c3b9a3a89949f545ad339a48556fabe9cd23ced311",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/formulas.py",
+      "legacyPath": "stock-probability-engine/engine/formulas.py",
+      "baselineSha256": "fb28f031e94bc5dad2b04cab0c71a6248a5aa927225dfbe93ef590e8c27dea28",
+      "expectedSha256": "fb28f031e94bc5dad2b04cab0c71a6248a5aa927225dfbe93ef590e8c27dea28",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/labels.py",
+      "legacyPath": "stock-probability-engine/engine/labels.py",
+      "baselineSha256": "b56754ef14534bce2ab251fb4bc7ba46229b29f70ce1b3645920c6d92a639a08",
+      "expectedSha256": "b56754ef14534bce2ab251fb4bc7ba46229b29f70ce1b3645920c6d92a639a08",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/logutil.py",
+      "legacyPath": "stock-probability-engine/engine/logutil.py",
+      "baselineSha256": "610aa940df7ea4feb49fd3687d94350f629e496554f62d6b9cad642a693eaebf",
+      "expectedSha256": "3b862a118200a184137af5ee1d894ce194e333dd5bf9bd12bddb3cc81bb978f3",
+      "policy": "runtime-path-adapter",
+      "rationale": "日志路径改走 resolve_runtime_path；格式和脱敏逻辑保持原样。"
+    },
+    {
+      "path": "engines/probability/engine/models/__init__.py",
+      "legacyPath": "stock-probability-engine/engine/models/__init__.py",
+      "baselineSha256": "3ae349d0fbefb7476d08d7df7f453939a8ea14e62d28a38d0b6fa50db326e935",
+      "expectedSha256": "3ae349d0fbefb7476d08d7df7f453939a8ea14e62d28a38d0b6fa50db326e935",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/models/base.py",
+      "legacyPath": "stock-probability-engine/engine/models/base.py",
+      "baselineSha256": "f757de4b2b49be7918fb6a367e05956562e08ef08c3608deefd958d888312c74",
+      "expectedSha256": "f757de4b2b49be7918fb6a367e05956562e08ef08c3608deefd958d888312c74",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/models/pooled.py",
+      "legacyPath": "stock-probability-engine/engine/models/pooled.py",
+      "baselineSha256": "9140b3ce767a332eef2a63c4847cdfa5cbdbbd19f5ff872b3899aad7666486d1",
+      "expectedSha256": "9140b3ce767a332eef2a63c4847cdfa5cbdbbd19f5ff872b3899aad7666486d1",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/models/single.py",
+      "legacyPath": "stock-probability-engine/engine/models/single.py",
+      "baselineSha256": "0f0f19e21d1f1f3b21cbadb58a74b11dc8cd87dc11a057618bf0085ae146f71d",
+      "expectedSha256": "0f0f19e21d1f1f3b21cbadb58a74b11dc8cd87dc11a057618bf0085ae146f71d",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/pipeline.py",
+      "legacyPath": "stock-probability-engine/engine/pipeline.py",
+      "baselineSha256": "f4c56844b9fe8fba45e676156a575307e0f026af5db0c163faf8cfda3f831f59",
+      "expectedSha256": "8f97209993374e43a8b710a60cb34bd5ee30c1ca16c12279c558e8522c1dc2ac",
+      "policy": "runtime-path-adapter",
+      "rationale": "断点路径改走 resolve_runtime_path；任务及统计逻辑保持原样。"
+    },
+    {
+      "path": "engines/probability/engine/predictor.py",
+      "legacyPath": "stock-probability-engine/engine/predictor.py",
+      "baselineSha256": "9fd8ad5f12637464e96e67f01b1e5efc33cbd17f1a703ecf9b32076c9af89307",
+      "expectedSha256": "bbfb4417602eaef83ce5cc657c514db1feb0c9eb79a0d00d9660672f71ad7718",
+      "policy": "runtime-path-adapter",
+      "rationale": "模型输出路径改走 resolve_runtime_path；预测统计逻辑保持原样。"
+    },
+    {
+      "path": "engines/probability/engine/store.py",
+      "legacyPath": "stock-probability-engine/engine/store.py",
+      "baselineSha256": "c7bfba60924aa4b559760ccdcc5db86edc7882e7e3553eabf89ac268f33a6a4c",
+      "expectedSha256": "c7bfba60924aa4b559760ccdcc5db86edc7882e7e3553eabf89ac268f33a6a4c",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/config.yaml",
+      "legacyPath": "stock-probability-engine/config.yaml",
+      "baselineSha256": "a90e9fefe75107c8a2d5973d2e2c2fb057e234bd191dc1ab61daf7c9d582870e",
+      "expectedSha256": "a90e9fefe75107c8a2d5973d2e2c2fb057e234bd191dc1ab61daf7c9d582870e",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/features.yaml",
+      "legacyPath": "stock-probability-engine/features.yaml",
+      "baselineSha256": "387c472f39997b29b5cb56c22adb3179353566f0f5286dfc9a2be147e004fd03",
+      "expectedSha256": "387c472f39997b29b5cb56c22adb3179353566f0f5286dfc9a2be147e004fd03",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/requirements.txt",
+      "legacyPath": "stock-probability-engine/requirements.txt",
+      "baselineSha256": "0d2ebcb853fb7985395e061ffaea922a47711fa54ce2db185562bd77ebabe41d",
+      "expectedSha256": "0d2ebcb853fb7985395e061ffaea922a47711fa54ce2db185562bd77ebabe41d",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "engines/probability/engine/schema.sql",
+      "legacyPath": "stock-probability-engine/engine/schema.sql",
+      "baselineSha256": "be6b4faa5f2de7c1d5a0367eb2a4103d7ebd0deb2197f948e2ed2e2166ea88d1",
+      "expectedSha256": "be6b4faa5f2de7c1d5a0367eb2a4103d7ebd0deb2197f948e2ed2e2166ea88d1",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/ga/engine/GaEngine.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/ga/engine/GaEngine.java",
+      "baselineSha256": "fa1db05d89281397bc99591315978ff6e20583294c64e528ffff71373fb8bd17",
+      "expectedSha256": "fa1db05d89281397bc99591315978ff6e20583294c64e528ffff71373fb8bd17",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/ga/feature/FeatureKeys.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/ga/feature/FeatureKeys.java",
+      "baselineSha256": "2759505a479cc558197c404d66f88a8b21e47548641cc7251c90e75e616bfaeb",
+      "expectedSha256": "2759505a479cc558197c404d66f88a8b21e47548641cc7251c90e75e616bfaeb",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/ga/feature/FeatureService.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/ga/feature/FeatureService.java",
+      "baselineSha256": "3905dfc51ebcee1f8abe1618f5365866bed7726a23ebc712993fb6710559d2a3",
+      "expectedSha256": "3905dfc51ebcee1f8abe1618f5365866bed7726a23ebc712993fb6710559d2a3",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/ga/label/LabelBuilder.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/ga/label/LabelBuilder.java",
+      "baselineSha256": "6dd110379df5ed380ae6a86a17ade2523395e43e398c0adad23dd9dbeb4f03c9",
+      "expectedSha256": "6dd110379df5ed380ae6a86a17ade2523395e43e398c0adad23dd9dbeb4f03c9",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/ga/metric/GaQueryCache.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/ga/metric/GaQueryCache.java",
+      "baselineSha256": "b4836b38e616261275fb50820fec15bb67a2c4e7f25fcb43f8c8d1c5f88d55f4",
+      "expectedSha256": "b4836b38e616261275fb50820fec15bb67a2c4e7f25fcb43f8c8d1c5f88d55f4",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/ga/metric/GaQueryService.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/ga/metric/GaQueryService.java",
+      "baselineSha256": "dfa34a6aa03e263d717d0c449d98e8624ff8e367cf1f7588a482b7648c4fe671",
+      "expectedSha256": "dfa34a6aa03e263d717d0c449d98e8624ff8e367cf1f7588a482b7648c4fe671",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/ga/metric/MetricService.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/ga/metric/MetricService.java",
+      "baselineSha256": "7c8e2c75c1506ac104fd0892c49a308c7f8cc96361ad41f9a0cfa972902fe22a",
+      "expectedSha256": "7c8e2c75c1506ac104fd0892c49a308c7f8cc96361ad41f9a0cfa972902fe22a",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/ga/predict/ChampionService.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/ga/predict/ChampionService.java",
+      "baselineSha256": "fc5f5d44211c8f03f9e278613c479d43e9af9c46cf23dff6444546dffd7f3668",
+      "expectedSha256": "fc5f5d44211c8f03f9e278613c479d43e9af9c46cf23dff6444546dffd7f3668",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/ga/predict/PredictionService.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/ga/predict/PredictionService.java",
+      "baselineSha256": "d4eef7a84410019ed8499847a495c6bcbe3a79c16bee3f4ac7902728a6950192",
+      "expectedSha256": "d4eef7a84410019ed8499847a495c6bcbe3a79c16bee3f4ac7902728a6950192",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/analytics/EventRow.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/analytics/EventRow.java",
+      "baselineSha256": "a08e525cc95ffd9925795a9e7f31659ab136dc15a594cac5ed31eb897db636b1",
+      "expectedSha256": "a08e525cc95ffd9925795a9e7f31659ab136dc15a594cac5ed31eb897db636b1",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/analytics/EventStudy.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/analytics/EventStudy.java",
+      "baselineSha256": "6604f32cd129c59e2b2652cbec30d01d3870cabd42ef88fa2c80b86e3f1a449c",
+      "expectedSha256": "6604f32cd129c59e2b2652cbec30d01d3870cabd42ef88fa2c80b86e3f1a449c",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/analytics/Performance.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/analytics/Performance.java",
+      "baselineSha256": "e49e62e572ec6dba8b6366ac297f968df357ca2d3f6d3369963690ac66e1fc1a",
+      "expectedSha256": "e49e62e572ec6dba8b6366ac297f968df357ca2d3f6d3369963690ac66e1fc1a",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/backtest/BacktestConfig.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/backtest/BacktestConfig.java",
+      "baselineSha256": "bc092860def5b4f8e752ec00db38cbe02cca95cb6081a5c69f8fa9a5972d5b99",
+      "expectedSha256": "bc092860def5b4f8e752ec00db38cbe02cca95cb6081a5c69f8fa9a5972d5b99",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/backtest/BacktestEngine.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/backtest/BacktestEngine.java",
+      "baselineSha256": "1d4ee5101b993d8588e1c3f5a9fe53dabad4b8c80ec1b7c39256e5c8cb19277f",
+      "expectedSha256": "1d4ee5101b993d8588e1c3f5a9fe53dabad4b8c80ec1b7c39256e5c8cb19277f",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/backtest/EquityPoint.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/backtest/EquityPoint.java",
+      "baselineSha256": "42784182acf9cad9c0c5449b7515f7bd7f0a827cd457f68bd2e500f568f5826b",
+      "expectedSha256": "42784182acf9cad9c0c5449b7515f7bd7f0a827cd457f68bd2e500f568f5826b",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/backtest/TradeRecord.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/backtest/TradeRecord.java",
+      "baselineSha256": "3bda6e263c2efac7b7f4ce205d3195042f1b3d2603240ded47639f2544095222",
+      "expectedSha256": "3bda6e263c2efac7b7f4ce205d3195042f1b3d2603240ded47639f2544095222",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/indicator/Indicators.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/indicator/Indicators.java",
+      "baselineSha256": "d1084f1893b5b28b79bd87e3f91c947f8144a073313f7fb83ac3f6142f9c0c27",
+      "expectedSha256": "d1084f1893b5b28b79bd87e3f91c947f8144a073313f7fb83ac3f6142f9c0c27",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/AbstractStrategy.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/AbstractStrategy.java",
+      "baselineSha256": "c72e15d1a848791a321b98bf781f534d1b9ffeefb1d16dc1bdcb8e6bc9b0b66b",
+      "expectedSha256": "c72e15d1a848791a321b98bf781f534d1b9ffeefb1d16dc1bdcb8e6bc9b0b66b",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/CrossSection.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/CrossSection.java",
+      "baselineSha256": "453e027b449236f6d3613a5003c4c446e88bf8b6755ef326592836b13bf5a3d9",
+      "expectedSha256": "453e027b449236f6d3613a5003c4c446e88bf8b6755ef326592836b13bf5a3d9",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/EvalContext.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/EvalContext.java",
+      "baselineSha256": "18974e8df1f600adf88634239aea2b98d27adce496d48cdc79b05d14d49a487d",
+      "expectedSha256": "18974e8df1f600adf88634239aea2b98d27adce496d48cdc79b05d14d49a487d",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/impl/L1OversoldRebound.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/impl/L1OversoldRebound.java",
+      "baselineSha256": "cefeef8ab757348943fe62bb4154a6d68195ff18eccd004c75761aab23ba2a44",
+      "expectedSha256": "cefeef8ab757348943fe62bb4154a6d68195ff18eccd004c75761aab23ba2a44",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/impl/L2DeepValue.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/impl/L2DeepValue.java",
+      "baselineSha256": "30db417e912f19f48e3ea4fa63d89482d412eafc11a1941b398997fee39ff428",
+      "expectedSha256": "30db417e912f19f48e3ea4fa63d89482d412eafc11a1941b398997fee39ff428",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/impl/R1VolumeBreakout.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/impl/R1VolumeBreakout.java",
+      "baselineSha256": "a7efa970f62649e460788bb0ac3c227a01a90ae356d86283621d92f7bea25792",
+      "expectedSha256": "a7efa970f62649e460788bb0ac3c227a01a90ae356d86283621d92f7bea25792",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/impl/R2MaMacd.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/impl/R2MaMacd.java",
+      "baselineSha256": "1a431ce957c44833d49d46cbf13d20a38f6da55ebf2902669a0a4a633942db09",
+      "expectedSha256": "1a431ce957c44833d49d46cbf13d20a38f6da55ebf2902669a0a4a633942db09",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/impl/X1ReversalConfirm.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/impl/X1ReversalConfirm.java",
+      "baselineSha256": "efcee586d951b9ed6bf42ac2eebaf9a1afbc3aee1b14fce46839a085842fb6fe",
+      "expectedSha256": "efcee586d951b9ed6bf42ac2eebaf9a1afbc3aee1b14fce46839a085842fb6fe",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/ParamDef.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/ParamDef.java",
+      "baselineSha256": "cab13dc855f973d4283f5b39297fd05d440671c4d7c13f4473eecf525dc5314c",
+      "expectedSha256": "cab13dc855f973d4283f5b39297fd05d440671c4d7c13f4473eecf525dc5314c",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/SignalSeries.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/SignalSeries.java",
+      "baselineSha256": "54acd3e67ad630ed004d14e39524ee834439c37bb6a1fb5be15caa735b6fa7bc",
+      "expectedSha256": "54acd3e67ad630ed004d14e39524ee834439c37bb6a1fb5be15caa735b6fa7bc",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/Strategy.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/Strategy.java",
+      "baselineSha256": "895788d6b7bb70dd1e6d0edbb784bc33985b515717d71218c3b52b4bf73a756a",
+      "expectedSha256": "895788d6b7bb70dd1e6d0edbb784bc33985b515717d71218c3b52b4bf73a756a",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/StrategyMeta.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/StrategyMeta.java",
+      "baselineSha256": "5e169d7e486352ff04d67fea726ebff1b0f2e835921f90a03df40446c4777b7e",
+      "expectedSha256": "5e169d7e486352ff04d67fea726ebff1b0f2e835921f90a03df40446c4777b7e",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/StrategyRegistry.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/StrategyRegistry.java",
+      "baselineSha256": "fc3adfd7b88eb2b5fbbf8103f11c9e1f64b6f4d64b18a670116753333995abb9",
+      "expectedSha256": "fc3adfd7b88eb2b5fbbf8103f11c9e1f64b6f4d64b18a670116753333995abb9",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/quant/strategy/Universe.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/quant/strategy/Universe.java",
+      "baselineSha256": "e1ecacae50992aeed69a20167100d79a2d802844e8571ca1b35d7e919d33bb9d",
+      "expectedSha256": "e1ecacae50992aeed69a20167100d79a2d802844e8571ca1b35d7e919d33bb9d",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/service/ForecastService.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/service/ForecastService.java",
+      "baselineSha256": "190ea8209b2599200b83b776c6a8f0223d4b6dc2f338093f3e4b916de46007fe",
+      "expectedSha256": "190ea8209b2599200b83b776c6a8f0223d4b6dc2f338093f3e4b916de46007fe",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/service/ScoreCalculationService.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/service/ScoreCalculationService.java",
+      "baselineSha256": "ec36270f31888a1d6ac934cf950deef26b845b524e22b5b2faca209cc4431a0c",
+      "expectedSha256": "ec36270f31888a1d6ac934cf950deef26b845b524e22b5b2faca209cc4431a0c",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/service/ScoreContinuityAnalyzer.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/service/ScoreContinuityAnalyzer.java",
+      "baselineSha256": "96de13e4d5d202547ebe5987a70788aa9263d8f94e78a4f72d3d97335d1017dd",
+      "expectedSha256": "96de13e4d5d202547ebe5987a70788aa9263d8f94e78a4f72d3d97335d1017dd",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/service/ShortTermForecastService.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/service/ShortTermForecastService.java",
+      "baselineSha256": "5eee0173fe18db772334547ad928be514ba3852d51d2b59506d2e3fbae1bceb2",
+      "expectedSha256": "5eee0173fe18db772334547ad928be514ba3852d51d2b59506d2e3fbae1bceb2",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/java/com/li/stock/service/TTradingStrategyEngine.java",
+      "legacyPath": "stock/src/main/java/com/li/stock/service/TTradingStrategyEngine.java",
+      "baselineSha256": "f82f54af10469c7b4d9c1de1e23e30e1e42e51bcfdf99e1149c7de87230fd23d",
+      "expectedSha256": "f82f54af10469c7b4d9c1de1e23e30e1e42e51bcfdf99e1149c7de87230fd23d",
+      "policy": "unchanged",
+      "rationale": null
+    },
+    {
+      "path": "apps/api/src/main/resources/prob_schema.sql",
+      "legacyPath": "stock/src/main/resources/prob_schema.sql",
+      "baselineSha256": "be6b4faa5f2de7c1d5a0367eb2a4103d7ebd0deb2197f948e2ed2e2166ea88d1",
+      "expectedSha256": "be6b4faa5f2de7c1d5a0367eb2a4103d7ebd0deb2197f948e2ed2e2166ea88d1",
+      "policy": "unchanged",
+      "rationale": null
+    }
+  ]
+}

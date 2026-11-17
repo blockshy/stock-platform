@@ -1,0 +1,92 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,text/html
+
+spring:
+  application:
+    name: stock
+  datasource:
+    url: jdbc:mysql://localhost:3306/stock_eastmoney?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&cachePrepStmts=true&useServerPrepStmts=false
+    # 公开配置不提供真实账号或默认密码；本地启动器从私有凭据文件注入环境变量。
+    # 直接启动 Java 时也必须显式提供这两个值，不能依赖开发者机器上的隐式凭据。
+    username: ${LOCAL_STOCK_DB_USER:}
+    password: ${LOCAL_STOCK_DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: stock-pool
+      minimum-idle: 2
+      maximum-pool-size: 10
+      connection-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  jackson:
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:score_schema.sql
+
+logging:
+  level:
+    com.li.stock: INFO
+
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.li.stock.domain.model,com.li.stock.domain.vo,com.li.stock.domain.query
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+
+# 每日定时日线抓取：00 前缀 17:00、60 前缀 18:50、30 前缀 20:20，
+# 每次保证覆盖近 500 个交易日（730 个自然日），复权口径为前复权 + 不复权。
+# catch-up-on-startup：启动时对今日计划时间已过的前缀自动补跑，防止应用没开/电脑睡眠错过执行。
+stock:
+  scheduled-crawl:
+    enabled: false
+    days-back: 730
+    delay-millis: 1500
+    catch-up-on-startup: true
+    cron-00: "0 0 17 * * ?"
+    cron-60: "0 50 18 * * ?"
+    cron-30: "0 20 20 * * ?"
+
+  # 量化评分自动计算：启动后异步重算最近 10 个交易日；每日 21:30（晚于日线抓取）重算最新交易日。
+  # 复用页面「实时计算评分」的算法，写入为 ON DUPLICATE KEY UPDATE，重算幂等；手动接口不受影响。
+  # 单次重算约 30 秒，启动补跑 10 天约 5 分钟，全部在后台守护线程执行，不阻塞接口。
+  score-schedule:
+    enabled: true
+    adjust-flag: 2
+    startup-enabled: true
+    startup-days: 10
+    startup-delay-millis: 3000
+    daily-days: 1
+    cron: "0 30 21 * * ?"
+
+  # 遗传算法涨跌预测（ga 包）：14 张 ga_ 表由 GaSchemaInitializer 幂等创建，
+  # 参数全部来自 ga_config；关闭 enabled 只停定时触发，看板手动触发仍可用。
+  # 股票概率预测引擎（prob 包）：统计计算在 Python 项目 PythonProject/stock-probability-engine，
+  # 后端只做 REST + 任务调度。schedule-enabled 打开后每个交易日收盘自动跑 engine daily。
+  prob:
+    enabled: true
+    schedule-enabled: false
+    cron-daily: "0 30 18 * * MON-FRI"
+    python: py
+    python-args: "-3"
+    # 默认路径以 apps/api 工作目录为基准；统一启动器会注入已解析的绝对路径。
+    workdir: "${LOCAL_STOCK_ENGINE:../../engines/probability}"
+    config-path: "${LOCAL_STOCK_PROB_CONFIG:../../engines/probability/config.yaml}"
+    features-path: "${LOCAL_STOCK_PROB_FEATURES:../../engines/probability/features.yaml}"
+    source-table: stock_daily
+
+  ga:
+    enabled: true
+    cron-daily: "0 30 17 * * ?"
+    cron-evolve: "0 0 2 ? * SAT"
+    # 冷启动初始化：启动 60 秒后检查一次，实盘预测不足 init_days 个交易日时自动跑一次 InitJob；
+    # 之后每小时复查，数据齐了即跳过（手动「立即运行 InitJob」不受此开关影响）
+    init-enabled: true
+    init-delay-ms: 60000
+    init-check-ms: 3600000

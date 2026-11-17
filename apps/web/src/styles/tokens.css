@@ -1,0 +1,58 @@
+/**
+ * 全站设计变量：仅定义视觉，不承担格式化、状态判断或业务默认值。
+ * 市场涨跌色与任务结果色分别命名，防止把“上涨”误当“成功”。
+ * 旧变量作为兼容别名保留，业务模块可逐步迁移而不改变现有图表与计算口径。
+ */
+:root {
+    --ui-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --ui-bg: #f3f6fa;
+    --ui-surface: #ffffff;
+    --ui-surface-subtle: #f8fafc;
+    --ui-border: #dfe6ef;
+    --ui-text: #17243b;
+    --ui-muted: #64748b;
+    --ui-primary: #285bd4;
+    --ui-primary-hover: #204cb8;
+    --ui-on-primary: #ffffff;
+    --ui-primary-soft: #edf3ff;
+    --ui-success: #087f6b;
+    --ui-success-soft: #eaf8f3;
+    --ui-success-border: #cbe9df;
+    --ui-danger: #bc3449;
+    --ui-danger-soft: #fff0f2;
+    --ui-danger-hover: #a72a3e;
+    --ui-danger-border: #f2d0d6;
+    --ui-warning: #936312;
+    --ui-warning-soft: #fff8e7;
+    --ui-warning-border: #efdfb8;
+    --ui-rise: #d8392b;
+    --ui-fall: #17924e;
+    --ui-rise-soft: #fff1ee;
+    --ui-fall-soft: #edf8f0;
+    --ui-space-1: 4px;
+    --ui-space-2: 8px;
+    --ui-space-3: 12px;
+    --ui-space-4: 16px;
+    --ui-space-6: 24px;
+    --ui-radius-sm: 6px;
+    --ui-radius: 10px;
+    --ui-radius-lg: 12px;
+    --ui-control-height: 32px;
+    --ui-text-sm: 12px;
+    --ui-text-base: 13px;
+    --ui-text-title: 20px;
+    --ui-shadow: 0 2px 6px rgb(24 46 81 / 3%);
+    --ui-shadow-popover: 0 12px 32px rgb(24 46 81 / 14%);
+    --ui-focus: 0 0 0 3px rgb(40 91 212 / 16%);
+    --ui-chart-mask: rgb(255 255 255 / 90%);
+    --bg: var(--ui-bg);
+    --card: var(--ui-surface);
+    --panel: var(--ui-surface);
+    --border: var(--ui-border);
+    --text: var(--ui-text);
+    --muted: var(--ui-muted);
+    --accent: var(--ui-primary);
+    --up: var(--ui-rise);
+    --down: var(--ui-fall);
+    --radius: var(--ui-radius-lg);
+}

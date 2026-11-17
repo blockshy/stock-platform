@@ -1,0 +1,23 @@
+{
+  "baseline": "统一工程的算法契约以 contracts 中的固定摘要与数值基线为准；上游提交仅用于来源追溯。",
+  "sources": [
+    {
+      "repository": "stock-web",
+      "url": "https://github.com/kunkun0521/stock-web",
+      "upstreamHead": "08db05580b1fd350f97d771503f3c6b1501fa9fa",
+      "target": "apps/web"
+    },
+    {
+      "repository": "stock",
+      "url": "https://github.com/kunkun0521/stock",
+      "upstreamHead": "5801df9691741ac354f4a72aa084b4a463f2c88a",
+      "target": "apps/api"
+    },
+    {
+      "repository": "stock-probability-engine",
+      "url": "https://github.com/kunkun0521/stock-probability-engine",
+      "upstreamHead": "ca7507bc9087969d57066c1e26a3aa24d82f91ef",
+      "target": "engines/probability"
+    }
+  ]
+}

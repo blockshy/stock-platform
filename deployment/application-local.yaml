@@ -1,0 +1,29 @@
+# 所有环境差异由启动器注入；此文件不包含凭据及机器绝对路径。
+server:
+  address: 127.0.0.1
+  port: ${LOCAL_STOCK_API_PORT}
+  shutdown: graceful
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:${LOCAL_STOCK_DB_PORT}/${LOCAL_STOCK_DB_NAME}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&cachePrepStmts=true&useServerPrepStmts=false
+    username: ${LOCAL_STOCK_DB_USER}
+    password: ${LOCAL_STOCK_DB_PASSWORD}
+stock:
+  scheduled-crawl:
+    enabled: false
+    catch-up-on-startup: false
+  score-schedule:
+    enabled: ${LOCAL_STOCK_SCORE_SCHEDULE}
+    startup-enabled: false
+  ga:
+    enabled: false
+    init-enabled: false
+  prob:
+    enabled: true
+    schedule-enabled: false
+    python: ${LOCAL_STOCK_PYTHON}
+    python-args: ""
+    workdir: ${LOCAL_STOCK_ENGINE}
+    config-path: ${LOCAL_STOCK_PROB_CONFIG}
+    features-path: ${LOCAL_STOCK_PROB_FEATURES}
+    source-table: stock_daily_all

@@ -1,0 +1,19 @@
+# 编辑器约定仅作用于今后的编辑，不批量改写已有字节验收基线。
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{json,yaml,yml}]
+indent_size = 2
+
+# Windows PowerShell 5.1 需要 BOM 才能可靠识别中文脚本。
+[*.ps1]
+charset = utf-8-bom
+
+[*.md]
+trim_trailing_whitespace = false

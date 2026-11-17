@@ -1,0 +1,17 @@
+{
+  "name": "stock-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "本地股票研究平台：网页、Java API 与概率引擎统一工程",
+  "scripts": {
+    "check:ui": "node tests/check_frontend_rules.mjs",
+    "test:web": "npm --prefix apps/web test",
+    "test:deployment": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File deployment/Test-PlatformScripts.ps1",
+    "test": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/run_checks.ps1",
+    "check": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/platform.ps1 -Action Check",
+    "build": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/platform.ps1 -Action Build",
+    "start": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/platform.ps1 -Action Start",
+    "status": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/platform.ps1 -Action Status",
+    "stop": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/platform.ps1 -Action Stop"
+  }
+}

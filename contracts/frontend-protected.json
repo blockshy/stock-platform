@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "sha256": "6817e1efba9c8664ca81c47c8d4fa745dea028ce3b7f628924df741ba2c463db",
+      "path": "api/client.js"
+    },
+    {
+      "sha256": "e58b76a6bc022815c1f77f290508aeb733bf8d40d55dbe36672d2719bd0393df",
+      "path": "api/dataCrawler.js"
+    },
+    {
+      "sha256": "9b36f2b5de10a74c63df566e7a0212b47a2e4450b3bf36023f9c08535c49b443",
+      "path": "api/forecast.js"
+    },
+    {
+      "sha256": "6c1b738bdc964f1b375870ae15ae517ba1c419c4d475ff8ca804f0f75fe2249d",
+      "path": "api/limitUp.js"
+    },
+    {
+      "sha256": "7ed1959f2045377d5c1c2a5ef34750a2f3b45b452ca1dec91f76b5dac55c6899",
+      "path": "api/market.js"
+    },
+    {
+      "sha256": "57f83de07bc238e018a59b0582adc284d41e51c09fc83804a443082ce6c0ddc6",
+      "path": "api/score.js"
+    },
+    {
+      "sha256": "8d6d231a0f4609f5ca8902578a0ee459a31b58aab80da9dfad311f40d8467cae",
+      "path": "api/scoreContinuity.js"
+    },
+    {
+      "sha256": "e913a3d350e026fc0bca97ed316f3f4b5f76e33fb56ed12f767c58bace33b9e4",
+      "path": "api/shortTerm.js"
+    },
+    {
+      "sha256": "47b607b172898a7622e412f1b1185765894faa90d81078594597f7722100ca88",
+      "path": "api/shortTermHistory.js"
+    },
+    {
+      "sha256": "2d7cc06531c0e6ac010209f25e99acee7baf9eab14feb15f25f918821ac5f11b",
+      "path": "api/stock.js"
+    },
+    {
+      "sha256": "8556ce242b6e3eaa05bbd476f4072bf507db54837f5ba5eb7c1d8aad613e658c",
+      "path": "api/tLab.js"
+    },
+    {
+      "sha256": "ed1da20eb230fe004cca3da99177faeb2e6b1a44e14e96478d15df84e43e8f8a",
+      "path": "api/tTrading.js"
+    },
+    {
+      "sha256": "ce1fc52a2e7bfc23031e894d6a2c19758cf41e52e681aacd77378d6f956ff1d1",
+      "path": "hooks/useApi.js"
+    },
+    {
+      "sha256": "500640a1c1fb516da3c923094dd9135879131f328d54ece594e6de6243763792",
+      "path": "hooks/usePersistedState.js"
+    },
+    {
+      "sha256": "7dbac6f5036e8d9fe2d818c21c0c82bb20d631c4d72e0e49574c1a5f2367cb82",
+      "path": "context/CurrentStockContext.jsx"
+    },
+    {
+      "sha256": "3518c89514494645835b6cb41cf864dba6d442231540f1714781ab2b2b0d8bc6",
+      "path": "utils/format.js"
+    },
+    {
+      "sha256": "a10298aaa0a23145bf74ea2b6ebf789e1dd4848fea65ab2065ce473c7a81ba71",
+      "path": "charts/options.js"
+    },
+    {
+      "sha256": "fc66839e61027e2f3b761056cf159986d4c8a388ea6af3de2f32d8b2aeae178d",
+      "path": "charts/tTradingOptions.js"
+    },
+    {
+      "sha256": "8e02067c939302fd584b12f0f27305ebeb2de6396c2fb6fd1f070b0ed7b83724",
+      "path": "ga/api.js"
+    },
+    {
+      "sha256": "04cceeeeec5fb052c99cf713f5eaf1d32c02b49776b7e1ed70d912f9b56461d4",
+      "path": "ga/gaUtils.js"
+    },
+    {
+      "sha256": "9bf6ebd7681b737832100824482bb1238d0c26b580013c4482625714bf8034d5",
+      "path": "ga/kline.js"
+    },
+    {
+      "sha256": "aa54df38e9bf6a6edcbd6ac7e5e591de93f3e4bdfeef15371015e78acddee657",
+      "path": "ga/glossary.js"
+    },
+    {
+      "sha256": "058fe45275f9b2b76f407c0dc863fd00f868a926b48ba49db3219be6553421b3",
+      "path": "prob/api.js"
+    },
+    {
+      "sha256": "c261366b76ef523902c79bd87ac546cc2aec6021c054d3f46f46e59750aa6aef",
+      "path": "prob/format.js"
+    },
+    {
+      "sha256": "a31d82b176f2bab3dc9ce738bdc5a1503881da5c7cf5cfd3fdb136d7b7f1eeda",
+      "path": "prob/formulas.js"
+    },
+    {
+      "sha256": "74b2c243d4accb1845a66dccbd28889c896e56c4840f182e0bcd9ef52a15e7d2",
+      "path": "prob/runMonitor.js"
+    },
+    {
+      "sha256": "ec832ac34c3c6e39b2395add4e9ff29a59454e07664c25e4421fe912f6b2560f",
+      "path": "pages/crawlerMonitor.js"
+    },
+    {
+      "sha256": "2d4fe199771ec181a8380a3b7b6730589d2173b71a47088839f8178b79dbc36c",
+      "path": "quant/api.js"
+    },
+    {
+      "sha256": "3eb05841d76965391310ae9a7b5206f40b60b592800271c050e5ca1df2b32d26",
+      "path": "quant/format.js"
+    },
+    {
+      "sha256": "4abba959941db745085e1705ad03e1e1a3bf7c2fdc659f772b6c6629883b4853",
+      "path": "tlab/utils.js"
+    },
+    {
+      "sha256": "2b24dff39d436dab0ac04e57cb2044ae855bb18af8ffc0413b3f15e6ef4dc30d",
+      "path": "tlab/charts.js"
+    },
+    {
+      "sha256": "e12e0875ce9aed3d18175b91a925e0d3a07b544642a433ed148167411c4c13f8",
+      "path": "components/DecimalInput.jsx"
+    }
+  ],
+  "description": "本次UI迁移以原项目字节摘要保护业务接口、格式化、状态恢复和图表选项。"
+}

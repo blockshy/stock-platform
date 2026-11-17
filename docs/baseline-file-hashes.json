@@ -1,0 +1,1534 @@
+[
+  {
+    "path": "apps/web/package.json",
+    "sha256": "EFC3E19684B6E8FF7F09EA7452E28A3435B85159BB2EC830F139A68445FF8C1B"
+  },
+  {
+    "path": "apps/web/vite.config.js",
+    "sha256": "385C7E8863FD81D023001E27FA67C7BF28CBB11B06449B4E7F620B2874540D88"
+  },
+  {
+    "path": "apps/web/src/App.jsx",
+    "sha256": "33C42D579B2A144167F1B4A7E5D7F192DC0A5379530BEC354AB6754F8108162C"
+  },
+  {
+    "path": "apps/web/src/main.jsx",
+    "sha256": "89EA190BD4EA457B142B047738B8B1EB95244A0C8CB3476101DD813504EDCB34"
+  },
+  {
+    "path": "apps/web/src/api/client.js",
+    "sha256": "6817E1EFBA9C8664CA81C47C8D4FA745DEA028CE3B7F628924DF741BA2C463DB"
+  },
+  {
+    "path": "apps/web/src/api/dataCrawler.js",
+    "sha256": "E58B76A6BC022815C1F77F290508AEB733BF8D40D55DBE36672D2719BD0393DF"
+  },
+  {
+    "path": "apps/web/src/api/forecast.js",
+    "sha256": "9B36F2B5DE10A74C63DF566E7A0212B47A2E4450B3BF36023F9C08535C49B443"
+  },
+  {
+    "path": "apps/web/src/api/limitUp.js",
+    "sha256": "6C1B738BDC964F1B375870AE15AE517BA1C419C4D475FF8CA804F0F75FE2249D"
+  },
+  {
+    "path": "apps/web/src/api/market.js",
+    "sha256": "7ED1959F2045377D5C1C2A5EF34750A2F3B45B452CA1DEC91F76B5DAC55C6899"
+  },
+  {
+    "path": "apps/web/src/api/score.js",
+    "sha256": "57F83DE07BC238E018A59B0582ADC284D41E51C09FC83804A443082CE6C0DDC6"
+  },
+  {
+    "path": "apps/web/src/api/scoreContinuity.js",
+    "sha256": "8D6D231A0F4609F5CA8902578A0EE459A31B58AAB80DA9DFAD311F40D8467CAE"
+  },
+  {
+    "path": "apps/web/src/api/shortTerm.js",
+    "sha256": "E913A3D350E026FC0BCA97ED316F3F4B5F76E33FB56ED12F767C58BACE33B9E4"
+  },
+  {
+    "path": "apps/web/src/api/shortTermHistory.js",
+    "sha256": "47B607B172898A7622E412F1B1185765894FAA90D81078594597F7722100CA88"
+  },
+  {
+    "path": "apps/web/src/api/stock.js",
+    "sha256": "2D7CC06531C0E6AC010209F25E99ACEE7BAF9EAB14FEB15F25F918821AC5F11B"
+  },
+  {
+    "path": "apps/web/src/api/tLab.js",
+    "sha256": "8556CE242B6E3EAA05BBD476F4072BF507DB54837F5BA5EB7C1D8AAD613E658C"
+  },
+  {
+    "path": "apps/web/src/api/tTrading.js",
+    "sha256": "ED1DA20EB230FE004CCA3DA99177FAEB2E6B1A44E14E96478D15DF84E43E8F8A"
+  },
+  {
+    "path": "apps/web/src/charts/options.js",
+    "sha256": "A10298AAA0A23145BF74EA2B6EBF789E1DD4848FEA65AB2065CE473C7A81BA71"
+  },
+  {
+    "path": "apps/web/src/charts/tTradingOptions.js",
+    "sha256": "FC66839E61027E2F3B761056CF159986D4C8A388EA6AF3DE2F32D8B2AEAE178D"
+  },
+  {
+    "path": "apps/web/src/components/currentStock.css",
+    "sha256": "4C097E5041BDDD322850424F475542BDD9D3BBCF2055CE27E5C8459783185646"
+  },
+  {
+    "path": "apps/web/src/components/CurrentStockPicker.jsx",
+    "sha256": "C307F5CDA38F35EC1D284BCDF20A60E18B3EF7C083E89191C0B7D90DE81C2E01"
+  },
+  {
+    "path": "apps/web/src/components/DecimalInput.jsx",
+    "sha256": "E12E0875CE9AED3D18175B91A925E0D3A07B544642A433ED148167411C4C13F8"
+  },
+  {
+    "path": "apps/web/src/components/EChart.jsx",
+    "sha256": "3409301CB63DA628B5D792D50D3675B83FC7F21226EAB401D50F53FB00A5F773"
+  },
+  {
+    "path": "apps/web/src/components/ErrorBanner.jsx",
+    "sha256": "60B3C00D5161B9D77CA122491F692F8A1F226173204B2E5D6402D61570A9EA4D"
+  },
+  {
+    "path": "apps/web/src/components/Header.jsx",
+    "sha256": "8FFA87B3004344991F5D84B3EBE6261977E79FE5178AC987189683F3547E6E70"
+  },
+  {
+    "path": "apps/web/src/components/klineIndicatorGuide.css",
+    "sha256": "6656407FF318902C1B5CDCAFDA4585FE3BE03EC3855FBD800D7D296EB27462FE"
+  },
+  {
+    "path": "apps/web/src/components/KlineIndicatorGuide.jsx",
+    "sha256": "C457B44DACC7B8F87165118B56664ED2469DB65786C56EDD91BF74D00BFFA00B"
+  },
+  {
+    "path": "apps/web/src/components/limitUp.css",
+    "sha256": "A33B9064037CD523E8D92030BE3E28A3E332850FB36FB9B91C358F44C82A23BC"
+  },
+  {
+    "path": "apps/web/src/components/LimitUpTicker.jsx",
+    "sha256": "F504337C4E5CD89745CB16C32C7F0DF25B9B68C31771581824450E4F98175976"
+  },
+  {
+    "path": "apps/web/src/components/Pagination.jsx",
+    "sha256": "8DFBC74F22C29C5747B22B8946907B831BA2AFD4601BA57B4415FE8805E49E0D"
+  },
+  {
+    "path": "apps/web/src/components/Panel.jsx",
+    "sha256": "EADF095539AB5DD30659234468A5FDAB441599521AC9BB8FECB3A25787ED995A"
+  },
+  {
+    "path": "apps/web/src/components/ParamLabel.jsx",
+    "sha256": "8FCD64F480492A5478EAEF3533194B7B1DDAF4A8B903326CE7F88987A226A1EB"
+  },
+  {
+    "path": "apps/web/src/components/scoreContinuity.css",
+    "sha256": "F27A31BFBA5C6D73EE0EF71CFE24B62C96473AF310C520B921F6B072F27C7685"
+  },
+  {
+    "path": "apps/web/src/components/ScoreContinuityPanel.jsx",
+    "sha256": "954FF28182AE6442A39A6018F96CF822ABEA30CC5A83C07F5474F37548EB51BB"
+  },
+  {
+    "path": "apps/web/src/components/scoreRuleModal.css",
+    "sha256": "56DBE35A1FBBD23B42A9408DD43A1BB3EC8600BC12ACFECC25C54E3CEFB663DD"
+  },
+  {
+    "path": "apps/web/src/components/ScoreRuleModal.jsx",
+    "sha256": "7868FC9F0BA6550FD228E03F1511F65794AB8DC1A47C1BB8DBC34A15F4939575"
+  },
+  {
+    "path": "apps/web/src/components/StatCard.jsx",
+    "sha256": "9DA61B43ED7040C0CA95141B8464A79E6CC9B1FD3569F4C8EED9BA56F3119B3D"
+  },
+  {
+    "path": "apps/web/src/components/stockDetail.css",
+    "sha256": "F04ABB31FD5B1D32A8F6B68C67F7D555112A00D0020425957B10C72C285FE8BA"
+  },
+  {
+    "path": "apps/web/src/components/Tabs.jsx",
+    "sha256": "B4CA5E03D62C00601EF8DD8BE298DD5DEE540ADC1CDE97F95F41B48D28AE24BB"
+  },
+  {
+    "path": "apps/web/src/context/CurrentStockContext.jsx",
+    "sha256": "7DBAC6F5036E8D9FE2D818C21C0C82BB20D631C4D72E0E49574C1A5F2367CB82"
+  },
+  {
+    "path": "apps/web/src/ga/AnalysisPage.jsx",
+    "sha256": "B50795F8D41242A467D47A9EBA7243317999205FAE736B102E55BC0DAAA2955C"
+  },
+  {
+    "path": "apps/web/src/ga/api.js",
+    "sha256": "8E02067C939302FD584B12F0F27305EBEB2DE6396C2FB6FD1F070B0ED7B83724"
+  },
+  {
+    "path": "apps/web/src/ga/CleanupPage.jsx",
+    "sha256": "FEAE0A6B63F8EB3E3CD0F3BD2A980C6CD07D7631347B90C137C6AAAD97D18815"
+  },
+  {
+    "path": "apps/web/src/ga/ConfigPage.jsx",
+    "sha256": "7D5655BC82D1C100CD10B54014F2C1433CA158283E794E1FE89CAD30A3A71127"
+  },
+  {
+    "path": "apps/web/src/ga/EvolutionPage.jsx",
+    "sha256": "E5D201C58A11E5E5F8DFD4E02E503AD5CE4318E42DC97872C864AEE0D2F991C5"
+  },
+  {
+    "path": "apps/web/src/ga/FactorsPage.jsx",
+    "sha256": "E6BA06E25B613050369511FA2211B9DA51D000D15301AF977A54A60DB3455781"
+  },
+  {
+    "path": "apps/web/src/ga/ga.css",
+    "sha256": "7952F4B69C218820622A2007C1E6CE5AF7C228EE96DCDBD29285F77F811229F3"
+  },
+  {
+    "path": "apps/web/src/ga/GaApp.jsx",
+    "sha256": "BDD1452869B11235AFB78F00499309EC166499D1337A1D2F24D4C5B594B8C648"
+  },
+  {
+    "path": "apps/web/src/ga/GaChart.jsx",
+    "sha256": "80A8DA05A4152AE2A3682C33CA600BEC548AB881A15EE0114E59717E8037D7E7"
+  },
+  {
+    "path": "apps/web/src/ga/GaParts.jsx",
+    "sha256": "743977938FB3963DD71726A63A6DD5F561E0105C7D8775FF590045BF39D02645"
+  },
+  {
+    "path": "apps/web/src/ga/gaUtils.js",
+    "sha256": "04CCEEEEEC5FB052C99CF713F5EAF1D32C02B49776B7E1ED70D912F9B56461D4"
+  },
+  {
+    "path": "apps/web/src/ga/glossary.js",
+    "sha256": "AA54DF38E9BF6A6EDCBD6AC7E5E591DE93F3E4BDFEEF15371015E78ACDDEE657"
+  },
+  {
+    "path": "apps/web/src/ga/GlossaryContext.jsx",
+    "sha256": "D08B11355D8AB54A012D862A9B1E58E55B53598C9137271D95550A7E958736BE"
+  },
+  {
+    "path": "apps/web/src/ga/GlossaryModal.jsx",
+    "sha256": "ECE952DA14BA8C5F727FA3D13A4BC963F20F0296C69CC6E25D0B5734C6A6A86E"
+  },
+  {
+    "path": "apps/web/src/ga/GlossaryTerm.jsx",
+    "sha256": "8E0CA027AD330F66980EA33B0E656E5A287ADCD01C22A98A2B0B0E6880C60F28"
+  },
+  {
+    "path": "apps/web/src/ga/JobsPage.jsx",
+    "sha256": "C676169D7863AF59D317A33FDA78F0C9532E15A064E5626BFF2CB8546A91757C"
+  },
+  {
+    "path": "apps/web/src/ga/kline.js",
+    "sha256": "9BF6EBD7681B737832100824482BB1238D0C26B580013C4482625714BF8034D5"
+  },
+  {
+    "path": "apps/web/src/ga/OverviewPage.jsx",
+    "sha256": "A20589716B136B9C4BE4B38ED379FF07120C7B6BDA14898373F57AE0C6A0293A"
+  },
+  {
+    "path": "apps/web/src/ga/PicksPage.jsx",
+    "sha256": "01868848D367E7B10E12143C92903B79B97B6C362D1AF7AFD8E06FDB4AC98624"
+  },
+  {
+    "path": "apps/web/src/ga/PoolPage.jsx",
+    "sha256": "90AD5B8A9052C1302C50D58355B409EF5781930960858D569E35D9D29D35FBC0"
+  },
+  {
+    "path": "apps/web/src/ga/PredictionsPage.jsx",
+    "sha256": "E122FD4EE2EB8BD489E3E778EB3AEF2A4B54EE00ACD258F25DC00325D8BD0748"
+  },
+  {
+    "path": "apps/web/src/ga/StockPage.jsx",
+    "sha256": "4622B9660A2DD45A9B922C80A4D4E51B19D40D048351342346F00512449032A8"
+  },
+  {
+    "path": "apps/web/src/hooks/useApi.js",
+    "sha256": "CE1FC52A2E7BFC23031E894D6A2C19758CF41E52E681AACD77378D6F956FF1D1"
+  },
+  {
+    "path": "apps/web/src/hooks/usePersistedState.js",
+    "sha256": "500640A1C1FB516DA3C923094DD9135879131F328D54ECE594E6DE6243763792"
+  },
+  {
+    "path": "apps/web/src/pages/crawlerMonitor.js",
+    "sha256": "EC832AC34C3C6E39B2395ADD4E9FF29A59454E07664C25E4421FE912F6B2560F"
+  },
+  {
+    "path": "apps/web/src/pages/crawlerMonitor.test.js",
+    "sha256": "682630DDFD1E1E1682F85637763D825EE333F866DC0623692A90C038E9855EFC"
+  },
+  {
+    "path": "apps/web/src/pages/DataCrawler.jsx",
+    "sha256": "51E5B73AA88D523882A93B9560A6B0AAB4F083B35BB7B917FA83691443FEBF6E"
+  },
+  {
+    "path": "apps/web/src/pages/ForecastDashboard.jsx",
+    "sha256": "BBC9B2A995F65C5C4A23F8567E9E66BC9699EE15ABDE794E30387C69F52CBC66"
+  },
+  {
+    "path": "apps/web/src/pages/MarketDashboard.jsx",
+    "sha256": "2EAF8F5193A7DFD08AC838B4BB728F1B3C922438E81D828A8B97CFD4825F7ECA"
+  },
+  {
+    "path": "apps/web/src/pages/ScoreRanking.jsx",
+    "sha256": "EB36F3616EE79B4103AB1CE3B72EBF9C312EC33A405359CF759B1522B346A74D"
+  },
+  {
+    "path": "apps/web/src/pages/ShortTermForecast.jsx",
+    "sha256": "AEDF71EBB5B144BA3BF91C6CA0E6F9CDC169F3A0268DA1FFBA9ED198DBA4AF22"
+  },
+  {
+    "path": "apps/web/src/pages/StockDetail.jsx",
+    "sha256": "0C00CE5E6D4D3E8705B829FA99D94C09AC583CB573759AA1443CE607FBFF109A"
+  },
+  {
+    "path": "apps/web/src/pages/StockList.jsx",
+    "sha256": "F14CF92F51DA3F1D22A751E0576382FCE04F1AC466C34CBE350CC11351E5A6B1"
+  },
+  {
+    "path": "apps/web/src/pages/TTradingSimulator.jsx",
+    "sha256": "4986C62057DED305B9E771461688EF3FC79179ADB373FBA281F7397983D668D6"
+  },
+  {
+    "path": "apps/web/src/prob/api.js",
+    "sha256": "058FE45275F9B2B76F407C0DC863FD00F868A926B48BA49DB3219BE6553421B3"
+  },
+  {
+    "path": "apps/web/src/prob/BacktestPanel.jsx",
+    "sha256": "E5889836660C51E55ACADF2C43157DF13392963E3F36574BF477E1355569A1D8"
+  },
+  {
+    "path": "apps/web/src/prob/CoverageHint.jsx",
+    "sha256": "669D7E34FB9F58EFB80029BAF4E5EF3BB694A709C643D78DCCEBBF03A1DAA404"
+  },
+  {
+    "path": "apps/web/src/prob/EvalPanel.jsx",
+    "sha256": "2F94A7FAEE791A55523CFD9680C9B10951132592100AC33D2CCA808DC7DD6140"
+  },
+  {
+    "path": "apps/web/src/prob/format.js",
+    "sha256": "C261366B76EF523902C79BD87AC546CC2AEC6021C054D3F46F46E59750AA6AEF"
+  },
+  {
+    "path": "apps/web/src/prob/FormulaContext.jsx",
+    "sha256": "089740AF26CF0DE9AF7673CFC8E0C17219EE264BB2CCACB087DCC9DE2147F1E0"
+  },
+  {
+    "path": "apps/web/src/prob/FormulaModal.jsx",
+    "sha256": "A3069418C50E431ED6FE1A0A39CB474A7A24F8EA811615EDAFC0C86584F76F9E"
+  },
+  {
+    "path": "apps/web/src/prob/formulas.js",
+    "sha256": "A31D82B176F2BAB3DC9CE738BDC5A1503881DA5C7CF5CFD3FDB136D7B7F1EEDA"
+  },
+  {
+    "path": "apps/web/src/prob/FormulaTerm.jsx",
+    "sha256": "522049C49E3F8393A5CD19B66D3B6BFFB3968509117E0BF67FD64AFF4C2FED16"
+  },
+  {
+    "path": "apps/web/src/prob/OverviewPanel.jsx",
+    "sha256": "7FBEBC52C78D15255924A136FCF73D1C2BDD71DC781ACD3EC09C54CB0C94D78B"
+  },
+  {
+    "path": "apps/web/src/prob/prob.css",
+    "sha256": "4AB4DA8BE90A22600D948642A682748A6A2E943D32DA1DC7753B9221249C10F1"
+  },
+  {
+    "path": "apps/web/src/prob/ProbApp.jsx",
+    "sha256": "0F98C03FB5D9C48E66DD9A71317DE8BFB8508630488D771D909B863B6F4B421A"
+  },
+  {
+    "path": "apps/web/src/prob/ProbParts.jsx",
+    "sha256": "79785C1C5DCA6A677A7000D33070706B2B3AD51DFB6BE697776D3961FD1B2C48"
+  },
+  {
+    "path": "apps/web/src/prob/runMonitor.js",
+    "sha256": "74B2C243D4ACCB1845A66DCCBD28889C896E56C4840F182E0BCD9EF52A15E7D2"
+  },
+  {
+    "path": "apps/web/src/prob/runMonitor.test.js",
+    "sha256": "7EDE8AE1718722BA88C14BC85CE9AA4313119ADF99FB7BC034ECBADBAE4037DA"
+  },
+  {
+    "path": "apps/web/src/prob/RunsPanel.jsx",
+    "sha256": "7A2D444F3AB6BFDAC930D877DEEFE53479186D0FFB77659D4F6763655EB020E0"
+  },
+  {
+    "path": "apps/web/src/prob/StockPanel.jsx",
+    "sha256": "2E331A78262A399E9195E99861A6483B81F4992F88A042DD7A6563A007D2B1B7"
+  },
+  {
+    "path": "apps/web/src/prob/StockSearch.jsx",
+    "sha256": "BDCE5CC4F18F3A909B16E010C0EFFB01A529B4045BDDC9C71E6E61618188E071"
+  },
+  {
+    "path": "apps/web/src/quant/api.js",
+    "sha256": "2D4FE199771EC181A8380A3B7B6730589D2173B71A47088839F8178B79DBC36C"
+  },
+  {
+    "path": "apps/web/src/quant/format.js",
+    "sha256": "3EB05841D76965391310AE9A7B5206F40B60B592800271C050E5CA1DF2B32D26"
+  },
+  {
+    "path": "apps/web/src/quant/ParamForm.jsx",
+    "sha256": "5F9907C6366609ABA8CAB7E0C8003E0715A77CD82BEFDECACF11059F9964E46E"
+  },
+  {
+    "path": "apps/web/src/quant/quant.css",
+    "sha256": "0C936184FF537E9C325E1D92DF8886E847975A833456089F2DA74C9FEC43B66E"
+  },
+  {
+    "path": "apps/web/src/quant/QuantApp.jsx",
+    "sha256": "94A82CE7F34A3FC030E846B24C8A2768FA59E188C8B57B5762B60EA006E26DF8"
+  },
+  {
+    "path": "apps/web/src/quant/QuantParts.jsx",
+    "sha256": "8F7F1C89F9777A0D04F2820BA74BD23B1D06B5A98389A0B6FE326BF93DEE4439"
+  },
+  {
+    "path": "apps/web/src/quant/ResultPanel.jsx",
+    "sha256": "D620049D691B78286CCEC61F35225C3E3F242A8F702F4C751000D0244CBDD59D"
+  },
+  {
+    "path": "apps/web/src/quant/SignalsPanel.jsx",
+    "sha256": "2ED4E6D19C7D27156200D10FD292D8220F5B2497D094F5AB08D946DD943F6275"
+  },
+  {
+    "path": "apps/web/src/quant/StrategyPanel.jsx",
+    "sha256": "02C97A05F1BC3F9E519F86BDFDE4A8DCEEE6E6D386CA838BEE38613A295F0965"
+  },
+  {
+    "path": "apps/web/src/styles/global.css",
+    "sha256": "2505503122A51A917AEB86B402BF7C67259E98A253BD1EA66A96FE059FC60313"
+  },
+  {
+    "path": "apps/web/src/tlab/charts.js",
+    "sha256": "2B24DFF39D436DAB0AC04E57CB2044AE855BB18AF8FFC0413B3F15E6EF4DC30D"
+  },
+  {
+    "path": "apps/web/src/tlab/styles.css",
+    "sha256": "33E4672C3D8C56DD5523D4327EA581F81C7439553E5EC9B1C274EFC4610AA7D9"
+  },
+  {
+    "path": "apps/web/src/tlab/TLabPage.jsx",
+    "sha256": "F89BBE9A94CBE04230DDA83CC19299587DE190475A17E30D12AA0F72DC9024B7"
+  },
+  {
+    "path": "apps/web/src/tlab/utils.js",
+    "sha256": "4ABBA959941DB745085E1705AD03E1E1A3BF7C2FDC659F772B6C6629883B4853"
+  },
+  {
+    "path": "apps/web/src/tlab/components/EChart.jsx",
+    "sha256": "F1D2212582F84F0A1BABD3A1CB245ECBDA466E3ADD982AA57104F57BAB6C965E"
+  },
+  {
+    "path": "apps/web/src/tlab/components/StockCodeInput.jsx",
+    "sha256": "99DD2EC00037C7CACEB7FACA5E8C1E976ECE986B2EC5EDEEF311643722985C90"
+  },
+  {
+    "path": "apps/web/src/tlab/components/UI.jsx",
+    "sha256": "444ACEEB034E7EB0216A8E4502D61B9DC30F73FED161B2AE5CD8747EDCEB9B02"
+  },
+  {
+    "path": "apps/web/src/tlab/pages/PlanPage.jsx",
+    "sha256": "574FD018317B952F95C2501EB72B846D1014CBA01F2A7A2A1037E7F3A159F82A"
+  },
+  {
+    "path": "apps/web/src/tlab/pages/ScanPage.jsx",
+    "sha256": "EDBBA55D05C25497EB0B0F0DA00D490F4C447BDC365783487636DF2446B4CF84"
+  },
+  {
+    "path": "apps/web/src/tlab/pages/SimulatePage.jsx",
+    "sha256": "5D5ABC2AD201A1BB38E3B3334AEB6F1146B1C1DF42AEDF583890536E3F88FEB9"
+  },
+  {
+    "path": "apps/web/src/utils/format.js",
+    "sha256": "3518C89514494645835B6CB41CF864DBA6D442231540F1714781AB2B2B0D8BC6"
+  },
+  {
+    "path": "apps/web/t-lab/package.json",
+    "sha256": "7AD3B6E0852475BD1869444159967DBC1ABA5451F9618BCC1C237DD0C85E43BA"
+  },
+  {
+    "path": "apps/web/t-lab/vite.config.js",
+    "sha256": "CEF2090F3CCCECF6643CCF22F343832062FC2EE7DD252112626EA2518B911139"
+  },
+  {
+    "path": "apps/web/t-lab/src/api.js",
+    "sha256": "08DBF614656EA4CBD389AE5D97B9DBB225EE1ECE58ABE538E659ED6F504AA551"
+  },
+  {
+    "path": "apps/web/t-lab/src/App.jsx",
+    "sha256": "19554644D6EB1448D7D6D5B63770B390DEB422C199F08FAC1E542959B375D5EF"
+  },
+  {
+    "path": "apps/web/t-lab/src/charts.js",
+    "sha256": "2B24DFF39D436DAB0AC04E57CB2044AE855BB18AF8FFC0413B3F15E6EF4DC30D"
+  },
+  {
+    "path": "apps/web/t-lab/src/main.jsx",
+    "sha256": "A366C78634A4C18AD99C8F9A101A22FE41AF670339847B48B48C4692F38E393C"
+  },
+  {
+    "path": "apps/web/t-lab/src/styles.css",
+    "sha256": "4BD0BCAC686CFBD379A72AC339FCED1C974AF46DDA91CEFB9B5FE62173399527"
+  },
+  {
+    "path": "apps/web/t-lab/src/utils.js",
+    "sha256": "4ABBA959941DB745085E1705AD03E1E1A3BF7C2FDC659F772B6C6629883B4853"
+  },
+  {
+    "path": "apps/web/t-lab/src/components/EChart.jsx",
+    "sha256": "F1D2212582F84F0A1BABD3A1CB245ECBDA466E3ADD982AA57104F57BAB6C965E"
+  },
+  {
+    "path": "apps/web/t-lab/src/components/UI.jsx",
+    "sha256": "5F2A815DF392A06DA4237926F3FB065C5FE3C7A7748E2599021014A9EE1E8EC2"
+  },
+  {
+    "path": "apps/web/t-lab/src/pages/PlanPage.jsx",
+    "sha256": "07E84C636781260D900B61A2BF7EE75359CBC4EFC6D15503EFF9DA418A31D3E1"
+  },
+  {
+    "path": "apps/web/t-lab/src/pages/ScanPage.jsx",
+    "sha256": "D5027569B086980FDF864F0B33CE9F8BE4E65E0471F6BDCE9899BA239327A561"
+  },
+  {
+    "path": "apps/web/t-lab/src/pages/SimulatePage.jsx",
+    "sha256": "7B5748990176B8FC88B2140DCDE46C64A1E70C00B214CFE8C56F64E634EAD180"
+  },
+  {
+    "path": "apps/api/pom.xml",
+    "sha256": "2749B042A257E1B0155973E42530F2F4815EF2FC1C366DE329F91847F5FEA40B"
+  },
+  {
+    "path": "apps/api/docs/diagrams/render.py",
+    "sha256": "11FD61F46865829C1908DB8C0A93F965D4C38C42635F8EF88055ED19F8BCBB9F"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/StockApplication.java",
+    "sha256": "6A67314ABEDF35DF1B8AB266563393453A900E70EE64E2B1060D202D1ECB95C4"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/common/ApiResponse.java",
+    "sha256": "A5289DF5371D9E9679D8E2FBE072C8EA7354AC2105C4B6979E6B3EB416506211"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/common/BizException.java",
+    "sha256": "4C8345E62EA982055C54BB98F919741C1CA101B6AA760EEDF6C57DD2AC41BCF7"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/common/GlobalExceptionHandler.java",
+    "sha256": "41686B1512CDC201E732F2390B2863706BDFE2903A70014DB329E3CC05346311"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/common/MarketCache.java",
+    "sha256": "FDECAFA6AA8B7A379CB187E245E13A60B02CC391438B85C4B0C369C6D2955ADA"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/common/MarketCacheWarmer.java",
+    "sha256": "58B0EC4113B0F9CF32E04688758FB0482D6856617C53AE1E671FBA829705811C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/common/PageResult.java",
+    "sha256": "4C91A3442C0BD9F009E4445B243E204378A8AA51FAC32E566F5C3735A49915BA"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/common/QuerySupport.java",
+    "sha256": "3A8C81A8F106D682C9F03F41C69687C939FE7101A34E577512412BC00A0710C5"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/common/Rs.java",
+    "sha256": "720560593483EE6AA23FB0CC34B2937CB675B220AC72BFD50523B654FC21C2BC"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/config/ApiLoggingFilter.java",
+    "sha256": "C321C342583F4809E00AF67395DFB2E7EDE275776827785B73172BA6668E4A9A"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/config/WebConfig.java",
+    "sha256": "654F8B43E5C8D9AD246EE77EE11FFD6F940B28FFBBEA0293F955CC685C6043AC"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/controller/CrawlTaskController.java",
+    "sha256": "DF8E3AF26E5432ECFBFE2ED5157CB4F1E3DBE584084B0E38373D44875D00F414"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/controller/ForecastController.java",
+    "sha256": "45394237A9B92A2D04847176E62EEC85891C84DD902D836819BA8D6E3A57714C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/controller/MarketController.java",
+    "sha256": "C75424EFA2BFBF802A76637E727E78DE9D33F00855623ADA511CD75AD99629BE"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/controller/ScoreContinuityController.java",
+    "sha256": "FD78D784F74510DE1F9A7FB780C54AF0B1E91E8B04F9528E88338EACCB07424F"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/controller/ScoreRankingController.java",
+    "sha256": "F270E0B8D348E0AADF3F2FC393C9BDC3C9021BB1BD74E5A2B737C9F4DC8E03A2"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/controller/ShortTermForecastController.java",
+    "sha256": "A2112D221FDF7DBA55263A841ABF2CF7E3C340CF64343617CABBC63735A27D60"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/controller/ShortTermForecastHistoryController.java",
+    "sha256": "B598612CC76972B886677C3BEF2031A4BD20F4DD1AC16A6ED3DCD6843FCE994A"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/controller/StockController.java",
+    "sha256": "B439AC6D8F709BEB14A8245E885F5ECBBAB2673DBAF785006F17E19C2D29F1AA"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/controller/TController.java",
+    "sha256": "466382296621CDE27B3FE774D3ADEC52747950E90D7EEA4689FED70F9100F592"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/controller/TTradingController.java",
+    "sha256": "E584429E58A96D5EA70EEEA7C7EA56CE32AA9B22C0CA496C5E05A4BC9F7C1F7E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/Bar.java",
+    "sha256": "01DA9ADD817AF4C96816BDD58E165EA8B179B6745E3A32EDEC9406389172468D"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/DailyPoint.java",
+    "sha256": "AB93AEF7AEE1AFF41E2A0830E25DB60F7C13CAC823CA672B0795A14C51F5CCD1"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/Fill.java",
+    "sha256": "FF116AAED67E36B1D2F5DF81E45FF6FB94AEF6F1D630905B8522DE321508E2F9"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/Indicator.java",
+    "sha256": "E2901F6BDEF4ACDFA4DB016FF0C24CAE61596415E58C176A7B25D6428685BCAE"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/Order.java",
+    "sha256": "7D053B271D9FE0DCDE5DA46F5DBCE33D043CFAC58E57CC7C1AA40D4B241BEED0"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/Params.java",
+    "sha256": "515D0D43C0E17BE7315B81A06C125A8DE3DBA77C6DD0ACEE1A1DBBEAA749A384"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/Pending.java",
+    "sha256": "DCADE56F885BBACAD07EDD49133B00BF5C5EE2DCD2F06F271266968161BDC2E3"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/PositionState.java",
+    "sha256": "27EBCC028BCBEF792637ADA4967207B7E3C6FC83284872038A9F8C3EB9B2D371"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/SimOutcome.java",
+    "sha256": "E713D7B900FECFDBC8ECDFDE0A399A9007A1E82BB9DAA135A63E007ECF7E68C1"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/TradeRecord.java",
+    "sha256": "C654242BC8D8D7210072246458A69B69BEA7CA877FBA81821A2BAFCA9444D988"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/Bar.java",
+    "sha256": "575CA71EC55F1FA8144D2C7C9FD6054E7853D12A21E553764EC152A2F00F29BA"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/CrawlTask.java",
+    "sha256": "2FCE4DA547A7E0BD3DFE654BE591242ED4B47351C84F133144D97BB58493334B"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/DataRangeStat.java",
+    "sha256": "36F7E0E92E6C127CEAD969600B1E61DD4A3753D8CDF7102A4777E41955D9FD6B"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/ForecastPrediction.java",
+    "sha256": "F3DFEB8DBC765E1BE5A79DDD2DBB472DA8C0BBA333F0A40B252421B102BE6A75"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/ForecastResult.java",
+    "sha256": "08A309251719097E076B93C146F75A5FF94EC4E35577C1EA7729B6FB1A52E0A2"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/ForecastRun.java",
+    "sha256": "E93507DEFCB2C8DBB42DB48A4353E6544D2D8DF7489913C03899F9CC11B51604"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/ScoreBar.java",
+    "sha256": "AC8232FF2C05C6067E9BE3994C89005AA08B50466D286AA8D6E7FE93FA49620D"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/ScoreDailyPoint.java",
+    "sha256": "E03DE2874A1A8033437A01B1179A5D1C1C35F8DA45111C6F2E7CE06AF7798895"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/TBar.java",
+    "sha256": "2FC614B1662F8EC5FDD8F90AF50336D2775B6C3DC5C8BB4296E9597DE744AFA8"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/TPositionState.java",
+    "sha256": "4950DB9C66425EDA7E6145FC09779EDFFE4BA97C72FC9721AC33DA36116BD78C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/TSignal.java",
+    "sha256": "DBFB459B78BA7077A813BEE28168B07D3F8C4722290B10878260C087DF32AC84"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/TTradeAction.java",
+    "sha256": "71E19C1AA424ED6A97EFB54129FE1704FAF99E9E05F89434D2AAE80B63554DF6"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/model/TTradingConfig.java",
+    "sha256": "C1B2E33868262C6ABD663698E2A2BEA35DD409BC08F012530EEFBABDEE67FE4E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/query/CrawlTaskRequest.java",
+    "sha256": "2104090799B336CC14155A364A5248A49C733C50489BBD8E6D6636BD050259A7"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/query/StockQuery.java",
+    "sha256": "2094CED98BB6D38B24C10D453E03D98E7DA7FC101762CCC0F2E2C3B8B321E27B"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/query/TStrategyParams.java",
+    "sha256": "F1CD7D927428A02A13967C71A5268EE78BCD70DE27D90C366DFE1852DAC89AFF"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/query/TTradingRequest.java",
+    "sha256": "08A2C31AB5C832FD8C0C88DE6FF5FAAB338FB7BD0F4A76B005D8BBCFB5E19144"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/BreadthPointVO.java",
+    "sha256": "9323D4097F97626C7EA1B9AF6658D2C63296863A884910D10204F4BE7080C71A"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/CrawlerDateRangeVO.java",
+    "sha256": "9AE0625BAB126BE892152431CFA87CEE70A5F3EFF8C3C2FF6EF79EAD380C58C5"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/CrawlTaskVO.java",
+    "sha256": "74C5A75FB6877444E9EED6EED31B419124585C2CF99DC525A2F354010465AAD3"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/DataRangeVO.java",
+    "sha256": "AE409676ABCF38B29E8D47E7E2F79773556D6D0E804A054619FCA42C52BA569A"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/DistributionVO.java",
+    "sha256": "CE85705B34A3A35A678B6E2F929823FC11F08DC58F95EF123EA4AC9EC78B08D5"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/FilterOptionsVO.java",
+    "sha256": "F2E15A5A0E57E4496F607673678140CD6330D67BBB351445C3A09B6F58EFBF70"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ForecastEvalVO.java",
+    "sha256": "0067B271E123F7832C487E2E4FA90FE19B118B6DCF8A643C50E2D5AC599687FA"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ForecastModelVO.java",
+    "sha256": "0E443C37CEC50170F125C33C16B3FC87A947CF3DEC800136DB46C93352317025"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ForecastOverviewVO.java",
+    "sha256": "D22659C09978EDA6385BE95E2ABA6BB20B4B84DEA28EB1D63BAE50A02F3580E8"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ForecastPickVO.java",
+    "sha256": "1935C2ADB9D2BCECF89DCE8B21F42D7F2771D7DE638FFA723D8950ACA566A18A"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ForecastPredictionVO.java",
+    "sha256": "643E3EFBDBE7709CECFCE6CAC5325CCF6566570913E42F29E694E8CBCF1DADF4"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ForecastWeightVO.java",
+    "sha256": "C9AFD5D61E607280160333D05AA27A5C0C16C10B60723F1ED511E8806302361D"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/KlinePointVO.java",
+    "sha256": "DB8DEDB6D48087FF9FB00F9AF54C5757155C4281A6E0E3170FAA01BFBD251332"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/KlineSeriesVO.java",
+    "sha256": "6875E0E5C34FE7ACBFC06BA523F320343E7D468114D0BEF725758B1837B528C6"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/MarketOverviewVO.java",
+    "sha256": "6878AA77A29633B5A10211D829284E1A5BB2114AAD0D2F19748F3136C01C9B80"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ParamItemVO.java",
+    "sha256": "24353049836184D5E8E600D3BEBFD393D27CD830A812FDEBEA7D5CCD6F75A078"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/PlanRequest.java",
+    "sha256": "757637CD6ABD6FE9A4FCE6E969865134CF2224B233A856D60E9B604A9B9F8DA3"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/PlanResultVO.java",
+    "sha256": "299CE779D4C82DFAC2181C1FAC17CB32F4DDEB8FA35C9DAC5F724F98DCFB1DFE"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/QuoteVO.java",
+    "sha256": "A8BDC72A39DDACD32291974B2DA40FDDAE049291C0304119E12123E7B6C9A060"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/RangeStatsVO.java",
+    "sha256": "8F0C51B1D572ACFE7D4604D3FC87015A12021B45A27B90A7E96AAB00EA9B8427"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ScanRequest.java",
+    "sha256": "8C097F339FEA074557FA00EC0703FDF4F611D04ECEF960F85E49C37E1458B31E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ScanResultVO.java",
+    "sha256": "CCA9E076000AB9CC8AD66C150106447C0F39380FB5DCAE267157B549F6F48B46"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ScoreBuildVO.java",
+    "sha256": "79F927E9FFDFC708336E0E2227D600F8BBA59751351B3415F91FEF4B2298A86D"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ScoreContinuityItemVO.java",
+    "sha256": "1852DD16E0B7ECDA588642D927BD308233D3CEADCE709059402570E0ABC2F09A"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ScoreContinuityVO.java",
+    "sha256": "E7F18C16BAE7F1ECDB08F4993503A4F95723285D219D483B2D71BC98256BBAED"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ScoreRankingVO.java",
+    "sha256": "96C1724CAEAFAC88567D7ECECF258438659BBB8BEA40114F72EE76BD9E1935E6"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ScoreScheduleRunVO.java",
+    "sha256": "84EA197AC1DACF760B5422ACF919BD40A6943868EA92FD298882F46E5269795C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/SectorPerfVO.java",
+    "sha256": "480B4E18DFDA86F0789B7236FAD2BC839D27AC1FF5C1052C83AD2952EC591E60"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ShortTermBuildVO.java",
+    "sha256": "39C52626DC0521E3EB3750ED122E5FBA70BA84E89FC12CF1B007496B422CD4EF"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ShortTermDailyForecastVO.java",
+    "sha256": "FDA26A978D6149D26A98F8B91AD1EC82DF10D5539E38BB8AAB7D7B1D61817B37"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ShortTermEvaluateVO.java",
+    "sha256": "ED53C7F040FC3D2E93022714AB666C4818D5F004F9A985995F27F291B68CD2C8"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ShortTermForecastVO.java",
+    "sha256": "D6F441AE10CC246A138A7408400D65C8860CE32BB6600021C5D515643332E517"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ShortTermRunBuildVO.java",
+    "sha256": "01E2B44155C90FDF8402F795FB57BCFA3FE1FEBCE97F5DA3DD033276CC8740BB"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ShortTermRunSummaryVO.java",
+    "sha256": "3A44A2DFBF1762356B4A2E3DBC4F77F8B93D72D5BDE70D95951816365336D09E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/ShortTermRunVO.java",
+    "sha256": "3BCC70239E4E6EB6C4EFD925A57FBFD5E85A475E216B73EFC73DDA0013236A47"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/SimulateRequest.java",
+    "sha256": "94DB96598F1EAD3B248E0972062DD9BF118D20C288F702176577CA4D19914ADB"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/SimulateResultVO.java",
+    "sha256": "EA1A59DF49AF3C2B873754CCA2F77B1421222BE1EA96ADF593427D949B6FAD67"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/StockBriefVO.java",
+    "sha256": "0A5A2AE389B774836B03A68BB94A05007B461E154F79F0B2956B48CA86AA4C4C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/StockDailyVO.java",
+    "sha256": "6E548AAC8A9B1DE9C1847BF0638CE6D760CD36D23258E18B4E51B76321D4284E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/StockInfoVO.java",
+    "sha256": "BBE2AE0B18A2696FBDAD32DE8D09BFB3D445B49C276FF413B3CDBFCFC99A15FE"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/TAdviceVO.java",
+    "sha256": "9D740D437B9A824366A9A2B8D8F508A1A71B9FC8B938469F5C5426607836A483"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/TDailyPointVO.java",
+    "sha256": "597E5EC7552E64C8380676C6C427FE72FCDDFD05FFAB3DD2A05E8782FC85F129"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/TKlinePointVO.java",
+    "sha256": "2555992770A3935AE48CB4BE2E46B2FBE677B65FC2A0CD97F238FC202DC79926"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/TStrategyConfigVO.java",
+    "sha256": "CFE1DDC199F78E9703C9BB4C9AF1D5C7B7165D23A8B9156AD8636B9A51B4F617"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/TTradeRecordVO.java",
+    "sha256": "7386FA29D09C8A71E5FB5FAC001DFAB9902A664D2B9A3878E1D7ED004E1D3269"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/domain/vo/TTradingResultVO.java",
+    "sha256": "E4D8955935D78BA64D055B2CE927D93E13D75280A7C90AE1E15BA6BF251324BB"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/GaMath.java",
+    "sha256": "1C5EE55FAB71C9CD336D7B59D92FC66BF6B2D5DBCDCF37D441DE84E4C08C92A1"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/GaModel.java",
+    "sha256": "AF761328A3008C15CA5536B4FD68B9317A9B1D1E46E434092AE1D50111C6F858"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/api/GaController.java",
+    "sha256": "A67D76852BC39C20904325804CFE090BDD74A8BB0CE4AC3B35E76BEEC844B9A1"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/cleanup/GaCleanupRepository.java",
+    "sha256": "68DD30CF1221F1344B28874B010C239CE23734F51DD6DDF129F46E4C6F0FB1F7"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/cleanup/GaCleanupService.java",
+    "sha256": "AFAF77D06177C5B4CBAFBD3ABD991CA0AA23B51E495D67184EBB05BEC237C74C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/config/GaConfig.java",
+    "sha256": "9FA119D28AA19EE75E34E2BE03DA5EBBA4D0CACD57F1EABABEB25017AF65515E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/config/GaSchemaInitializer.java",
+    "sha256": "96C834B1D06153884FEA235D7896BFC02E89D6685D7EC60EFD017167B7E8CD89"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/engine/GaEngine.java",
+    "sha256": "FA1DB05D89281397BC99591315978FF6E20583294C64E528FFFF71373FB8BD17"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/feature/FeatureKeys.java",
+    "sha256": "2759505A479CC558197C404D66F88A8B21E47548641CC7251C90E75E616BFAEB"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/feature/FeatureService.java",
+    "sha256": "3905DFC51EBCEE1F8ABE1618F5365866BED7726A23EBC712993FB6710559D2A3"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/job/GaJobRunner.java",
+    "sha256": "FC5CDCD0CFB5236BF0A58CF8714F2B0CC9D3835F73FB05D3AECB0A86D3BB8973"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/label/LabelBuilder.java",
+    "sha256": "6DD110379DF5ED380AE6A86A17ADE2523395E43E398C0ADAD23DD9DBEB4F03C9"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/metric/GaQueryCache.java",
+    "sha256": "B4836B38E616261275FB50820FEC15BB67A2C4E7F25FCB43F8C8D1C5F88D55F4"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/metric/GaQueryService.java",
+    "sha256": "DFA34A6AA03E263D717D0C449D98E8624FF8E367CF1F7588A482B7648C4FE671"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/metric/MetricService.java",
+    "sha256": "7C8E2C75C1506AC104FD0892C49A308C7F8CC96361AD41F9A0CFA972902FE22A"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/pool/PoolService.java",
+    "sha256": "BB7B2090B2BB77D49B684E1ACE2D6B55741A1535951524F7165ABF2145543AFC"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/predict/ChampionService.java",
+    "sha256": "FC5F5D44211C8F03F9E278613C479D43E9AF9C46CF23DFF6444546DFFD7F3668"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/predict/PredictionService.java",
+    "sha256": "D4EEF7A84410019ED8499847A495C6BCBE3A79C16BEE3F4AC7902728A6950192"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/repository/GaDataRepository.java",
+    "sha256": "42B619501C21260390DF31EFFB478E02DE43ADBEF70FCF41F25198CAEF8D2844"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/ga/repository/GaStoreRepository.java",
+    "sha256": "0514AE45CE1A5CB9EBC6A8866D68E08F32EC190235BBFDE4B4910A1942F886EE"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/integration/BaoStockClient.java",
+    "sha256": "93768E5221162825B17473C53D0C5A6CA53D8C38273F303180C984EF438A4D8F"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/CrawlTaskMapper.java",
+    "sha256": "742D4020211A09CA10E99257B4FB33A854D67D68D4DC1E59F3D2952FFC9C0CE8"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/ForecastMapper.java",
+    "sha256": "02BA1276302750EEE8CAB068364D6759BE9D823648B6CA2A98FDA52094E2230E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/MarketMapper.java",
+    "sha256": "851591862D641E436878FD922AF9F18BD8B4086E6CF7C5111AB30A644AED73CC"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/ScoreCalculationMapper.java",
+    "sha256": "84DA9E0770B0597BD3E121306AE7877A4CD0BC7E035DF147B4F69A09B76B473E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/ScoreContinuityMapper.java",
+    "sha256": "3A404C2D27C2CDF1F524C82C6D692CFBD263B4440A9EE76250B2ADB85566FF96"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/ScoreRankingMapper.java",
+    "sha256": "FBBB6539E97BDF1BD981CAE4D035625D084172E48FCF6F1032467B6DD4CC01DB"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/ScoreScheduleMapper.java",
+    "sha256": "933ACEE484F68339A3D76DF4A60A9C20A8C0AD6EF2A8C17EFD18A56FAEF575F7"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/ShortTermForecastMapper.java",
+    "sha256": "EA615CE94F5D655899493B490CF02F7F6D2F3AA5BCE9D45640375EFCE18C5807"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/ShortTermHistoryMapper.java",
+    "sha256": "A119700B32B79637AA122C5E441A70744E2D9D2895C69BF065D11CBC66940E7E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/StockDailyMapper.java",
+    "sha256": "B133F7CCE89CD912A186984937F9D966EA8A867D6001FA7122AFD0EFFDA22898"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/mapper/StockInfoMapper.java",
+    "sha256": "590928B37815776288283B4F793D71C3159AA5234E06CC82478C76A45AAEAECC"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/prob/api/ProbController.java",
+    "sha256": "63A748D1057A3165582D07E2DD4B9299DC8562974BDC7406850EE0891F608A4E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/prob/api/ProbResponse.java",
+    "sha256": "E1F9E273C974CDE21D1ED4B20F07E181EB38665C2FDC60B1257202BCB34DC579"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/prob/config/ProbSchemaInitializer.java",
+    "sha256": "F2311D699FC4CD0034000DD01F3FBF839E218F30859FFDF4F987E35256314CDA"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/prob/task/ProbRepository.java",
+    "sha256": "D01BF4E4CC54A7890FCB532247D4D5A219F7C88ED80D08300F5A3C8E0168D040"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/prob/task/ProbScheduler.java",
+    "sha256": "B80005E4E98B933760B11865456E59500B3F8FEB4D6CF6A856D4D60D41C813DE"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/prob/task/ProbTaskService.java",
+    "sha256": "BEB5FC706E44F3F55C49786185D2AAEA44D6B27EC85A763A57F39B16771414D3"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/analytics/EventRow.java",
+    "sha256": "A08E525CC95FFD9925795A9E7F31659AB136DC15A594CAC5ED31EB897DB636B1"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/analytics/EventStudy.java",
+    "sha256": "6604F32CD129C59E2B2652CBEC30D01D3870CABD42EF88FA2C80B86E3F1A449C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/analytics/Performance.java",
+    "sha256": "E49E62E572EC6DBA8B6366AC297F968DF357CA2D3F6D3369963690AC66E1FC1A"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/api/QuantController.java",
+    "sha256": "4FDFED18A3D0956DD400F29E95F4158309F2A3DA3A88C5E07B185CE36C4F029B"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/backtest/BacktestConfig.java",
+    "sha256": "BC092860DEF5B4F8E752EC00DB38CBE02CCA95CB6081A5C69F8FA9A5972D5B99"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/backtest/BacktestEngine.java",
+    "sha256": "1D4EE5101B993D8588E1C3F5A9FE53DABAD4B8C80EC1B7C39256E5C8CB19277F"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/backtest/EquityPoint.java",
+    "sha256": "42784182ACF9CAD9C0C5449B7515F7BD7F0A827CD457F68BD2E500F568F5826B"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/backtest/TradeRecord.java",
+    "sha256": "3BDA6E263C2EFAC7B7F4CE205D3195042F1B3D2603240DED47639F2544095222"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/config/QuantSchemaInitializer.java",
+    "sha256": "B6D30DF8708A8857FBF25D4CCE40969A7A54ED70590C036603A2EAFD25DC3370"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/data/MarketPanel.java",
+    "sha256": "793962C59B151C1F0D53535273407A0A137AFE29CA2DE5B45A1A57D7C7CF665C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/data/PanelService.java",
+    "sha256": "02FB03ED92627AFE885676E2811EEFE0B9E66179FC7B717DF91C5917E523E373"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/indicator/Indicators.java",
+    "sha256": "D1084F1893B5B28B79BD87E3F91C947F8144A073313F7FB83AC3F6142F9C0C27"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/AbstractStrategy.java",
+    "sha256": "C72E15D1A848791A321B98BF781F534D1B9FFEEFB1D16DC1BDCB8E6BC9B0B66B"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/CrossSection.java",
+    "sha256": "453E027B449236F6D3613A5003C4C446E88BF8B6755EF326592836B13BF5A3D9"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/EvalContext.java",
+    "sha256": "18974E8DF1F600ADF88634239AEA2B98D27ADCE496D48CDC79B05D14D49A487D"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/ParamDef.java",
+    "sha256": "CAB13DC855F973D4283F5B39297FD05D440671C4D7C13F4473EECF525DC5314C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/SignalSeries.java",
+    "sha256": "54ACD3E67AD630ED004D14E39524EE834439C37BB6A1FB5BE15CAA735B6FA7BC"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/Strategy.java",
+    "sha256": "895788D6B7BB70DD1E6D0EDBB784BC33985B515717D71218C3B52B4BF73A756A"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/StrategyMeta.java",
+    "sha256": "5E169D7E486352FF04D67FEA726EBFF1B0F2E835921F90A03DF40446C4777B7E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/StrategyRegistry.java",
+    "sha256": "FC3ADFD7B88EB2B5FBBF8103F11C9E1F64B6F4D64B18A670116753333995ABB9"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/Universe.java",
+    "sha256": "E1ECACAE50992AEED69A20167100D79A2D802844E8571CA1B35D7E919D33BB9D"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/impl/L1OversoldRebound.java",
+    "sha256": "CEFEEF8AB757348943FE62BB4154A6D68195FF18ECCD004C75761AAB23BA2A44"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/impl/L2DeepValue.java",
+    "sha256": "30DB417E912F19F48E3EA4FA63D89482D412EAFC11A1941B398997FEE39FF428"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/impl/R1VolumeBreakout.java",
+    "sha256": "A7EFA970F62649E460788BB0AC3C227A01A90AE356D86283621D92F7BEA25792"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/impl/R2MaMacd.java",
+    "sha256": "1A431CE957C44833D49D46CBF13D20A38F6DA55EBF2902669A0A4A633942DB09"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/strategy/impl/X1ReversalConfirm.java",
+    "sha256": "EFCEE586D951B9ED6BF42AC2EEBAF9A1AFBC3AEE1B14FCE46839A085842FB6FE"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/task/QuantRepository.java",
+    "sha256": "FE5FB5546F280F2779BDC41D5636924FF99E8DFA064833BDCE35F939787024C9"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/quant/task/QuantTaskService.java",
+    "sha256": "1BB2CF4C3FF53FE710A844D01E5FCEDAF4F0FED049865CBB050775A9F787BEF5"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/CrawlTaskRepository.java",
+    "sha256": "6133788BEB1E0FB8DCEA10E03BFFC2F1780A2C421522D80735111C57BA874288"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/ForecastRepository.java",
+    "sha256": "2EE584A1F9290E35BF9E17C36C276701CC7C4B8F8CAAB02084F6B8F81170747C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/MarketRepository.java",
+    "sha256": "1CBA5F50EF0D21367C9BF6F4EF0AC257B0F104E83458B2E408886E16878B51ED"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/ScoreCalculationRepository.java",
+    "sha256": "1B6666613B4EA85CB84F273A66C53EF103F8A7BF1C09DDDF3DE8760EBE959F9E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/ScoreContinuityRepository.java",
+    "sha256": "6D6DE04981255A97A6A48EF20FFB1DD2AEA6ED7708CF4F4BF905EF98827F5231"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/ScoreRankingRepository.java",
+    "sha256": "BDC0B7A1E2DC8A583FAB4703E0EDAED3D2F58BEC6FA8F8EA4E74BA4EF57D9184"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/ScoreScheduleRepository.java",
+    "sha256": "EFBF036D078C3C60AEE9BC9EF94873CB36ADD3737190502C56911FA0A4D73895"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/ShortTermForecastRepository.java",
+    "sha256": "1B02C9ACB9498BE1F6ED67E9B561DA4FDE508B890CBC2469B24762F84CD6D875"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/ShortTermHistoryRepository.java",
+    "sha256": "53F7D4C53C550830E2E75F6A2D6F29B3688602973A53ACDBBFF87284668B1754"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/StockDailyRepository.java",
+    "sha256": "554CF86F873B046ABC71EC595EEEAC42351A6E12F0ECCCB467E055F2CA33DAC1"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/StockInfoRepository.java",
+    "sha256": "D8503E8061EAE1FA04F943F5AFCCF50F9FBDBD77BA840695D15557784BCCAB29"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/TLabDailyRepository.java",
+    "sha256": "474D03F01C246708A50C22543FC38D8C0490BE4A4E14CEFF94C13B35091EEF9B"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/repository/TLabTaskRepository.java",
+    "sha256": "8C6D2DE8277732D6F52C8E849530FC2B38487D14189DA76C1847BC18F0F3D866"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/schedule/DailyKlineScheduledCrawler.java",
+    "sha256": "5404318735C0CC4E4BA1C5D615E2E9873EB4E3B71EC424FCE48CBC32FB9F18E6"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/schedule/ScoreScheduledTask.java",
+    "sha256": "3059FEAB129EFD944161C480F711432B980D8A2DB0B42693884449B2E1F54945"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/CrawlTaskService.java",
+    "sha256": "E150F0A0A990D344FC1071A0D34A3BD9B0083AB1771F662D322CC7A5693EC9E7"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/ForecastService.java",
+    "sha256": "190EA8209B2599200B83B776C6A8F0223D4B6DC2F338093F3E4B916DE46007FE"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/MarketService.java",
+    "sha256": "EBB001FDBA17CC8D95D363FA7A64DDCCB69720912FC6C5AE7EE856F328AAE4EA"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/ScoreCalculationService.java",
+    "sha256": "EC36270F31888A1D6AC934CF950DEEF26B845B524E22B5B2FACA209CC4431A0C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/ScoreContinuityAnalyzer.java",
+    "sha256": "96DE13E4D5D202547EBE5987A70788AA9263D8F94E78A4F72D3D97335D1017DD"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/ScoreContinuityService.java",
+    "sha256": "EA4138881B33F2F07A61D94B27C53D83C7C2A42618E49AD4576823E14E3B2E78"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/ScoreRankingService.java",
+    "sha256": "42E47EA70E24B36FA13B36F43C0A9A4AA547EC7110A7C3D6154C3625A2AA57C7"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/ScoreScheduleService.java",
+    "sha256": "F2E409BD52A5F90876645183FA77197D20806E5CBE8FB9BB698F996F52352FF1"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/ShortTermForecastHistoryService.java",
+    "sha256": "7457326C07557D1EED22A580300F6A758200B7F14C7A8412ADA41C47F1DE2673"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/ShortTermForecastService.java",
+    "sha256": "5EEE0173FE18DB772334547AD928BE514BA3852D51D2B59506D2E3FBAE1BCEB2"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/StockService.java",
+    "sha256": "15FD0CE8AED5D966B2CD12977C7CC4CD1113084BDDEB484B008A7522A4FA663A"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/TLabService.java",
+    "sha256": "538D19FFCFAA36F64BC59813E84BEF2FA7CDC48CCD6E33BE3ACCD51D9E3F10F1"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/TTradingService.java",
+    "sha256": "70721E42463690C92978684EA72A05A48713460E34DFD15DA4CF3A474858C62C"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/TTradingSimulator.java",
+    "sha256": "2FBB29F396074A8D40C9C3DE69F7B5A1B0D27160252C8D72B3FECD5FC0C4276F"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/TTradingStrategyEngine.java",
+    "sha256": "F82F54AF10469C7B4D9C1DE1E23E30E1E42E51BCFDF99E1149C7DE87230FD23D"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/service/indicator/IndicatorService.java",
+    "sha256": "DF98B9DC35B4B2E720E7193F614318F1F23CE8180C4B02DBE05567A4A3C052F5"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/tlab/engine/Backtester.java",
+    "sha256": "DD2FF1639A4C02032B3110F3959FB0C69DB051BE7B1CA765187EED41B844E85E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/tlab/engine/EngineConfig.java",
+    "sha256": "DE4E53CF3B329BEA3FB216399BBFFCE0C63939C2A2AC68E9B34D64BFE4F8D670"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/tlab/engine/EntryScanner.java",
+    "sha256": "7319111B61849B8C9493873CEEDC940DC6853DA5454C959C41FF575DCB20EE33"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/tlab/engine/ExecutionSimulator.java",
+    "sha256": "1536E1345C85F2F1753102744CEC7D1F1DE21053EF8631C7E5C1E5001C74595E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/tlab/engine/FeeCalculator.java",
+    "sha256": "FD12B15D83162E79EB3981627228439FC6CC4708E11FC857CC812AAA9B2BB819"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/tlab/engine/NextDayPlanner.java",
+    "sha256": "10EADE51DDB7A075BAA5FCB87ABF975A343DEB5BA06C86DB7EAD946EDC0DBFC8"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/tlab/engine/StrategyEngine.java",
+    "sha256": "9005A5C36E3D89592CA5AA1C18E43D844FBA99EBB6DF6E84FA4EF028F1B50924"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/tlab/engine/StrategyPlan.java",
+    "sha256": "82B743FEE18B92E44C17930E7CDE41DF23999BA2E60FF589994B6F12ABD982E7"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/util/IndicatorCalculator.java",
+    "sha256": "58642B0C96232B1DDA26C0747DEC8ED26538664D5F34E880303058D07142F2E1"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/util/KlineAggregator.java",
+    "sha256": "9CEE761CBCC6A72BBBFD5E996FB953CDBD3F62E28289D4BB11AB623702132BFF"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/util/Numbers.java",
+    "sha256": "2838059A06D6C3D4E6C77A42158CBA07A57FF9411FB27CD914208647CFB44C2E"
+  },
+  {
+    "path": "apps/api/src/main/java/com/li/stock/util/TIndicatorUtil.java",
+    "sha256": "4AD1C458AC57E8DA0D9628EF7F66236AE9BF17443B4D2BF1BAC48DAA1574BB45"
+  },
+  {
+    "path": "apps/api/src/main/resources/application.yaml",
+    "sha256": "828C10CE1275E2D4A511CB86DFCA7DE83F4AAA121F474D5EC4C982804EF78BE9"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/CrawlTaskMapper.xml",
+    "sha256": "70B2283A785F0F976638046C87A7FBA361B3F7089ECD1356398993A14715DCDB"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/ForecastMapper.xml",
+    "sha256": "77DEBF49EDF074E66E0463CEA0F87EC0DF1976CCA9FA45D25ED424B616C1271F"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/MarketMapper.xml",
+    "sha256": "2FD57233F009F771AC7FBF2161FA3430DEBF00EA00AC8CBB9B04525EE1771268"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/ScoreCalculationMapper.xml",
+    "sha256": "9BDDD69EAEDA927BE91751685E65AC0176C040976D01E387EF789FE8D202DD8B"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/ScoreContinuityMapper.xml",
+    "sha256": "AF3CFC856047C14DB11847FA1D11118C04F9F8FE5D0BD28ED236E67E3CFEA101"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/ScoreRankingMapper.xml",
+    "sha256": "222AF9F02C8230051DD0D4F5A35D8435E1E1C07045A72539CD8A85AF9B0B58EB"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/ScoreScheduleMapper.xml",
+    "sha256": "B767293579398D4188099A9FD3EEE1222350E59887831C53090F7170644AAA1A"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/ShortTermForecastMapper.xml",
+    "sha256": "56F38B76CFD187EBDFB07647F8B5BA4EFCBAB83A35BB3651EA3134EB0C7EA7C9"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/ShortTermHistoryMapper.xml",
+    "sha256": "429017EBF88386EAA22208D2D8D8BB8E87793572049918A0BCAB1C671C11D516"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/StockDailyMapper.xml",
+    "sha256": "F54F767AE3E976EFD40F662BF2336B9C48285087E64011816D5A69634B5CBD93"
+  },
+  {
+    "path": "apps/api/src/main/resources/mapper/StockInfoMapper.xml",
+    "sha256": "B68544829EDFEDEFCD7999E77A981362B508725B3D10C5268E1C8DD739AE3C9E"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/StockApplicationTests.java",
+    "sha256": "B4A0B672029FFC35D93137584FEBA0A408ABCAC113870D9B746735A4A190FCF2"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/ga/GaApiContractTest.java",
+    "sha256": "062C5EC306A88878F077F1EDE0BF536B9DE1F5BE3F9B7BD946C2A449DC93F34F"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/ga/GaCoreAcceptanceTest.java",
+    "sha256": "6B7FAF915A755ECAD67DBD9C8E5B52897DAF8F03A2CA2D665FF08CBB8FF1F20A"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/integration/BaoStockClientEtfTest.java",
+    "sha256": "C05082585FF17EE07E7A5092E43C3BEA575B78449F091F0C641EE4E9DB5A3AC5"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/integration/BaoStockClientSessionTest.java",
+    "sha256": "0A01DD3C64E8AFC9074F76ED52F6A01DC0DFB31E5587C8F4A4D7E317AA007985"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/integration/BaoStockMemorySocket.java",
+    "sha256": "4A0DAE70FDD539AB518DA131892A383B65DBFC70070FA8C1246B0DE86C2395A9"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/quant/QuantMathTest.java",
+    "sha256": "4904BE7C48772CE71EC103F81DB159C3896D3EEBCFC61CC1DD99A7BD46C33A6D"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/repository/ShortTermForecastRepositoryTest.java",
+    "sha256": "EBB78E7B06DFB7F5977F960347DB999B4D50059679D18869FE11D6C7B9EDC033"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/repository/ShortTermHistoryRepositoryTest.java",
+    "sha256": "E8B1F206188978965E259AB9D211C5BEA708C5857111BC337C9E7E912EDE6700"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/repository/StockDailyRepositoryEtfTest.java",
+    "sha256": "562046D09527FA971DAFFD3466A5285C4C637586FF50697E4844D78E55A69141"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/schedule/ScoreScheduledTaskTest.java",
+    "sha256": "99E698DFE830A440696F1A60B52A80A9CF4CC3DEC2AC54B3CE3CFC75B85EC63F"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/service/CrawlTaskServiceEtfTest.java",
+    "sha256": "98A26D1F4363334B8404828D5822B3BEBB349936C071635925A6FFE1DDD23675"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/service/ScoreCalculationServicePercentileTest.java",
+    "sha256": "CF3433FFEA72591392350DE2640625DFDACECE147C9F83322E895B455C183DB5"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/service/ScoreContinuityAnalyzerTest.java",
+    "sha256": "F948A0E56EF6F5B7BC96C783E4992406F097C8EED53B7EBCC4D74E319EC3E653"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/service/ScoreScheduleServiceTest.java",
+    "sha256": "026BDF17A0CF105C90B5AE58145D78011B431995DBB8AEE4D66DAC5CCDADD17A"
+  },
+  {
+    "path": "apps/api/src/test/java/com/li/stock/tlab/TLabEngineTest.java",
+    "sha256": "FA32361FF7EFC1F724CBEB2196D0BA85F06E666D8A96935BD9BBA1267220B7E6"
+  },
+  {
+    "path": "engines/probability/config.yaml",
+    "sha256": "A90E9FEFE75107C8A2D5973D2E2C2FB057E234BD191DC1AB61DAF7C9D582870E"
+  },
+  {
+    "path": "engines/probability/features.yaml",
+    "sha256": "387C472F39997B29B5CB56C22ADB3179353566F0F5286DFC9A2BE147E004FD03"
+  },
+  {
+    "path": "engines/probability/engine/__init__.py",
+    "sha256": "2701CBAAA89C7B811E3FA4B6FA35B004F0C9974C7AEA076CC92FB2E4AD393AA8"
+  },
+  {
+    "path": "engines/probability/engine/backtest.py",
+    "sha256": "A4930CC974304E3B9F02040070FC33B37986E2AE9AC931FA5D547D4E5EE7D9E1"
+  },
+  {
+    "path": "engines/probability/engine/checkpoint.py",
+    "sha256": "8F2E234F9C474154E1D222ACE261297508E39D4143B641180EA6CCFCE76C83B6"
+  },
+  {
+    "path": "engines/probability/engine/cli.py",
+    "sha256": "2D851523A2DAFF85F041450D4D8046930DFE571476ED30497538C00D452C0519"
+  },
+  {
+    "path": "engines/probability/engine/config.py",
+    "sha256": "31FDBA163FD7E4FAE1A315CEF98018BF0C720D5FAB2C71F0EFCA3E8E791B9EA4"
+  },
+  {
+    "path": "engines/probability/engine/data.py",
+    "sha256": "15944B0F52D6AE3351DE5AEB1F2F15215A10D7C3BC41819D3F2D86CE4C61248E"
+  },
+  {
+    "path": "engines/probability/engine/db.py",
+    "sha256": "A9783AF191FAE35DCD30C28EEEEAC60C0CEDF1B3267554C802A457A9D078CC98"
+  },
+  {
+    "path": "engines/probability/engine/evaluation.py",
+    "sha256": "061BC1F3BE50628EAB7D884FF107AFAED6ED4AE4ECCB306BF15A2C20BD81C92C"
+  },
+  {
+    "path": "engines/probability/engine/features.py",
+    "sha256": "C3B5E219049927FE0EBB69C3B9A3A89949F545AD339A48556FABE9CD23CED311"
+  },
+  {
+    "path": "engines/probability/engine/formulas.py",
+    "sha256": "FB28F031E94BC5DAD2B04CAB0C71A6248A5AA927225DFBE93EF590E8C27DEA28"
+  },
+  {
+    "path": "engines/probability/engine/labels.py",
+    "sha256": "B56754EF14534BCE2AB251FB4BC7BA46229B29F70CE1B3645920C6D92A639A08"
+  },
+  {
+    "path": "engines/probability/engine/logutil.py",
+    "sha256": "610AA940DF7EA4FEB49FD3687D94350F629E496554F62D6B9CAD642A693EAEBF"
+  },
+  {
+    "path": "engines/probability/engine/pipeline.py",
+    "sha256": "F4C56844B9FE8FBA45E676156A575307E0F026AF5DB0C163FAF8CFDA3F831F59"
+  },
+  {
+    "path": "engines/probability/engine/predictor.py",
+    "sha256": "9FD8AD5F12637464E96E67F01B1E5EFC33CBD17F1A703ECF9B32076C9AF89307"
+  },
+  {
+    "path": "engines/probability/engine/store.py",
+    "sha256": "C7BFBA60924AA4B559760CCDCC5DB86EDC7882E7E3553EABF89AC268F33A6A4C"
+  },
+  {
+    "path": "engines/probability/engine/models/__init__.py",
+    "sha256": "3AE349D0FBEFB7476D08D7DF7F453939A8EA14E62D28A38D0B6FA50DB326E935"
+  },
+  {
+    "path": "engines/probability/engine/models/base.py",
+    "sha256": "F757DE4B2B49BE7918FB6A367E05956562E08EF08C3608DEEFD958D888312C74"
+  },
+  {
+    "path": "engines/probability/engine/models/pooled.py",
+    "sha256": "9140B3CE767A332EEF2A63C4847CDFA5CBDBBD19F5FF872B3899AAD7666486D1"
+  },
+  {
+    "path": "engines/probability/engine/models/single.py",
+    "sha256": "0F0F19E21D1F1F3B21CBADB58A74B11DC8CD87DC11A057618BF0085AE146F71D"
+  },
+  {
+    "path": "engines/probability/tests/test_checkpoint.py",
+    "sha256": "CE87DD015C74554DD09DFDE488FCD15739A051E77DDD0B83F9377D138D030A79"
+  },
+  {
+    "path": "engines/probability/tests/test_formulas.py",
+    "sha256": "D39FA22526846C78FA059CAB8959BDEF1D7E34EF6368B6F4038DCAC72A86CF40"
+  },
+  {
+    "path": "engines/probability/tests/test_redaction.py",
+    "sha256": "6DC8F9F93CA2BD2E0A22CE6B6B877FA1FAD45981AA10212158BAD0631A4A0C3A"
+  },
+  {
+    "path": "engines/probability/tests/test_task_progress.py",
+    "sha256": "B86F955EB6DB9CD185EC15D69F0495BC02C2BE0FF7A78CA36385C6E1A9CA1506"
+  }
+]
