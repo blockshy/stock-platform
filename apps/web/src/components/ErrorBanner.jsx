@@ -19,16 +19,13 @@ export default function ErrorBanner({ message, onRetry }) {
                 ) : null}
             </div>
             <div className="error-banner-msg">{message}</div>
-            <ol className="error-banner-tips">
-                <li>确认后端已启动：<code>{base.backend || 'http://localhost:8080'}</code> 能访问
-                    <code>/api/market/overview</code></li>
-                <li>当前页面使用的接口基址：<code>{base.primary}</code>
-                    {base.all.length > 1 ? `（备选：${base.all.slice(1).join('、')}）` : ''}</li>
-                <li>后端端口不是 8080 时，用
-                    <code>VITE_BACKEND=http://localhost:端口 npm run dev</code> 重启前端</li>
-                <li>如果页面不是通过 <code>npm run dev</code> 打开的（如 IDE 内置预览 / 静态服务器），
-                    改用 <code>http://localhost:5173</code> 访问，后端已放开跨域</li>
-            </ol>
+            {/* 通用提示兼容本机与域名部署；连接细节折叠显示，不把开发命令当作用户操作流程。 */}
+            <p className="error-banner-tips">请确认网络和服务状态后重试。若提示提交结果未知，请先查看任务或结果记录，避免重复提交。</p>
+            <details className="error-banner-tips">
+                <summary>连接诊断</summary>
+                <p>当前接口：<code>{base.primary}</code></p>
+                {base.configurationError ? <p>接口地址配置无效，请联系部署维护人员检查配置。</p> : null}
+            </details>
         </div>
     );
 }

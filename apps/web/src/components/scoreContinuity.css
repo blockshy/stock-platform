@@ -66,7 +66,7 @@
     padding: 10px 12px;
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: #fafbfc;
+    background: var(--ui-surface-subtle);
 }
 
 .sc-root .sc-chips-line {
@@ -102,7 +102,7 @@
     padding: 4px 11px;
     border: 1px solid var(--border);
     border-radius: 999px;
-    background: #fff;
+    background: var(--ui-surface);
     color: var(--text);
     font-size: 12px;
     cursor: pointer;
@@ -117,7 +117,7 @@
 .sc-root .sc-chips button.active {
     border-color: var(--accent);
     background: var(--accent);
-    color: #fff;
+    color: var(--ui-on-primary);
     font-weight: 600;
 }
 
@@ -136,7 +136,7 @@
     padding: 5px 9px;
     border: 1px solid var(--border);
     border-radius: 6px;
-    background: #fff;
+    background: var(--ui-surface);
     color: var(--text);
     font-size: 12px;
     outline: none;
@@ -159,7 +159,7 @@
     padding: 4px 8px;
     border: 1px solid var(--border);
     border-radius: 6px;
-    background: #fff;
+    background: var(--ui-surface);
     color: var(--text);
     font-size: 12px;
 }
@@ -168,10 +168,10 @@
 .sc-root .sc-warn {
     margin: 0 0 12px;
     padding: 8px 11px;
-    border: 1px solid #f2dfae;
+    border: 1px solid var(--ui-warning-border);
     border-radius: 8px;
-    background: #fff9eb;
-    color: #8a6414;
+    background: var(--ui-warning-soft);
+    color: var(--ui-warning);
     font-size: 12px;
     line-height: 1.7;
 }
@@ -182,10 +182,10 @@
     gap: 8px;
     margin: 0 0 8px;
     padding: 5px 10px;
-    border: 1px solid #f2dfae;
+    border: 1px solid var(--ui-warning-border);
     border-radius: 8px;
-    background: #fff9eb;
-    color: #8a6414;
+    background: var(--ui-warning-soft);
+    color: var(--ui-warning);
     font-size: 12px;
 }
 
@@ -290,7 +290,7 @@
     padding: 5px 4px;
     border: 1px solid transparent;
     border-radius: 6px;
-    background: #f4f6f9;
+    background: var(--ui-surface-subtle);
     color: var(--text);
     font-size: 12px;
     font-variant-numeric: tabular-nums;
@@ -305,13 +305,13 @@
 .sc-root .sc-cell.active {
     border-color: var(--accent);
     background: var(--accent);
-    color: #fff;
+    color: var(--ui-on-primary);
     font-weight: 700;
 }
 
 .sc-root .sc-cell.disabled {
-    background: #f7f8fa;
-    color: #b6bcc6;
+    background: var(--ui-surface-subtle);
+    color: var(--ui-placeholder);
     cursor: not-allowed;
 }
 
@@ -335,7 +335,7 @@
     position: sticky;
     top: 0;
     z-index: 2;
-    background: #fff;
+    background: var(--ui-surface);
 }
 
 .sc-root .sc-table tbody tr {
@@ -387,7 +387,8 @@
 }
 
 .sc-root.sc-compact .sc-select-label select {
-    padding: 3px 7px;
+    /* 紧凑表单只减少上下留白，右侧仍保留统一下拉箭头的空间。 */
+    padding: 3px 32px 3px 7px;
 }
 
 .sc-root.sc-compact .sc-warn {

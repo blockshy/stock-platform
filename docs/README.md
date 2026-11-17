@@ -9,14 +9,16 @@
 | 采集历史行情或运行预测 | [用户手册](user-guide.md) → [任务与榜单排查](troubleshooting.md) |
 | 验证修改是否影响功能 | [测试说明](testing.md) → [功能等效性](functional-parity.md) |
 | 保持页面一致 | [前端规范](frontend-guidelines.md) |
+| 切换浅色、暗色或跟随系统 | [用户手册](user-guide.md) → [主题配置](configuration.md) |
 | 评估远端部署 | [远端部署规划](remote-deployment-plan.md) |
+| 评估概率引擎改为 Java | [Java 引擎迁移评估](java-engine-migration-plan.md) |
 | 提交或公开资料 | [公开边界](publication-policy.md) → [来源说明](sources.md) |
 
 ## 状态约定
 
 - **已实现**：仓库已有对应代码或脚本；不意味着任意机器、任意数据规模均已验证。
 - **需准备**：依赖、独立数据库、账号、模型和数据等由使用者配置。
-- **规划中**：尚无可直接执行的交付。Linux / Docker 远端部署属于此类，当前暂缓实施。
+- **规划中**：尚无可直接执行的交付。Linux / Docker 远端部署当前暂缓实施；Python → Java 引擎迁移也仅完成评估，没有替换现有模型实现。
 - **测试通过**：只能指具体提交、环境和范围下的新报告，不能引用历史机器记录替代本次测试。
 
 文档代码块中的安装路径和示例值应按实际环境替换。不要将日志、配置快照、数据库导出或生产截图直接附在公共 Issue 中。

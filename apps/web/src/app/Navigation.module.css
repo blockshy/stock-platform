@@ -1,18 +1,18 @@
 /* 侧栏样式独立于业务页面，旧 sidebar 类只保留移动端开合钩子。 */
-.sidebar:global(.sidebar) { width: 220px; flex-basis: 220px; background: #152238; border-right: 1px solid #23334d; }
+.sidebar:global(.sidebar) { width: 220px; flex-basis: 220px; background: var(--ui-nav-bg); border-right: 1px solid var(--ui-nav-border); }
 .brand { display: flex; align-items: center; gap: 10px; padding: 22px 18px 18px; }
-.logo { display: grid; place-items: center; width: 34px; height: 34px; flex: none; background: #3c6ce0; border-radius: 10px; color: white; font-size: 17px; font-weight: 700; }
-.brandTitle { color: #f8fafc; font-size: 14px; line-height: 1.5; font-weight: 650; white-space: nowrap; }
-.brandCaption { font-size: 10px; color: #8fa2be; letter-spacing: .1em; margin-top: 3px; }
+.logo { display: grid; place-items: center; width: 34px; height: 34px; flex: none; background: var(--ui-nav-active); border-radius: 10px; color: var(--ui-nav-on-active); font-size: 17px; font-weight: 700; }
+.brandTitle { color: var(--ui-nav-title); font-size: 14px; line-height: 1.5; font-weight: 650; white-space: nowrap; }
+.brandCaption { font-size: 10px; color: var(--ui-nav-muted); letter-spacing: .1em; margin-top: 3px; }
 .group { margin: 0 10px 12px; }
-.groupTitle { margin: 0; padding: 10px 10px 6px; color: #8fa2be; font-size: 10px; font-weight: 500; letter-spacing: .08em; }
+.groupTitle { margin: 0; padding: 10px 10px 6px; color: var(--ui-nav-muted); font-size: 10px; font-weight: 500; letter-spacing: .08em; }
 .links { display: flex; flex-direction: column; gap: 3px; }
-.link { display: flex; align-items: center; gap: 10px; min-height: 37px; padding: 8px 10px; border-radius: 7px; color: #c6d2e4; text-decoration: none; font-size: 12px; line-height: 1.5; white-space: nowrap; transition: background .15s, color .15s; }
-.link:hover { background: #233650; color: white; }
-.link[aria-current="page"] { background: #285bd4; color: white; font-weight: 600; }
-.link:focus-visible { outline: 2px solid #a8c4ff; outline-offset: 2px; }
-.badge { margin-left: auto; color: #b7c8e3; font-size: 10px; padding: 1px 5px; border: 1px solid #4a5b78; border-radius: 4px; }
-.link[aria-current="page"] .badge { color: white; border-color: #84a4ed; }
-.foot { margin-top: auto; padding: 16px 20px 20px; color: #8fa2be; font-size: 11px; line-height: 1.7; border-top: 1px solid #29384e; }
-.foot strong { display: block; color: #c6d2e4; font-size: 11px; font-weight: 500; margin-bottom: 2px; }
+.link { display: flex; align-items: center; gap: 10px; min-height: 37px; padding: 8px 10px; border-radius: 7px; color: var(--ui-nav-text); text-decoration: none; font-size: 12px; line-height: 1.5; white-space: nowrap; transition: background .15s, color .15s; }
+.link:hover { background: var(--ui-nav-hover); color: var(--ui-nav-title); }
+.link[aria-current="page"] { background: var(--ui-nav-active); color: var(--ui-nav-on-active); font-weight: 600; }
+.link:focus-visible { outline: 2px solid var(--ui-nav-title); outline-offset: 2px; }
+.badge { margin-left: auto; color: var(--ui-nav-text); font-size: 10px; padding: 1px 5px; border: 1px solid var(--ui-nav-border); border-radius: 4px; }
+.link[aria-current="page"] .badge { color: var(--ui-nav-on-active); border-color: currentColor; }
+.foot { margin-top: auto; padding: 16px 20px 20px; color: var(--ui-nav-muted); font-size: 11px; line-height: 1.7; border-top: 1px solid var(--ui-nav-border); }
+.foot strong { display: block; color: var(--ui-nav-text); font-size: 11px; font-weight: 500; margin-bottom: 2px; }
 @media (max-height: 760px) { .brand { padding-block: 16px; } .group { margin-bottom: 6px; } .link { min-height: 33px; padding-block: 6px; } .foot { padding-block: 12px; } }

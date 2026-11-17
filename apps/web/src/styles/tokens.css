@@ -4,17 +4,27 @@
  * 旧变量作为兼容别名保留，业务模块可逐步迁移而不改变现有图表与计算口径。
  */
 :root {
+    color-scheme: light;
     --ui-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
     --ui-bg: #f3f6fa;
     --ui-surface: #ffffff;
     --ui-surface-subtle: #f8fafc;
     --ui-border: #dfe6ef;
+    --ui-border-subtle: #edf1f7;
+    --ui-border-strong: #b7c5d8;
+    --ui-hover: #f0f4fa;
+    --ui-surface-hover: var(--ui-hover);
+    --ui-placeholder: #78869a;
+    --ui-disabled-bg: #eff3f8;
+    --ui-disabled: #8593a8;
+    --ui-code-bg: #eef2f8;
     --ui-text: #17243b;
     --ui-muted: #64748b;
     --ui-primary: #285bd4;
     --ui-primary-hover: #204cb8;
     --ui-on-primary: #ffffff;
     --ui-primary-soft: #edf3ff;
+    --ui-primary-border: #cadbff;
     --ui-success: #087f6b;
     --ui-success-soft: #eaf8f3;
     --ui-success-border: #cbe9df;
@@ -29,6 +39,26 @@
     --ui-fall: #17924e;
     --ui-rise-soft: #fff1ee;
     --ui-fall-soft: #edf8f0;
+    --ui-purple: #7649b8;
+    --ui-purple-soft: #f2edfb;
+    --ui-overlay: rgb(9 18 33 / 48%);
+    --ui-tooltip-bg: #17243b;
+    --ui-tooltip-text: #f8fafc;
+    --ui-scrollbar: #b5c2d5;
+    --ui-scrollbar-hover: #8a9cb6;
+    --ui-chart-grid: #e6edf5;
+    --ui-chart-axis: #a7b4c6;
+    --ui-chart-axis-label: var(--ui-muted);
+    --ui-chart-tooltip-bg: var(--ui-surface);
+    /* 导航在浅色下仍保留深蓝品牌底；暗色模式使用更低亮度，文字与选中状态单独配色。 */
+    --ui-nav-bg: #152238;
+    --ui-nav-border: #23334d;
+    --ui-nav-text: #c6d2e4;
+    --ui-nav-muted: #9aacc4;
+    --ui-nav-title: #f8fafc;
+    --ui-nav-hover: #233650;
+    --ui-nav-active: #285bd4;
+    --ui-nav-on-active: #ffffff;
     --ui-space-1: 4px;
     --ui-space-2: 8px;
     --ui-space-3: 12px;
@@ -55,4 +85,65 @@
     --up: var(--ui-rise);
     --down: var(--ui-fall);
     --radius: var(--ui-radius-lg);
+}
+
+/*
+ * 暗色仅替换外观 token；市场方向仍为红涨绿跌，任务成功仍使用独立的青绿色。
+ * ThemeProvider 与首屏脚本写入 data-theme，跟随系统最终也解析到同一套变量。
+ */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --ui-bg: #0d1421;
+    --ui-surface: #162131;
+    --ui-surface-subtle: #1b293c;
+    --ui-border: #33435b;
+    --ui-border-subtle: #28374c;
+    --ui-border-strong: #536681;
+    --ui-hover: #24344a;
+    --ui-placeholder: #8c9cb4;
+    --ui-disabled-bg: #202d40;
+    --ui-disabled: #73859f;
+    --ui-code-bg: #101b2b;
+    --ui-text: #e7edf6;
+    --ui-muted: #a0afc3;
+    --ui-primary: #8aafff;
+    --ui-primary-hover: #aec7ff;
+    --ui-on-primary: #0b1830;
+    --ui-primary-soft: #223655;
+    --ui-primary-border: #466393;
+    --ui-success: #6dd8bd;
+    --ui-success-soft: #123c38;
+    --ui-success-border: #245c50;
+    --ui-danger: #ff93a4;
+    --ui-danger-soft: #432b36;
+    --ui-danger-hover: #ffb6c1;
+    --ui-danger-border: #714354;
+    --ui-warning: #f3cd78;
+    --ui-warning-soft: #3b3323;
+    --ui-warning-border: #695837;
+    --ui-rise: #ff8a80;
+    --ui-fall: #65d69b;
+    --ui-rise-soft: #3d292e;
+    --ui-fall-soft: #16392f;
+    --ui-purple: #c2a3ff;
+    --ui-purple-soft: #302544;
+    --ui-overlay: rgb(3 8 16 / 72%);
+    --ui-tooltip-bg: #dce7f7;
+    --ui-tooltip-text: #142136;
+    --ui-scrollbar: #4c607d;
+    --ui-scrollbar-hover: #7085a1;
+    --ui-chart-grid: #2b3a50;
+    --ui-chart-axis: #61738e;
+    --ui-nav-bg: #0c1421;
+    --ui-nav-border: #26354b;
+    --ui-nav-text: #b9c9df;
+    --ui-nav-muted: #91a4bf;
+    --ui-nav-title: #f1f5fb;
+    --ui-nav-hover: #1d2d45;
+    --ui-nav-active: #2b5dd6;
+    --ui-nav-on-active: #ffffff;
+    --ui-shadow: 0 2px 6px rgb(0 0 0 / 16%);
+    --ui-shadow-popover: 0 12px 32px rgb(0 0 0 / 40%);
+    --ui-focus: 0 0 0 3px rgb(138 175 255 / 25%);
+    --ui-chart-mask: rgb(22 33 49 / 92%);
 }

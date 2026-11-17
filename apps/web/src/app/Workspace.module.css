@@ -5,12 +5,16 @@
  */
 .root { font-family: var(--ui-font); font-size: var(--ui-text-base); color: var(--ui-text); background: var(--ui-bg); }
 .root :global(.container) { max-width: 1500px; padding: 20px 24px 32px; gap: 16px; }
-.root :global(.topbar) { height: 60px; flex-basis: 60px; background: var(--ui-surface); border-color: var(--ui-border); padding-inline: 24px; }
+.root :global(.topbar) { min-height: 60px; height: auto; flex-basis: auto; background: var(--ui-surface); border-color: var(--ui-border); padding: 10px 24px; }
+.root :global(.topbar-actions) { min-width: 0; }
 .root :global(.topbar-location) { font-size: 12px; }
 .root :global(.topbar-location strong) { font-size: 14px; color: var(--ui-text); }
 .root :global(.app-footer) { background: transparent; font-size: 11px; color: var(--ui-muted); border-color: var(--ui-border); }
 .root :global(.ga-root), .root :global(.tlab-root) { font-size: var(--ui-text-base); }
 .root :global(.score-page), .root :global(.sd-root), .root :global(.ga-page), .root :global(.tlab-layout) { gap: 16px; }
+/* 页面级筛选栏与后续内容由父 gap 分隔；进入卡片后恢复内部筛选栏留白，避免变量继承误伤。 */
+.root :global(.ga-page), .root :global(.quant-stack) { --ui-filter-margin-bottom: 0px; }
+.root [data-ui="card"] { --ui-filter-margin-bottom: 12px; }
 
 /* 统一页面标题层级，模块原有导航、刷新、说明和公式入口保持在原位置。 */
 .root :global(.page-intro), .root :global(.ga-head), .root :global(.quant-head), .root :global(.tlab-page-head) {
@@ -24,24 +28,39 @@
     color: var(--ui-muted); font-size: 12px; line-height: 1.65; margin-top: 6px;
 }
 .root :global(.ga-head-row) { align-items: center; gap: 10px 16px; }
+.root :global(.ga-head) { margin-bottom: 16px; }
+.root :global(.quant-root) { gap: 16px; }
 .root :global(.ga-nav) { gap: 4px; border-bottom: 0; padding: 4px; margin-top: 14px; background: var(--ui-surface-subtle); border-radius: 8px; }
 .root :global(.ga-nav-link) { padding: 6px 12px; border: 1px solid transparent; border-radius: 5px; font-size: 12px; min-height: 30px; line-height: 1.5; color: var(--ui-muted); }
 .root :global(.ga-nav-link.active) { background: var(--ui-surface); border-color: var(--ui-border); color: var(--ui-primary); box-shadow: var(--ui-shadow); }
 .root :global(.tlab-tabs) { flex-wrap: wrap; }
 .root :global(.tlab-tabs button) { min-height: 30px; font-size: 12px; }
-.root :global(.strategy-badge), .root :global(.topbar-badge) { color: var(--ui-primary); background: var(--ui-primary-soft); border: 1px solid #d9e5ff; font-size: 11px; }
+.root :global(.strategy-badge), .root :global(.topbar-badge) { color: var(--ui-primary); background: var(--ui-primary-soft); border: 1px solid var(--ui-primary-border); font-size: 11px; }
 
 /* 尚未组件化的原生表单统一大小；复选框、滑块和业务动态宽度不受影响。 */
-.root :global(.container) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
-    min-height: var(--ui-control-height); border-radius: var(--ui-radius-sm); border-color: var(--ui-border);
-    font-family: var(--ui-font); font-size: var(--ui-text-base); color: var(--ui-text); background: var(--ui-surface);
+.root :global(.container) :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
+    min-height: var(--ui-control-height); min-width: 0; max-width: 100%; padding: 5px 10px;
+    border: 1px solid var(--ui-border); border-radius: var(--ui-radius-sm);
+    font-family: var(--ui-font); font-size: var(--ui-text-base); line-height: 20px; color: var(--ui-text); background-color: var(--ui-surface);
 }
+/* 下拉框仍用浏览器原生弹层和键盘行为；箭头不与文字重叠，选项跟随 color-scheme。 */
+.root :global(.container) select:not([multiple]), .root select:not([multiple]) {
+    appearance: none; padding-inline-end: 32px; cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 16px) 50%, calc(100% - 12px) 50%; background-size: 4px 4px; background-repeat: no-repeat;
+}
+.root select option { color: var(--ui-text); background: var(--ui-surface); }
+.root :is(input, textarea)::placeholder { color: var(--ui-placeholder); opacity: 1; }
+.root :global(.container) :is(input, select, textarea):disabled,
+.root :is(input, select, textarea):disabled { color: var(--ui-muted); background-color: var(--ui-disabled-bg); cursor: not-allowed; }
 .root :global(.container) :is(input, select, textarea):focus { border-color: var(--ui-primary); box-shadow: var(--ui-focus); outline: none; }
 .root :global(.container) :is(input[type="checkbox"], input[type="radio"]) { accent-color: var(--ui-primary); box-shadow: none; }
-.root :global(.container) button:focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 2px; }
+.root :is(button, input, select, textarea):focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 2px; }
 .root :global(.container) button:disabled { cursor: not-allowed; opacity: .48; }
+.root :global(.container) button[data-ui="button"]:disabled { opacity: 1; }
 .root :global(.field), .root :global(.ga-field-label), .root :global(.field-label) { font-size: 12px; color: var(--ui-muted); }
-.root :global(.toolbar) { gap: 8px 12px; flex-wrap: wrap; }
+.root :global(.toolbar) { gap: 10px 12px; flex-wrap: wrap; }
+.root :global(.toolbar) > *, .root :global(.crawler-form) > * { min-width: 0; }
 .root :global(.toolbar.wrap) { margin-bottom: 12px; }
 .root :global(.score-rebuild), .root :global(.forecast-rebuild), .root :global(.t-run-btn), .root :global(.tlab-root .btn-primary) {
     min-height: var(--ui-control-height); border-radius: var(--ui-radius-sm); background: var(--ui-primary); border-color: var(--ui-primary); font-size: 13px;
@@ -55,11 +74,11 @@
     padding: 10px 12px; background: var(--ui-surface-subtle); color: var(--ui-muted); border-bottom: 1px solid var(--ui-border); font-size: 11px; font-weight: 600; line-height: 1.5;
 }
 .root :global(.data-table td), .root :global(.ga-table td), .root :global(.tlab-root td) {
-    padding: 10px 12px; border-bottom: 1px solid #edf1f6; line-height: 1.5;
+    padding: 10px 12px; border-bottom: 1px solid var(--ui-border-subtle); line-height: 1.5;
 }
-.root :global(.data-table tbody tr:hover), .root :global(.ga-table tbody tr:hover), .root :global(.tlab-root tbody tr:hover) { background: #f4f7fe; }
+.root :global(.data-table tbody tr:hover), .root :global(.ga-table tbody tr:hover), .root :global(.tlab-root tbody tr:hover) { background: var(--ui-hover); }
 .root :global(.data-table .selected-row), .root :global(.ga-table .is-active) { background: var(--ui-primary-soft); }
-.root :global(.table-wrap), .root :global(.ga-table-wrap) { min-width: 0; border: 1px solid var(--ui-border); border-radius: 8px; overflow-x: auto; }
+.root :global(.table-wrap), .root :global(.ga-table-wrap) { min-width: 0; max-width: 100%; border: 1px solid var(--ui-border); border-radius: 8px; overflow-x: auto; }
 .root :global(.table-sort-button) { font-size: inherit; color: inherit; }
 .root :global(.stat-grid), .root :global(.ga-kpi-grid) { gap: 12px; }
 /* 市场概览固定六项：中等桌面采用三列，避免 auto-fit 产生五张加一张的孤立换行。 */
@@ -72,17 +91,24 @@
 .root :global(.crawler-running) { background: var(--ui-primary-soft); color: var(--ui-primary); }
 .root :global(.crawler-done), .root :global(.forecast-success), .root :global(.ga-note.ga-note--ok) { background: var(--ui-success-soft); color: var(--ui-success); }
 .root :global(.crawler-failed), .root :global(.ga-note.ga-note--err) { background: var(--ui-danger-soft); color: var(--ui-danger); }
-.root :global(.crawler-progress), .root :global(.quant-progress) { background: #e8eef7; border-radius: 999px; }
+.root :global(.crawler-progress), .root :global(.quant-progress) { background: var(--ui-surface-subtle); border-radius: 999px; }
 .root :global(.crawler-progress span) { background: var(--ui-primary); }
-.root :global(.error-banner), .root :global(.ga-error) { border: 1px solid #f2d0d6; border-radius: var(--ui-radius); background: var(--ui-danger-soft); color: var(--ui-danger); }
+.root :global(.error-banner), .root :global(.ga-error) { border: 1px solid var(--ui-danger-border); border-radius: var(--ui-radius); background: var(--ui-danger-soft); color: var(--ui-danger); }
 .root :global(.forecast-note), .root :global(.prob-note), .root :global(.ga-note) { font-size: 12px; color: var(--ui-muted); line-height: 1.7; }
-.root :global(.prob-disclaimer), .root :global(.risk-bar) { border-color: #efdfb8; background: var(--ui-warning-soft); color: var(--ui-warning); border-radius: 8px; font-size: 12px; }
-.root :global(.quant-data-chip.is-ready) { color: var(--ui-success); background: var(--ui-success-soft); border-color: #cbe9df; }
+.root :global(.prob-disclaimer), .root :global(.risk-bar) { border-color: var(--ui-warning-border); background: var(--ui-warning-soft); color: var(--ui-warning); border-radius: 8px; font-size: 12px; }
+.root :global(.quant-data-chip.is-ready) { color: var(--ui-success); background: var(--ui-success-soft); border-color: var(--ui-success-border); }
 .root :global(.quant-data-chip.is-ready i) { background: var(--ui-success); }
-.root :global(.quant-data-chip.is-err) { color: var(--ui-danger); background: var(--ui-danger-soft); border-color: #f2d0d6; }
+.root :global(.quant-data-chip.is-err) { color: var(--ui-danger); background: var(--ui-danger-soft); border-color: var(--ui-danger-border); }
 .root :global(.quant-data-chip.is-err i) { background: var(--ui-danger); }
 
-@media (max-width: 1200px) { .root :global(.topbar-actions) { gap: 8px; } .root :global(.search-box input) { width: 190px; } }
+/* 顶栏允许控件自然换行；股票选择、搜索和主题入口在窄屏都保持可达。 */
+@media (max-width: 1280px) {
+    .root :global(.topbar) { gap: 10px; }
+    .root :global(.topbar-actions) { gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .root :global(.topbar-location .crumb), .root :global(.topbar-location .crumb-sep) { display: none; }
+    .root :global(.search-box input) { width: 180px; }
+    .root :global(.topbar-badge) { display: none; }
+}
 @media (max-width: 960px) { .root :global(.container) { padding: 16px; } .root :global(.topbar) { padding-inline: 16px; } }
 @media (min-width: 1500px) { .root :global(.market-stat-grid) { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 @media (max-width: 600px) {
@@ -90,15 +116,24 @@
     /* 窄屏将搜索与全站选股放到第二行，保留两个入口且不挤压页面标题。 */
     .root :global(.topbar) { height: auto; flex-basis: auto; min-height: 60px; flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
     .root :global(.topbar-location strong) { font-size: 13px; }
-    .root :global(.topbar-actions) { width: 100%; margin-left: 0; gap: 8px; }
-    .root :global(.search-box) { flex: 1; min-width: 0; }
+    .root :global(.topbar-actions) { width: 100%; margin-left: 0; gap: 8px; justify-content: flex-start; }
+    .root :global(.search-box) { flex: 1 1 140px; min-width: 0; }
     .root :global(.search-box input) { width: 100%; min-width: 0; }
     .root :global(.cs-pop) { left: 0; right: auto; width: min(320px, calc(100vw - 24px)); }
-    /* 两行顶栏约 92px，为“查看结果”锚点保留 16px 间距，避免结果标题被 sticky 顶栏遮住。 */
-    .root :global(.t-result) { scroll-margin-top: 108px; }
+    /* 顶栏高度由真实布局测量；系统字体和主题入口换行不会遮住结果锚点。 */
+    .root :global(.t-result) { scroll-margin-top: calc(var(--ui-topbar-height, 100px) + 16px); }
     .root :global(.page-intro), .root :global(.ga-head), .root :global(.quant-head), .root :global(.tlab-page-head) { padding: 12px; }
     .root :global(.page-intro h1), .root :global(.ga-title), .root :global(.quant-title), .root :global(.tlab-page-head h1) { font-size: 18px; }
     .root :global(.data-table th), .root :global(.data-table td), .root :global(.ga-table th), .root :global(.ga-table td) { padding: 8px 10px; }
     .root :global(.market-stat-grid) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .root :global(.page-intro) { flex-wrap: wrap; gap: 10px; }
+    .root :global(.crawler-actions), .root :global(.t-panel-tools) { flex-wrap: wrap; }
+    .root :global(.crawler-form) { align-items: stretch; }
+    .root :global(.crawler-form) > :global(.field) { flex: 1 1 150px; flex-direction: column; align-items: stretch; }
+    .root :global(.toolbar .grow) { flex: 1 1 180px; min-width: 0; }
+    .root :global(.t-advice-grid) { grid-template-columns: 1fr; }
+    .root :global(.t-advice-compact .t-advice-line) { flex-wrap: wrap; white-space: normal; }
+    .root :global(.fc-doc) { width: 100%; padding-inline: 12px; }
+    .root :global(.fc-doc .metric-explain-grid) { grid-template-columns: 1fr; }
 }
 @media (max-width: 380px) { .root :global(.market-stat-grid) { grid-template-columns: 1fr; } }

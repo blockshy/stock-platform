@@ -23,9 +23,12 @@ function CalibrationOption(items) {
     const xs = items.map((b) => `${(Number(b.bin_low) * 100).toFixed(0)}–${(Number(b.bin_high) * 100).toFixed(0)}%`);
     return {
         tooltip: { trigger: 'axis' },
-        legend: { data: ['实际上涨频率', '预测概率均值', '理想校准'], bottom: 0, textStyle: { fontSize: 11 } },
-        grid: { left: 52, right: 16, top: 18, bottom: 46 },
-        xAxis: { type: 'category', data: xs, axisLabel: { fontSize: 10, rotate: 30 }, name: '预测概率分箱' },
+        // 图例独占上方一行，窄屏用滚动图例；下方留足斜标签与轴名的高度，避免相互覆盖。
+        // 只调整展示位置，不改变分箱、统计值、系列顺序及概率范围。
+        legend: { data: ['实际上涨频率', '预测概率均值', '理想校准'], type: 'scroll', top: 0, left: 0, right: 0, textStyle: { fontSize: 11 } },
+        grid: { left: 52, right: 16, top: 40, bottom: 64 },
+        xAxis: { type: 'category', data: xs, axisLabel: { fontSize: 10, rotate: 30 },
+                 name: '预测概率分箱', nameLocation: 'middle', nameGap: 42 },
         yAxis: { type: 'value', min: 0, max: 1, axisLabel: { formatter: (v) => `${(v * 100).toFixed(0)}%` },
                  splitLine: { lineStyle: { opacity: 0.35 } } },
         series: [
@@ -126,11 +129,12 @@ export default function EvalPanel({ refreshKey }) {
                             <thead><tr><th>模型</th><th>Brier</th><th>相对 M10</th><th>说明</th></tr></thead>
                             <tbody>
                                 {items.filter((r) => r.metric_name === 'Brier' && r.scope === 'ALL')
-                                    .map((r) => {
+                                    .map((r, index) => {
                                         const base = pick('Brier');
                                         const d = base == null || r.value == null ? null : Number(r.value) - Number(base);
                                         return (
-                                            <tr key={r.model_name}>
+                                            // 同一模型可能有多条历史评估；仅区分渲染身份，不去重或改变接口数据顺序。
+                                            <tr key={`${r.model_name}-${r.eval_date || ''}-${r.horizon || ''}-${index}`}>
                                                 <td><b>{r.model_name}</b></td>
                                                 <td>{num(r.value, 5)}</td>
                                                 <td className={`ga-tone-${d == null ? 'plain' : (d > 0 ? 'up' : 'down')}`}>

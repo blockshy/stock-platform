@@ -1,4 +1,4 @@
-/* 独立子应用样式：视觉语言与主站一致（浅色卡片、红涨绿跌），但完全自成一套 */
+/* 模拟器专用布局：颜色继承全站浅/暗主题，市场方向保持红涨绿跌。 */
 /* TLab 沿用全站 token，命名空间仅保留其模拟器专用布局。 */
 :where(.tlab-root) { --shadow: var(--ui-shadow); font-family: var(--ui-font); }
 
@@ -18,7 +18,7 @@
 :where(.tlab-root) .tlab-page-head h1 { margin: 0; font-size: 16px; font-weight: 650; }
 :where(.tlab-root) .tlab-page-head p { margin: 3px 0 0; font-size: 11.5px; color: var(--muted); }
 
-:where(.tlab-root) .tlab-tabs { display: flex; gap: 4px; background: #f1f3f7; padding: 3px; border-radius: 8px; }
+:where(.tlab-root) .tlab-tabs { display: flex; gap: 4px; background: var(--ui-surface-subtle); padding: 3px; border-radius: 8px; }
 :where(.tlab-root) .tlab-tabs button {
     border: 0; background: transparent; color: var(--muted);
     padding: 7px 16px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12.5px;
@@ -30,7 +30,7 @@
 
 :where(.tlab-root) .risk-bar {
     text-align: center; padding: 9px; border-radius: 8px;
-    background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; font-size: 12px;
+    background: var(--ui-warning-soft); border: 1px solid var(--ui-warning-border); color: var(--ui-warning); font-size: 12px;
 }
 
 :where(.tlab-root) .panel {
@@ -52,14 +52,14 @@
 /* 表单 */
 :where(.tlab-root) .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 10px; padding: 10px 12px; }
 :where(.tlab-root) .form-grid.inline { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); align-items: end; }
-/* 覆盖主站 .field 的 align-items:center（否则标签被居中、气泡定位基准偏移） */
-:where(.tlab-root) .field { display: flex; flex-direction: column; align-items: stretch; gap: 3px; font-size: 11px; color: var(--muted); min-width: 0; }
+/* 模块限定的两级选择器覆盖主站 .field；标签左对齐且铺满字段，气泡才以字段边界定位。 */
+.tlab-root .field { display: flex; flex-direction: column; align-items: stretch; gap: 3px; font-size: 11px; color: var(--muted); min-width: 0; }
 :where(.tlab-root) .field input, :where(.tlab-root) .field select, :where(.tlab-root) .panel-extra select {
     border: 1px solid var(--border); border-radius: 6px; padding: 5px 7px;
-    background: #fff; color: var(--text); font-size: 12px; width: 100%; min-width: 0;
+    background: var(--ui-surface); color: var(--text); font-size: 12px; width: 100%; min-width: 0;
 }
-:where(.tlab-root) .field input:focus, :where(.tlab-root) .field select:focus { outline: 2px solid rgba(47, 111, 237, .22); border-color: var(--accent); }
-:where(.tlab-root) .field-tip { font-size: 10px; color: #9ca3af; line-height: 1.3; }
+:where(.tlab-root) .field input:focus, :where(.tlab-root) .field select:focus { outline: 2px solid var(--ui-primary-border); border-color: var(--accent); }
+:where(.tlab-root) .field-tip { font-size: 10px; color: var(--ui-muted); line-height: 1.3; }
 :where(.tlab-root) .advanced { padding: 0 10px 8px; border-top: 1px dashed var(--border); margin-top: 4px; }
 :where(.tlab-root) .advanced-note { font-size: 10.5px; color: var(--muted); margin: 7px 0 6px; }
 /* 不设滚动容器：否则提示气泡会被 overflow 裁掉；参数数量固定，直接铺开即可 */
@@ -69,7 +69,7 @@
 
 :where(.tlab-root) .primary-btn {
     display: block; width: calc(100% - 28px); margin: 4px 14px 14px;
-    background: var(--accent); color: #fff; border: 0; border-radius: 7px;
+    background: var(--accent); color: var(--ui-on-primary); border: 0; border-radius: 7px;
     padding: 9px 16px; font-weight: 600; cursor: pointer;
 }
 :where(.tlab-root) .form-grid.inline .primary-btn { width: auto; margin: 0 0 1px; padding: 7px 18px; }
@@ -89,71 +89,71 @@
 }
 :where(.tlab-root) .stat-label { font-size: 11px; color: var(--muted); }
 :where(.tlab-root) .stat-value { font-size: 18px; font-weight: 660; margin: 3px 0 2px; white-space: nowrap; }
-:where(.tlab-root) .stat-hint { font-size: 10.5px; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+:where(.tlab-root) .stat-hint { font-size: 10.5px; color: var(--ui-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 :where(.tlab-root) .up { color: var(--up) !important; }
 :where(.tlab-root) .down { color: var(--down) !important; }
 :where(.tlab-root) .flat { color: var(--text); }
 
 :where(.tlab-root) .kv-list { padding: 8px 14px 12px; }
-:where(.tlab-root) .kv-list > div { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #f1f3f7; font-size: 12px; }
+:where(.tlab-root) .kv-list > div { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--ui-surface-subtle); font-size: 12px; }
 :where(.tlab-root) .kv-list > div:last-child { border-bottom: 0; }
 :where(.tlab-root) .kv-list span { color: var(--muted); }
 :where(.tlab-root) .kv-list.compact { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
 
 /* 图表 / 表格 */
 :where(.tlab-root) .chart-box { position: relative; width: 100%; }
-:where(.tlab-root) .chart-mask { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); background: rgba(255,255,255,.7); font-size: 12px; }
+:where(.tlab-root) .chart-mask { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); background: var(--ui-chart-mask); font-size: 12px; }
 :where(.tlab-root) .table-wrap { overflow: auto; }
 :where(.tlab-root) .table-wrap.short, :where(.tlab-root) .table-wrap.mini { max-height: 260px; }
 :where(.tlab-root) .data-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
-:where(.tlab-root) .data-table th, :where(.tlab-root) .data-table td { padding: 6px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid #f1f3f7; }
-:where(.tlab-root) .data-table th { position: sticky; top: 0; background: #f8fafc; color: var(--muted); font-weight: 550; z-index: 1; }
+:where(.tlab-root) .data-table th, :where(.tlab-root) .data-table td { padding: 6px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--ui-surface-subtle); }
+:where(.tlab-root) .data-table th { position: sticky; top: 0; background: var(--ui-surface-subtle); color: var(--muted); font-weight: 550; z-index: 1; }
 :where(.tlab-root) .data-table th:first-child, :where(.tlab-root) .data-table td:first-child, :where(.tlab-root) .data-table th:nth-child(2), :where(.tlab-root) .data-table td:nth-child(2) { text-align: left; }
 :where(.tlab-root) .data-table td.note-cell { text-align: left; max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
-:where(.tlab-root) .data-table tbody tr:hover { background: #f8fafc; }
+:where(.tlab-root) .data-table tbody tr:hover { background: var(--ui-surface-subtle); }
 :where(.tlab-root) .data-table tr.clickable { cursor: pointer; }
-:where(.tlab-root) .data-table tr.clickable:hover { background: #eef4ff; }
+:where(.tlab-root) .data-table tr.clickable:hover { background: var(--ui-primary-soft); }
 :where(.tlab-root) .data-table tr.insufficient { opacity: .55; }
 :where(.tlab-root) .empty-row { text-align: center !important; color: var(--muted); padding: 18px !important; }
 
-:where(.tlab-root) .tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10.5px; background: #f1f3f7; color: #4b5563; }
-:where(.tlab-root) .tag-INIT { background: #e8f0ff; color: #1d4ed8; }
-:where(.tlab-root) .tag-ADD, :where(.tlab-root) .tag-BUYBACK, :where(.tlab-root) .tag-FORCE_BUYBACK { background: #fdeceb; color: var(--up); }
-:where(.tlab-root) .tag-T_SELL, :where(.tlab-root) .tag-T_BUY, :where(.tlab-root) .tag-SELL_PENDING, :where(.tlab-root) .tag-PENDING_SELL { background: #f3edff; color: #6b3fa0; }
-:where(.tlab-root) .tag-EXIT { background: #e7f6ed; color: var(--down); }
-:where(.tlab-root) .tag-STOP { background: #e5e7eb; color: #111827; }
+:where(.tlab-root) .tag { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10.5px; background: var(--ui-surface-subtle); color: var(--ui-muted); }
+:where(.tlab-root) .tag-INIT { background: var(--ui-primary-soft); color: var(--ui-primary); }
+:where(.tlab-root) .tag-ADD, :where(.tlab-root) .tag-BUYBACK, :where(.tlab-root) .tag-FORCE_BUYBACK { background: var(--ui-rise-soft); color: var(--up); }
+:where(.tlab-root) .tag-T_SELL, :where(.tlab-root) .tag-T_BUY, :where(.tlab-root) .tag-SELL_PENDING, :where(.tlab-root) .tag-PENDING_SELL { background: var(--ui-purple-soft); color: var(--ui-purple); }
+:where(.tlab-root) .tag-EXIT { background: var(--ui-fall-soft); color: var(--down); }
+:where(.tlab-root) .tag-STOP { background: var(--ui-border); color: var(--ui-text); }
 
 :where(.tlab-root) .empty-hint { background: var(--panel); border: 1px dashed var(--border); border-radius: 10px; padding: 40px 26px; text-align: center; }
 :where(.tlab-root) .empty-hint h3 { margin: 0 0 8px; font-size: 16px; }
 :where(.tlab-root) .empty-hint p { margin: 0 auto; max-width: 620px; color: var(--muted); line-height: 1.7; }
 
-:where(.tlab-root) .warnings { margin-top: 4px; padding: 10px 14px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 11.5px; }
+:where(.tlab-root) .warnings { margin-top: 4px; padding: 10px 14px; background: var(--ui-warning-soft); border: 1px solid var(--ui-warning-border); border-radius: 8px; color: var(--ui-warning); font-size: 11.5px; }
 :where(.tlab-root) .warnings p { margin: 3px 0; }
-:where(.tlab-root) .error-banner { display: flex; justify-content: space-between; gap: 10px; padding: 9px 12px; margin-bottom: 10px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 7px; color: #b91c1c; font-size: 12px; }
+:where(.tlab-root) .error-banner { display: flex; justify-content: space-between; gap: 10px; padding: 9px 12px; margin-bottom: 10px; background: var(--ui-danger-soft); border: 1px solid var(--ui-danger-border); border-radius: 7px; color: var(--ui-danger); font-size: 12px; }
 :where(.tlab-root) .error-banner button { border: 0; background: transparent; color: inherit; cursor: pointer; font-size: 16px; line-height: 1; }
-:where(.tlab-root) .loading-mask { padding: 8px 12px; margin-bottom: 10px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 7px; color: #1d4ed8; font-size: 12px; }
+:where(.tlab-root) .loading-mask { padding: 8px 12px; margin-bottom: 10px; background: var(--ui-primary-soft); border: 1px solid var(--ui-primary-border); border-radius: 7px; color: var(--ui-primary); font-size: 12px; }
 
 /* 扫描页 */
 :where(.tlab-root) .signal-card { margin: 12px 14px; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border); }
-:where(.tlab-root) .signal-card.favorable { background: #fef2f2; border-color: #fecaca; }
-:where(.tlab-root) .signal-card.unfavorable { background: #f0fdf4; border-color: #bbf7d0; }
+:where(.tlab-root) .signal-card.favorable { background: var(--ui-danger-soft); border-color: var(--ui-danger-border); }
+:where(.tlab-root) .signal-card.unfavorable { background: var(--ui-success-soft); border-color: var(--ui-success-border); }
 :where(.tlab-root) .signal-title { font-size: 14px; font-weight: 640; }
 :where(.tlab-root) .signal-value { font-size: 12px; margin: 4px 0; }
 :where(.tlab-root) .signal-card p { margin: 4px 0 0; font-size: 11px; color: var(--muted); }
-:where(.tlab-root) .stability { padding: 9px 14px; margin-bottom: 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; color: #166534; font-size: 12px; }
-:where(.tlab-root) .stability.warn { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
+:where(.tlab-root) .stability { padding: 9px 14px; margin-bottom: 12px; background: var(--ui-success-soft); border: 1px solid var(--ui-success-border); border-radius: 8px; color: var(--ui-success); font-size: 12px; }
+:where(.tlab-root) .stability.warn { background: var(--ui-danger-soft); border-color: var(--ui-danger-border); color: var(--ui-danger); }
 
 /* 次日计划 */
 :where(.tlab-root) .order-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; padding: 12px 14px; }
-:where(.tlab-root) .order-card { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; background: #fbfcfe; }
-:where(.tlab-root) .order-card.accent { background: #faf7ff; border-color: #e2d4ff; }
+:where(.tlab-root) .order-card { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; background: var(--ui-surface-subtle); }
+:where(.tlab-root) .order-card.accent { background: var(--ui-purple-soft); border-color: var(--ui-border-strong); }
 :where(.tlab-root) .order-head { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
 :where(.tlab-root) .order-body { display: flex; flex-direction: column; gap: 4px; }
 :where(.tlab-root) .order-body > div { display: flex; justify-content: space-between; font-size: 11.5px; }
 :where(.tlab-root) .order-body span { color: var(--muted); }
 :where(.tlab-root) .order-cond { margin-top: 8px; padding-top: 7px; border-top: 1px dashed var(--border); font-size: 10.5px; color: var(--muted); line-height: 1.5; }
-:where(.tlab-root) .order-reason { margin-top: 4px; font-size: 10.5px; color: #9ca3af; line-height: 1.5; }
-:where(.tlab-root) .explain-list { margin: 0; padding: 10px 14px 12px 30px; font-size: 12px; line-height: 1.8; color: #4b5563; }
+:where(.tlab-root) .order-reason { margin-top: 4px; font-size: 10.5px; color: var(--ui-muted); line-height: 1.5; }
+:where(.tlab-root) .explain-list { margin: 0; padding: 10px 14px 12px 30px; font-size: 12px; line-height: 1.8; color: var(--ui-muted); }
 
 @media (max-width: 1100px) {
 :where(.tlab-root) .sim-layout { grid-template-columns: 1fr; }
@@ -180,6 +180,8 @@
 :where(.tlab-root) .form-grid.compact .field { font-size: 10.5px; gap: 2px; }
 :where(.tlab-root) .form-grid.compact .field input,
 :where(.tlab-root) .form-grid.compact .field select { padding: 4px 6px; font-size: 11.5px; border-radius: 5px; }
+/* 紧凑输入保留原密度，下拉框单独为共享箭头留白，不能把箭头压到选项文字上。 */
+:where(.tlab-root) .form-grid.compact .field select { padding-right: 32px; }
 :where(.tlab-root) .primary-btn.inline { width: auto; margin: 0; padding: 8px 22px; }
 /* 第二行第 5 格放提交按钮，省掉单独一行操作区 */
 :where(.tlab-root) .form-grid.compact .grid-btn {
@@ -193,16 +195,18 @@
 /* 问号本身不做定位上下文，气泡以标签（即字段左边界）为基准，避免压到右侧字段 */
 :where(.tlab-root) .field-hint {
     display: inline-flex; align-items: center; justify-content: center;
-    flex: none; width: 11px; height: 11px; border: 1px solid #ccd3de; border-radius: 50%;
-    color: #98a2b3; font-size: 8px; line-height: 1; cursor: help; outline: none;
+    flex: none; width: 11px; height: 11px; border: 1px solid var(--ui-border); border-radius: 50%;
+    color: var(--ui-muted); font-size: 8px; line-height: 1; cursor: help; outline: none;
 }
 :where(.tlab-root) .field-hint:hover, :where(.tlab-root) .field-hint:focus, :where(.tlab-root) .field-hint:focus-within {
     border-color: var(--accent); color: var(--accent);
 }
 :where(.tlab-root) .field-hint-pop {
+    /* 未展开的气泡不参与可滚动溢出计算，防止手机出现不可见的横向空白。 */
+    display: none;
     position: absolute; top: calc(100% + 34px); left: -4px; z-index: 40;
     width: 218px; max-width: 70vw; padding: 7px 9px; border-radius: 6px;
-    background: #263244; color: #fff; box-shadow: 0 8px 22px rgba(20, 30, 50, .24);
+    background: var(--ui-tooltip-bg); color: var(--ui-tooltip-text); box-shadow: var(--ui-shadow-popover);
     font-size: 11px; font-weight: 400; line-height: 1.55; text-align: left; white-space: normal;
     opacity: 0; visibility: hidden; pointer-events: none;
     transform: translateY(-4px); transition: opacity .15s ease, transform .15s ease;
@@ -210,7 +214,7 @@
 :where(.tlab-root) .field-hint:hover .field-hint-pop,
 :where(.tlab-root) .field-hint:focus .field-hint-pop,
 :where(.tlab-root) .field-hint:focus-within .field-hint-pop {
-    opacity: 1; visibility: visible; transform: translateY(0);
+    display: block; opacity: 1; visibility: visible; transform: translateY(0);
 }
 /* 第 4、5 列靠近右侧，气泡改为右对齐，避免超出页面 */
 :where(.tlab-root) .form-grid.compact > .field:nth-child(5n+4) .field-hint-pop,
@@ -255,19 +259,19 @@
 :where(.tlab-root) .stock-picked {
     position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
     max-width: 58%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    font-size: 10px; color: #1d4ed8; pointer-events: none;
+    font-size: 10px; color: var(--ui-primary); pointer-events: none;
 }
 :where(.tlab-root) .stock-suggest {
     position: absolute; top: calc(100% + 2px); left: 0; right: 0; z-index: 30;
-    margin: 0; padding: 3px; list-style: none; background: #fff;
+    margin: 0; padding: 3px; list-style: none; background: var(--ui-surface);
     border: 1px solid var(--border); border-radius: 7px;
-    box-shadow: 0 10px 26px rgba(16, 24, 40, .14); max-height: 230px; overflow: auto;
+    box-shadow: var(--ui-shadow-popover); max-height: 230px; overflow: auto;
 }
 :where(.tlab-root) .stock-suggest li {
     display: flex; align-items: center; gap: 8px; padding: 5px 7px;
     border-radius: 4px; cursor: pointer; font-size: 11.5px; color: var(--text);
 }
-:where(.tlab-root) .stock-suggest li:hover { background: #eef4ff; }
+:where(.tlab-root) .stock-suggest li:hover { background: var(--ui-primary-soft); }
 :where(.tlab-root) .stock-suggest .code { color: var(--muted); font-variant-numeric: tabular-nums; }
 :where(.tlab-root) .stock-suggest .name { flex: 1; }
 
@@ -279,10 +283,21 @@
 
 @media (max-width: 1180px) {
     :where(.tlab-root) .form-grid.compact { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    /* 参数变为三列后，撤销桌面五列定位；仅行末气泡向左展开。 */
+    :where(.tlab-root) .form-grid.compact > .field:nth-child(n) .field-hint-pop { left: -4px; right: auto; }
+    :where(.tlab-root) .form-grid.compact > .field:nth-child(3n) .field-hint-pop { left: auto; right: -4px; }
     :where(.tlab-root) .stat-grid.compact { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     :where(.tlab-root) .chart-row { grid-template-columns: 1fr; }
 }
 @media (max-width: 780px) {
     :where(.tlab-root) .form-grid.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    /* 手机两列参数中，右列提示向左展开，保留完整说明且不撑宽页面。 */
+    :where(.tlab-root) .form-grid.compact > .field:nth-child(n) .field-hint-pop { left: -4px; right: auto; }
+    :where(.tlab-root) .form-grid.compact > .field:nth-child(2n) .field-hint-pop { left: auto; right: -4px; }
     :where(.tlab-root) .stat-grid.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+/* 高级参数在平板宽度即改为两列，其提示定位也必须同步更新。 */
+@media (max-width: 1100px) {
+    :where(.tlab-root) .advanced-grid > .field:nth-child(n) .field-hint-pop { left: -4px; right: auto; }
+    :where(.tlab-root) .advanced-grid > .field:nth-child(2n) .field-hint-pop { left: auto; right: -4px; }
 }

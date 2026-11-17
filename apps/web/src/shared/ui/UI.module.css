@@ -2,11 +2,15 @@
 .card[data-ui="card"] { background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: var(--ui-radius-lg); min-width: 0; padding: 0; box-shadow: var(--ui-shadow); }
 .cardHead { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--ui-border); }
 .cardTitle { margin: 0; color: var(--ui-text); font-size: 14px; font-weight: 650; line-height: 1.5; }
-.cardExtra { margin-left: auto; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--ui-muted); }
+.cardExtra { margin-left: auto; min-width: 0; max-width: 100%; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--ui-muted); }
 .cardBody { padding: 16px; min-width: 0; }
 .cardBody.flush { padding: 0; }
+/* 内容边缘只保留卡片自身留白，避免段落默认外边距与卡片 padding 重复叠加。 */
+.cardBody > :first-child { margin-top: 0; }
+.cardBody > :last-child { margin-bottom: 0; }
 .metric[data-ui="metric"] { padding: var(--ui-metric-padding, 14px 16px); background: var(--ui-surface); border: 1px solid var(--ui-border); border-radius: var(--ui-radius-lg); min-width: 0; box-shadow: var(--ui-shadow); }
-.metricLabel { color: var(--ui-muted); font-size: 12px; display: flex; gap: 4px; align-items: center; }
+/* 长术语需要整体换行，不能把前面的中文标签挤成逐字竖排。 */
+.metricLabel { color: var(--ui-muted); font-size: 12px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; line-height: 1.5; }
 .metricValue { margin-top: 4px; color: var(--ui-text); font-size: var(--ui-metric-size, 24px); font-weight: 650; line-height: 1.3; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .metricHint { color: var(--ui-muted); font-size: 11px; margin-top: 5px; line-height: 1.5; }
 .metricValue[data-tone="up"] { color: var(--ui-rise); }
@@ -30,15 +34,29 @@
 .button[data-variant="danger"]:hover:not(:disabled) { background: var(--ui-danger-hover); border-color: var(--ui-danger-hover); color: var(--ui-on-primary); }
 .button[data-variant="ghost"] { background: transparent; }
 .button[data-size="small"] { min-height: 28px; padding: 3px 8px; font-size: 12px; }
-.button[data-ui="button"]:disabled { opacity: .48; cursor: not-allowed; filter: none; }
+.button[data-ui="button"]:disabled { background: var(--ui-disabled-bg); border-color: var(--ui-border); color: var(--ui-muted); opacity: 1; cursor: not-allowed; filter: none; }
 .button:focus-visible, .tab:focus-visible { outline: 2px solid var(--ui-primary); outline-offset: 2px; }
 .spinner { display: inline-block; width: 12px; height: 12px; flex: none; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.filterBar { display: flex; align-items: end; gap: 12px; flex-wrap: wrap; padding: 0; margin-bottom: 12px; }
+/* 外部容器可通过布局变量接管间距，共享控件无需依赖任何业务页面类名。 */
+.filterBar { display: flex; align-items: end; gap: 12px; flex-wrap: wrap; padding: 0; margin-bottom: var(--ui-filter-margin-bottom, 12px); }
 .field { display: inline-flex; flex-direction: column; gap: 5px; min-width: 0; }
 .fieldLabel { color: var(--ui-muted); font-size: 12px; line-height: 1.5; }
 .control[data-ui="control"] { min-height: var(--ui-control-height); min-width: 0; max-width: 100%; padding: 5px 10px; border: 1px solid var(--ui-border); border-radius: var(--ui-radius-sm); background: var(--ui-surface); color: var(--ui-text); font: inherit; font-size: var(--ui-text-base); line-height: 20px; outline: none; }
 .control[data-ui="control"]:focus { border-color: var(--ui-primary); box-shadow: var(--ui-focus); }
+/* 保留原生 select 的键盘与辅助技术语义，只统一闭合外观并为箭头预留独立空间。 */
+select.control[data-ui="control"]:not([multiple]) {
+    appearance: none;
+    padding-inline-end: 32px;
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 16px) 50%, calc(100% - 12px) 50%;
+    background-size: 4px 4px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+.control[data-ui="control"] option { color: var(--ui-text); background: var(--ui-surface); }
+.control[data-ui="control"]::placeholder { color: var(--ui-placeholder); opacity: 1; }
+.control[data-ui="control"]:disabled { color: var(--ui-muted); background-color: var(--ui-disabled-bg); cursor: not-allowed; }
 .textArea[data-ui="control"] { min-height: 80px; resize: vertical; }
 .empty { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 100px; padding: 24px; color: var(--ui-muted); font-size: 13px; text-align: center; }
 .alert[data-ui="alert"] { border: 1px solid var(--ui-border); border-radius: var(--ui-radius); padding: 12px 14px; background: var(--ui-primary-soft); color: var(--ui-primary); font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
@@ -46,6 +64,8 @@
 .alert[data-tone="success"] { color: var(--ui-success); background: var(--ui-success-soft); border-color: var(--ui-success-border); }
 .alert[data-tone="warn"] { color: var(--ui-warning); background: var(--ui-warning-soft); border-color: var(--ui-warning-border); }
 .alertHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.alert > :first-child { margin-top: 0; }
+.alert > :last-child { margin-bottom: 0; }
 .tabs[data-ui="tabs"] { display: flex; gap: 4px; flex-wrap: wrap; padding: 3px; border: 1px solid var(--ui-border); border-radius: 8px; background: var(--ui-surface-subtle); width: fit-content; max-width: 100%; }
 .tabs .tab { padding: 5px 12px; min-height: 30px; border: 1px solid transparent; border-radius: 5px; background: transparent; color: var(--ui-muted); font: inherit; font-size: 12px; cursor: pointer; }
 .tabs .tab[aria-pressed="true"] { color: var(--ui-primary); background: var(--ui-surface); border-color: var(--ui-border); font-weight: 600; box-shadow: var(--ui-shadow); }
@@ -54,17 +74,20 @@
 .pagerButtons { display: flex; align-items: center; gap: 5px; }
 .pagerCurrent { display: inline-flex; justify-content: center; min-width: 28px; color: var(--ui-primary); font-weight: 650; font-variant-numeric: tabular-nums; }
 .pagerSize { display: flex; align-items: center; gap: 6px; color: var(--ui-muted); }
-.pageHeader { padding: 16px; border: 1px solid var(--ui-border); background: var(--ui-surface); border-radius: var(--ui-radius-lg); box-shadow: var(--ui-shadow); margin-bottom: 16px; }
+/* 页头与下一块的间距交给页面容器 gap，避免自身 margin 与容器间距相加。 */
+.pageHeader { padding: 16px; border: 1px solid var(--ui-border); background: var(--ui-surface); border-radius: var(--ui-radius-lg); box-shadow: var(--ui-shadow); margin: 0; }
 .pageHeaderRow { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
 .pageHeader h1 { margin: 0; font-size: var(--ui-text-title); line-height: 1.4; font-weight: 650; color: var(--ui-text); }
 .pageHeader p { margin: 6px 0 0; font-size: 12px; line-height: 1.65; color: var(--ui-muted); }
 .headerActions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 @media (max-width: 600px) {
     .cardHead, .cardBody { padding: 12px; }
+    .cardExtra { gap: 6px; }
     .metric[data-ui="metric"] { padding: 12px; }
     .metricValue { font-size: 21px; }
     .pagerSummary { width: 100%; }
     .pagerButtons { flex-wrap: wrap; }
     .pageHeader { padding: 12px; }
+    .headerActions { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .button { transition: none; } .spinner { animation-duration: 1.6s; } }

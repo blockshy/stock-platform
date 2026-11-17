@@ -116,7 +116,8 @@ export function klineOption(series, height = 460,
 export function distributionOption(data) {
     const buckets = data?.buckets ?? [];
     return {
-        grid: { left: 46, right: 16, top: 18, bottom: 52 },
+        // 顶部预留轴名与文字高度；原 18px 会使“家数”被画布边缘裁剪。
+        grid: { left: 46, right: 16, top: 32, bottom: 52 },
         tooltip: { trigger: 'axis', formatter: (p) => `${p[0].name}<br/>家数：${p[0].value}` },
         xAxis: {
             type: 'category',

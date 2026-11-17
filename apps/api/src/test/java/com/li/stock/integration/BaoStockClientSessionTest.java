@@ -75,7 +75,7 @@ class BaoStockClientSessionTest {
             SessionSocket socket = new SessionSocket("session-" + index, historyCodes.get(index));
             sockets.add(socket);
             return socket;
-        });
+        }, millis -> { /* 内存会话测试只验证请求序列，不进行真实退避等待。 */ }, bound -> 0);
     }
 
     /** 实现实际登录/历史响应帧，但 connect、超时设置及 close 都只操作内存状态。 */

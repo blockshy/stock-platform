@@ -125,7 +125,7 @@
 }
 
 .sd-link {
-    background: #fff;
+    background: var(--ui-surface);
     border: 1px solid var(--border);
     border-radius: 999px;
     color: var(--accent);

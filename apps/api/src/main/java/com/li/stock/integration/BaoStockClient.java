@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.LongUnaryOperator;
 import java.util.function.Supplier;
 import java.util.zip.CRC32;
 import java.util.zip.InflaterInputStream;
@@ -33,7 +35,7 @@ import java.util.zip.InflaterInputStream;
  * 读取超时/中断，Socket 里会残留该响应的后续字节，之后所有请求读到的“响应头”
  * 都是残留数据（表现为持续的“响应头格式错误”）。因此任何传输层异常都视为
  * 连接已损坏：立即关闭并重新登录，再重试当前请求（最多 {@link #MAX_ATTEMPTS} 次，
- * 指数退避）。分页查询按页重试，已成功的页不会重复请求。</p>
+ * 有界指数退避并加入抖动）。分页查询按页重试，已成功的页不会重复请求。</p>
  */
 public final class BaoStockClient implements AutoCloseable {
     private static final String VERSION = "00.9.40";
@@ -45,6 +47,7 @@ public final class BaoStockClient implements AutoCloseable {
     private static final int PAGE_SIZE = 2000;
     private static final int MAX_ATTEMPTS = 3;
     private static final long RETRY_BACKOFF_MILLIS = 2000;
+    private static final long MAX_RETRY_BACKOFF_MILLIS = 8000;
     private static final byte[] COMPRESSED_END = "<![CDATA[]]>\n".getBytes(StandardCharsets.UTF_8);
     private static final String HISTORY_FIELDS =
             "date,open,high,low,close,preclose,volume,amount,adjustflag,turn,"
@@ -60,6 +63,8 @@ public final class BaoStockClient implements AutoCloseable {
     private final int connectTimeoutMillis;
     private final int readTimeoutMillis;
     private final Supplier<Socket> socketFactory;
+    private final RetrySleeper retrySleeper;
+    private final LongUnaryOperator jitter;
     private Socket socket;
     private String userId = LOGIN_USER;
 
@@ -70,10 +75,22 @@ public final class BaoStockClient implements AutoCloseable {
     /** 包内测试可注入纯内存 Socket；生产构造器始终使用真实 Socket，不暴露可配置远程地址。 */
     BaoStockClient(ObjectMapper objectMapper, int connectTimeoutMillis, int readTimeoutMillis,
                    Supplier<Socket> socketFactory) {
+        this(objectMapper, connectTimeoutMillis, readTimeoutMillis, socketFactory,
+                Thread::sleep, bound -> ThreadLocalRandom.current().nextLong(bound));
+    }
+
+    /**
+     * 包内注入等待与随机源，使离线测试能验证退避预算而不真实休眠。
+     * jitter 接收正数排他上界，必须返回 [0, bound)；生产固定采用线程本地随机源。
+     */
+    BaoStockClient(ObjectMapper objectMapper, int connectTimeoutMillis, int readTimeoutMillis,
+                   Supplier<Socket> socketFactory, RetrySleeper retrySleeper, LongUnaryOperator jitter) {
         this.objectMapper = objectMapper;
         this.connectTimeoutMillis = connectTimeoutMillis;
         this.readTimeoutMillis = readTimeoutMillis;
         this.socketFactory = socketFactory;
+        this.retrySleeper = retrySleeper;
+        this.jitter = jitter;
     }
 
     /**
@@ -83,17 +100,18 @@ public final class BaoStockClient implements AutoCloseable {
     public void login() {
         TransportException last = null;
         for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+            requireNotInterrupted();
             try {
                 loginOnce();
                 return;
             } catch (TransportException ex) {
                 last = ex;
                 if (attempt < MAX_ATTEMPTS) {
-                    backoff(RETRY_BACKOFF_MILLIS * attempt);
+                    backoff(attempt);
                 }
             }
         }
-        throw new IllegalStateException("BaoStock 登录重试 " + MAX_ATTEMPTS + " 次仍失败："
+        throw new IllegalStateException("BaoStock 登录尝试 " + MAX_ATTEMPTS + " 次仍失败："
                 + (last == null ? "unknown" : rootMessage(last)), last);
     }
 
@@ -102,9 +120,11 @@ public final class BaoStockClient implements AutoCloseable {
         closeSilently();
         try {
             Socket fresh = socketFactory.get();
+            // 在 connect/setSoTimeout 之前接管资源；二者失败时 finally 风格的清理也能关闭新 Socket。
+            // 原实现成功连接后才赋值，会遗漏连接超时或参数设置异常的半初始化连接。
+            socket = fresh;
             fresh.connect(new InetSocketAddress(HOST, PORT), connectTimeoutMillis);
             fresh.setSoTimeout(readTimeoutMillis);
-            socket = fresh;
             // 登录账号与登录返回的会话标识分离；重连不能把已失效的会话标识当作账号再次登录。
             Response response = rawRequest("00", "login" + SEP + LOGIN_USER + SEP + "123456" + SEP + "0");
             response.requireSuccess();
@@ -176,6 +196,7 @@ public final class BaoStockClient implements AutoCloseable {
     private Response request(String messageType, String body) {
         TransportException last = null;
         for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+            requireNotInterrupted();
             try {
                 if (socket == null || socket.isClosed()) {
                     // 用单次登录，重试节奏由本方法统一控制，避免与 login() 嵌套放大。
@@ -186,7 +207,7 @@ public final class BaoStockClient implements AutoCloseable {
                 if ("10001001".equals(response.errorCode())) {
                     closeSilently();
                     if (attempt < MAX_ATTEMPTS) {
-                        backoff(RETRY_BACKOFF_MILLIS * attempt);
+                        backoff(attempt);
                         continue;
                     }
                     // 达到上限后保留上游的精确业务码和说明，避免被包装成 unknown 或无限重新登录。
@@ -197,11 +218,11 @@ public final class BaoStockClient implements AutoCloseable {
                 last = ex;
                 closeSilently();
                 if (attempt < MAX_ATTEMPTS) {
-                    backoff(RETRY_BACKOFF_MILLIS * attempt);
+                    backoff(attempt);
                 }
             }
         }
-        throw new IllegalStateException("BaoStock 重试 " + MAX_ATTEMPTS + " 次仍失败："
+        throw new IllegalStateException("BaoStock 请求尝试 " + MAX_ATTEMPTS + " 次仍失败："
                 + (last == null ? "unknown" : rootMessage(last)), last);
     }
 
@@ -215,6 +236,7 @@ public final class BaoStockClient implements AutoCloseable {
 
     /** 单次请求，不做重试；任何 IO 异常都代表连接已不可复用。 */
     private Response rawRequest(String messageType, String body) {
+        requireNotInterrupted();
         if (socket == null || socket.isClosed()) {
             throw new TransportException("BaoStock 尚未登录", null);
         }
@@ -255,6 +277,7 @@ public final class BaoStockClient implements AutoCloseable {
             }
             String responseBody = new String(bodyBytesResponse, StandardCharsets.UTF_8);
             List<String> parts = List.of(responseBody.split(SEP, -1));
+            requireNotInterrupted();
             return new Response(responseType, parts, objectMapper);
         } catch (IOException | NumberFormatException ex) {
             // 传输层异常后流的位置不可知，连接必须丢弃，由上层重连。
@@ -275,6 +298,7 @@ public final class BaoStockClient implements AutoCloseable {
         byte[] data = new byte[length];
         int offset = 0;
         while (offset < length) {
+            requireNotInterrupted();
             int count = input.read(data, offset, length - offset);
             if (count < 0) throw new IOException("BaoStock 连接提前关闭");
             offset += count;
@@ -287,6 +311,7 @@ public final class BaoStockClient implements AutoCloseable {
         byte[] buffer = new byte[8192];
         int matched = 0;
         while (true) {
+            requireNotInterrupted();
             int count = input.read(buffer);
             if (count < 0) throw new IOException("BaoStock 连接提前关闭");
             for (int index = 0; index < count; index++) {
@@ -302,13 +327,38 @@ public final class BaoStockClient implements AutoCloseable {
         }
     }
 
-    private void backoff(long millis) {
+    /**
+     * 等抖动退避：上界按 2、4、8 秒增长并封顶，每次在上界的一半到上界之间等待。
+     * 当前三次总尝试只产生两次等待（1～2 秒、2～4 秒），不会叠加登录重试预算。
+     * 中断不是网络瞬时故障：立即停止、保留中断标记，不继续登录或发送下一页。
+     */
+    private void backoff(int failedAttempt) {
+        requireNotInterrupted();
+        long ceiling = Math.min(MAX_RETRY_BACKOFF_MILLIS,
+                RETRY_BACKOFF_MILLIS << Math.min(Math.max(failedAttempt - 1, 0), 20));
+        long half = ceiling / 2;
+        long millis = half + jitter.applyAsLong(half + 1);
         try {
-            Thread.sleep(millis);
+            retrySleeper.sleep(millis);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
+            closeSilently();
             throw new IllegalStateException("BaoStock 重试等待被中断", ex);
         }
+    }
+
+    /** 阻塞 Socket 读取仍由原读取超时兜底；在每次可检查边界停止后续工作。 */
+    private void requireNotInterrupted() {
+        if (Thread.currentThread().isInterrupted()) {
+            closeSilently();
+            throw new IllegalStateException("BaoStock 操作已中断，停止后续请求");
+        }
+    }
+
+    @FunctionalInterface
+    interface RetrySleeper {
+        /** 等待单位为毫秒；测试替身可记录预算或模拟中断，不发起真实网络动作。 */
+        void sleep(long millis) throws InterruptedException;
     }
 
     private String rootMessage(Throwable ex) {
@@ -331,9 +381,12 @@ public final class BaoStockClient implements AutoCloseable {
     }
 
     private void closeSilently() {
-        if (socket != null) {
+        Socket previous = socket;
+        socket = null;
+        userId = LOGIN_USER;
+        if (previous != null) {
             try {
-                socket.close();
+                previous.close();
             } catch (IOException ignored) {
                 // ignore
             }

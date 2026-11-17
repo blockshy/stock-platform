@@ -2,12 +2,12 @@
 
 .lu-ticker {
     position: sticky;
-    top: 58px;                 /* 顶栏高度，滚动时固定在顶栏下方 */
+    top: var(--ui-topbar-height, 60px); /* 使用实际顶栏高度，兼容主题入口及窄屏换行。 */
     z-index: 15;
     flex: 0 0 auto;
-    background: #fff8f7;
-    border-bottom: 1px solid #f6d4cf;
-    box-shadow: 0 2px 8px rgba(120, 40, 30, .04);
+    background: var(--ui-rise-soft);
+    border-bottom: 1px solid var(--ui-danger-border);
+    box-shadow: var(--ui-shadow-popover);
 }
 
 .lu-bar {
@@ -25,10 +25,10 @@
     align-items: center;
     gap: 7px;
     padding-right: 12px;
-    border-right: 1px solid #f0d7d2;
+    border-right: 1px solid var(--ui-danger-border);
     font-size: 12px;
     font-weight: 650;
-    color: #a3271f;
+    color: var(--ui-rise);
     white-space: nowrap;
 }
 
@@ -36,15 +36,15 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #d92b2b;
-    box-shadow: 0 0 0 3px rgba(217, 43, 43, .14);
+    background: var(--ui-rise);
+    box-shadow: 0 0 0 3px var(--ui-danger-soft);
     flex: none;
 }
 
 .lu-date {
     font-size: 10.5px;
     font-weight: 400;
-    color: #a98a86;
+    color: var(--ui-muted);
     font-variant-numeric: tabular-nums;
 }
 
@@ -69,8 +69,8 @@
     pointer-events: none;
 }
 
-.lu-viewport::before { left: 0; background: linear-gradient(90deg, #fff8f7, rgba(255, 248, 247, 0)); }
-.lu-viewport::after { right: 0; background: linear-gradient(270deg, #fff8f7, rgba(255, 248, 247, 0)); }
+.lu-viewport::before { left: 0; background: linear-gradient(90deg, var(--ui-rise-soft), transparent); }
+.lu-viewport::after { right: 0; background: linear-gradient(270deg, var(--ui-rise-soft), transparent); }
 
 .lu-track {
     display: flex;
@@ -103,25 +103,25 @@
     border: 0;
     border-radius: 6px;
     background: transparent;
-    color: #4a3b39;
+    color: var(--ui-text);
     font-size: 12px;
     line-height: 1.3;
     white-space: nowrap;
     cursor: pointer;
 }
 
-.lu-item:hover { background: #ffece9; color: #a3271f; }
+.lu-item:hover { background: var(--ui-danger-soft); color: var(--ui-rise); }
 
-.lu-name { font-weight: 600; color: #2f2a29; }
-.lu-code { color: #a98a86; font-size: 10.5px; font-variant-numeric: tabular-nums; }
-.lu-price { color: #6b5b58; font-variant-numeric: tabular-nums; }
-.lu-pct { color: #d92b2b; font-weight: 650; font-variant-numeric: tabular-nums; }
+.lu-name { font-weight: 600; color: var(--ui-text); }
+.lu-code { color: var(--ui-muted); font-size: 10.5px; font-variant-numeric: tabular-nums; }
+.lu-price { color: var(--ui-muted); font-variant-numeric: tabular-nums; }
+.lu-pct { color: var(--ui-rise); font-weight: 650; font-variant-numeric: tabular-nums; }
 
 .lu-streak {
     padding: 1px 5px;
     border-radius: 4px;
-    background: #d92b2b;
-    color: #fff;
+    background: var(--ui-rise);
+    color: var(--ui-on-primary);
     font-size: 10px;
     font-weight: 600;
 }
@@ -129,15 +129,15 @@
 .lu-one {
     padding: 1px 5px;
     border-radius: 4px;
-    background: #fff0d9;
-    border: 1px solid #f3d6a0;
-    color: #9a5b00;
+    background: var(--ui-warning-soft);
+    border: 1px solid var(--ui-warning-border);
+    color: var(--ui-warning);
     font-size: 10px;
 }
 
 .lu-message {
     font-size: 11.5px;
-    color: #a98a86;
+    color: var(--ui-muted);
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -150,18 +150,18 @@
     align-items: center;
     gap: 6px;
     padding-left: 10px;
-    border-left: 1px solid #f0d7d2;
+    border-left: 1px solid var(--ui-danger-border);
 }
 
 .lu-count {
     font-size: 11px;
-    color: #a98a86;
+    color: var(--ui-muted);
     white-space: nowrap;
     margin-right: 2px;
 }
 
-.lu-count b { color: #d92b2b; font-size: 12px; }
-.lu-count i { font-style: normal; color: #d8c7c4; margin: 0 3px; }
+.lu-count b { color: var(--ui-rise); font-size: 12px; }
+.lu-count i { font-style: normal; color: var(--ui-border); margin: 0 3px; }
 
 .lu-icon-btn {
     width: 24px;
@@ -174,37 +174,37 @@
     border: 1px solid transparent;
     border-radius: 6px;
     background: transparent;
-    color: #a98a86;
+    color: var(--ui-muted);
     font-size: 17px;
     line-height: 1;
     cursor: pointer;
 }
 
 .lu-icon-btn svg { width: 14px; height: 14px; }
-.lu-icon-btn:hover { color: #a3271f; background: #ffece9; border-color: #f6d4cf; }
+.lu-icon-btn:hover { color: var(--ui-rise); background: var(--ui-danger-soft); border-color: var(--ui-danger-border); }
 .lu-icon-btn:disabled { opacity: .45; cursor: default; }
 .lu-icon-btn.lu-fold { font-size: 16px; }
 
 .lu-detail-btn {
     flex: none;
     padding: 4px 10px;
-    border: 1px solid #f0c4bd;
+    border: 1px solid var(--ui-danger-border);
     border-radius: 6px;
-    background: #fff;
-    color: #a3271f;
+    background: var(--ui-surface);
+    color: var(--ui-rise);
     font-size: 11.5px;
     font-weight: 600;
     white-space: nowrap;
     cursor: pointer;
 }
 
-.lu-detail-btn:hover, .lu-detail-btn.active { background: #d92b2b; border-color: #d92b2b; color: #fff; }
+.lu-detail-btn:hover, .lu-detail-btn.active { background: var(--ui-rise); border-color: var(--ui-rise); color: var(--ui-on-primary); }
 .lu-detail-btn span { font-size: 9px; margin-left: 2px; }
 
 .lu-link {
     border: 0;
     background: transparent;
-    color: #a3271f;
+    color: var(--ui-rise);
     font-size: 11.5px;
     cursor: pointer;
     padding: 0;
@@ -215,7 +215,7 @@
 /* ---------- 收起态：只保留一个可恢复的胶囊 ---------- */
 .lu-collapsed-wrap {
     position: sticky;
-    top: 58px;
+    top: var(--ui-topbar-height, 60px);
     z-index: 15;
     height: 0;
     display: flex;
@@ -229,17 +229,17 @@
     gap: 6px;
     margin-top: 6px;
     padding: 4px 10px;
-    border: 1px solid #f0c4bd;
+    border: 1px solid var(--ui-danger-border);
     border-radius: 999px;
-    background: #fff8f7;
-    color: #a3271f;
+    background: var(--ui-rise-soft);
+    color: var(--ui-rise);
     font-size: 11px;
-    box-shadow: 0 2px 8px rgba(120, 40, 30, .08);
+    box-shadow: var(--ui-shadow-popover);
     cursor: pointer;
 }
 
-.lu-restore:hover { background: #ffece9; }
-.lu-restore strong { color: #d92b2b; }
+.lu-restore:hover { background: var(--ui-danger-soft); }
+.lu-restore strong { color: var(--ui-rise); }
 .lu-restore-arrow { font-size: 14px; line-height: 1; }
 
 /* ---------- 展开面板 ---------- */
@@ -249,14 +249,14 @@
     left: 50%;
     transform: translateX(-50%);
     width: min(1180px, calc(100% - 40px));
-    max-height: min(78vh, 700px);
+    max-height: min(700px, calc(100dvh - var(--ui-topbar-height, 60px) - 48px));
     overflow: auto;
-    background: #fff;
-    border: 1px solid #eed9d5;
+    background: var(--ui-surface);
+    border: 1px solid var(--ui-border);
     border-radius: 0 0 10px 10px;
-    box-shadow: 0 14px 32px rgba(60, 30, 25, .13);
+    box-shadow: var(--ui-shadow-popover);
     font-size: 12px;
-    color: #3a3331;
+    color: var(--ui-text);
 }
 
 .lu-panel-head {
@@ -267,12 +267,12 @@
     align-items: center;
     justify-content: space-between;
     padding: 9px 14px;
-    background: #fff;
-    border-bottom: 1px solid #f2e4e1;
+    background: var(--ui-surface);
+    border-bottom: 1px solid var(--ui-border-subtle);
 }
 
-.lu-panel-head strong { font-size: 13px; color: #a3271f; }
-.lu-panel-sub { margin-left: 10px; font-size: 10.5px; color: #a98a86; }
+.lu-panel-head strong { font-size: 13px; color: var(--ui-rise); }
+.lu-panel-sub { margin-left: 10px; font-size: 10.5px; color: var(--ui-muted); }
 
 .lu-stat-row {
     display: grid;
@@ -286,14 +286,14 @@
     flex-direction: column;
     gap: 2px;
     padding: 7px 10px;
-    border: 1px solid #f4e5e2;
+    border: 1px solid var(--ui-border);
     border-radius: 8px;
-    background: #fffaf9;
+    background: var(--ui-surface-subtle);
 }
 
-.lu-stat span { font-size: 10.5px; color: #a98a86; }
+.lu-stat span { font-size: 10.5px; color: var(--ui-muted); }
 .lu-stat b { font-size: 15px; font-variant-numeric: tabular-nums; }
-.lu-stat b.up { color: #d92b2b; }
+.lu-stat b.up { color: var(--ui-rise); }
 
 .lu-dist-row {
     display: grid;
@@ -303,40 +303,40 @@
 }
 
 .lu-dist { min-width: 0; }
-.lu-dist-title { font-size: 11px; font-weight: 600; color: #6b5b58; margin-bottom: 5px; }
-.lu-dist-title small { font-weight: 400; color: #a98a86; font-size: 10px; }
+.lu-dist-title { font-size: 11px; font-weight: 600; color: var(--ui-muted); margin-bottom: 5px; }
+.lu-dist-title small { font-weight: 400; color: var(--ui-muted); font-size: 10px; }
 .lu-dist-body { display: flex; flex-wrap: wrap; gap: 5px; align-items: flex-start; }
 
 .lu-chip {
     position: relative;
     overflow: hidden;
     padding: 3px 8px;
-    border: 1px solid #f0d7d2;
+    border: 1px solid var(--ui-danger-border);
     border-radius: 5px;
-    background: #fff8f7;
-    color: #6b5b58;
+    background: var(--ui-rise-soft);
+    color: var(--ui-muted);
     font-size: 11px;
     white-space: nowrap;
     cursor: pointer;
 }
 
-.lu-chip b { color: #d92b2b; margin-left: 3px; }
-.lu-chip:hover { border-color: #d92b2b; }
-.lu-chip.active { background: #d92b2b; border-color: #d92b2b; color: #fff; }
-.lu-chip.active b { color: #fff; }
+.lu-chip b { color: var(--ui-rise); margin-left: 3px; }
+.lu-chip:hover { border-color: var(--ui-rise); }
+.lu-chip.active { background: var(--ui-rise); border-color: var(--ui-rise); color: var(--ui-on-primary); }
+.lu-chip.active b { color: var(--ui-on-primary); }
 .lu-chip.static { cursor: default; }
-.lu-chip.static:hover { border-color: #f0d7d2; }
+.lu-chip.static:hover { border-color: var(--ui-danger-border); }
 
 .lu-chip-bar {
     position: absolute;
     left: 0;
     bottom: 0;
     height: 2px;
-    background: #d92b2b;
+    background: var(--ui-rise);
     opacity: .45;
 }
 
-.lu-empty { font-size: 11px; color: #b9a5a1; }
+.lu-empty { font-size: 11px; color: var(--ui-muted); }
 
 .lu-toolbar {
     position: sticky;
@@ -347,38 +347,38 @@
     gap: 8px;
     flex-wrap: wrap;
     padding: 7px 14px;
-    background: #fff;
-    border-top: 1px solid #f2e4e1;
-    border-bottom: 1px solid #f2e4e1;
+    background: var(--ui-surface);
+    border-top: 1px solid var(--ui-border-subtle);
+    border-bottom: 1px solid var(--ui-border-subtle);
 }
 
-.lu-tabs { display: inline-flex; gap: 3px; padding: 2px; background: #f6f1ef; border-radius: 6px; }
+.lu-tabs { display: inline-flex; gap: 3px; padding: 2px; background: var(--ui-surface-subtle); border-radius: 6px; }
 
 .lu-tabs button {
     padding: 4px 10px;
     border: 0;
     border-radius: 5px;
     background: transparent;
-    color: #8d7a76;
+    color: var(--ui-muted);
     font-size: 11.5px;
     cursor: pointer;
 }
 
-.lu-tabs button.active { background: #fff; color: #a3271f; font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
+.lu-tabs button.active { background: var(--ui-surface); color: var(--ui-rise); font-weight: 600; box-shadow: var(--ui-shadow-popover); }
 
 .lu-search, .lu-select {
-    border: 1px solid #eadfdc;
+    border: 1px solid var(--ui-border);
     border-radius: 6px;
     padding: 4px 8px;
-    background: #fff;
-    color: #3a3331;
+    background: var(--ui-surface);
+    color: var(--ui-text);
     font-size: 11.5px;
     outline: none;
 }
 
 .lu-search { width: 150px; }
-.lu-search:focus, .lu-select:focus { border-color: #d92b2b; }
-.lu-row-count { margin-left: auto; font-size: 10.5px; color: #a98a86; }
+.lu-search:focus, .lu-select:focus { border-color: var(--ui-rise); }
+.lu-row-count { margin-left: auto; font-size: 10.5px; color: var(--ui-muted); }
 
 /* 单一滚动区：面板本身一般不需要滚动，只有表格在这个区域内滚动，表头保持吸顶 */
 .lu-table-wrap { max-height: min(300px, 38vh); overflow: auto; }
@@ -393,24 +393,24 @@
     text-align: left;
     font-size: 10.5px;
     font-weight: 600;
-    color: #8d7a76;
-    background: #fffaf9;
-    border-bottom: 1px solid #f2e4e1;
+    color: var(--ui-muted);
+    background: var(--ui-surface-subtle);
+    border-bottom: 1px solid var(--ui-border-subtle);
     white-space: nowrap;
 }
 
 .lu-table td {
     padding: 6px 10px;
-    border-bottom: 1px solid #f7f0ee;
+    border-bottom: 1px solid var(--ui-border-subtle);
     font-size: 11.5px;
     white-space: nowrap;
 }
 
 .lu-table tbody tr { cursor: pointer; }
-.lu-table tbody tr:hover { background: #fff4f1; }
-.lu-table td.up { color: #d92b2b; font-weight: 600; }
+.lu-table tbody tr:hover { background: var(--ui-hover); }
+.lu-table td.up { color: var(--ui-rise); font-weight: 600; }
 .lu-table .lu-code { margin-left: 6px; }
-.lu-empty-row { text-align: center !important; color: #b9a5a1; padding: 20px !important; }
+.lu-table td.lu-empty-row { text-align: center; color: var(--ui-muted); padding: 20px; }
 
 .lu-tag {
     display: inline-block;
@@ -420,10 +420,10 @@
     font-size: 10px;
 }
 
-.lu-tag.one { background: #fff0d9; color: #9a5b00; }
-.lu-tag.st { background: #eef1f5; color: #6b7280; }
-.lu-tag.broken { background: #e8f5ec; color: #1b7f43; }
-.lu-table .muted { color: #c3b5b1; }
+.lu-tag.one { background: var(--ui-warning-soft); color: var(--ui-warning); }
+.lu-tag.st { background: var(--ui-surface-subtle); color: var(--ui-muted); }
+.lu-tag.broken { background: var(--ui-success-soft); color: var(--ui-success); }
+.lu-table .muted { color: var(--ui-muted); }
 
 .lu-foot {
     display: flex;
@@ -431,13 +431,13 @@
     justify-content: space-between;
     gap: 12px;
     padding: 9px 14px 12px;
-    border-top: 1px solid #f2e4e1;
-    color: #a98a86;
+    border-top: 1px solid var(--ui-border-subtle);
+    color: var(--ui-muted);
     font-size: 10.5px;
     line-height: 1.6;
 }
 
-.lu-risk { flex: none; color: #9a5b00; white-space: nowrap; }
+.lu-risk { flex: none; color: var(--ui-warning); white-space: nowrap; }
 
 @media (max-width: 1100px) {
     .lu-stat-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -452,6 +452,14 @@
     .lu-stat-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .lu-search { width: 110px; }
     .lu-row-count { display: none; }
+    .lu-bar { padding-inline: 12px; gap: 6px; }
+    .lu-panel-head { align-items: flex-start; gap: 8px; }
+    .lu-panel-sub { display: block; margin-left: 0; margin-top: 3px; }
+    /* 弹层自己滚动，避免固定工具栏在窄屏换行后压住统计项或第一行表格。 */
+    .lu-panel-head, .lu-toolbar { position: static; }
+    .lu-foot { flex-wrap: wrap; gap: 6px; }
+    .lu-search { flex: 1 1 120px; }
+    .lu-toolbar .lu-select { max-width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

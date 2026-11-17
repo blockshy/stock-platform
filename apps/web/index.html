@@ -3,6 +3,25 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="color-scheme" content="light dark"/>
+    <!-- 在模块与样式加载前恢复主题，避免暗色用户先看到浅色首屏。逻辑与 theme.js 的契约测试保持一致。 -->
+    <script id="theme-bootstrap">
+        (function () {
+            var mode = 'system';
+            var prefersDark = false;
+            try {
+                var saved = localStorage.getItem('stock.platform.theme');
+                if (saved === 'light' || saved === 'dark' || saved === 'system') mode = saved;
+            } catch (_) { /* 存储被禁用时跟随系统，不中断页面加载。 */ }
+            try {
+                prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            } catch (_) { /* 不支持媒体查询的浏览器按浅色系统处理。 */ }
+            var theme = mode === 'system' ? (prefersDark ? 'dark' : 'light') : mode;
+            document.documentElement.dataset.theme = theme;
+            document.documentElement.dataset.themeMode = mode;
+            document.documentElement.style.colorScheme = theme;
+        })();
+    </script>
     <!-- 标签页与侧栏使用同一产品名称；内嵌图标不依赖外部资源或业务接口。 -->
     <title>股票研究平台</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23285bd4'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial,sans-serif' font-size='23' font-weight='700' fill='white'%3ES%3C/text%3E%3C/svg%3E"/>

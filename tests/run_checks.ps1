@@ -2,7 +2,7 @@
 .SYNOPSIS
 统一运行平台离线验收，不启动应用服务、采集或模型任务。
 .DESCRIPTION
-依次检查前端任务观察器、界面规则、Python 等效性、Java 单元契约及部署脚本。
+依次检查前端任务观察器、主题与请求策略、界面规则、Python 等效性、Java 单元契约及部署脚本。
 Java 显式排除需要真实 Spring/数据库的两个集成类；Maven 使用 -o，缺少缓存时失败，
 依赖准备应在安装阶段完成。部署脚本只做语法解析及内存替身测试。
 .PARAMETER SkipJava
@@ -63,9 +63,10 @@ function Invoke-OfflineCheck {
 }
 
 try {
-    Invoke-OfflineCheck '前端任务观察器离线测试' {
-        $node = (Get-Command node -ErrorAction Stop).Source
-        Invoke-CheckedNative $node @('--test','src/prob/runMonitor.test.js','src/pages/crawlerMonitor.test.js') `
+    Invoke-OfflineCheck '前端任务观察器、主题与请求策略离线测试' {
+        # 复用前端包的测试入口，避免新增主题或请求测试后，平台验收仍只运行旧的观察器测试。
+        $npm = (Get-Command npm.cmd -ErrorAction Stop).Source
+        Invoke-CheckedNative $npm @('test') `
             (Join-Path $ProjectRoot 'apps\web')
     }
 

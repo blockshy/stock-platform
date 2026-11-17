@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "files": [
     {
-      "sha256": "6817e1efba9c8664ca81c47c8d4fa745dea028ce3b7f628924df741ba2c463db",
+      "sha256": "83707fe128ee87d0e0dd2617c02708008a9319c3f57c4faaa74b0980cba1967b",
       "path": "api/client.js"
     },
     {
@@ -66,7 +66,7 @@
       "path": "utils/format.js"
     },
     {
-      "sha256": "a10298aaa0a23145bf74ea2b6ebf789e1dd4848fea65ab2065ce473c7a81ba71",
+      "sha256": "e75dd9da4395b2bbc7e6e195d2d6ae659e4d70138a03d294dd53cebdfb6f77ce",
       "path": "charts/options.js"
     },
     {
@@ -82,7 +82,7 @@
       "path": "ga/gaUtils.js"
     },
     {
-      "sha256": "9bf6ebd7681b737832100824482bb1238d0c26b580013c4482625714bf8034d5",
+      "sha256": "552eaf3887163ec900e7d812b8a79a76d848f99ccbf61dce9abce0de6675dacd",
       "path": "ga/kline.js"
     },
     {
@@ -130,5 +130,5 @@
       "path": "components/DecimalInput.jsx"
     }
   ],
-  "description": "本次UI迁移以原项目字节摘要保护业务接口、格式化、状态恢复和图表选项。"
+  "description": "受保护的接口、格式化、状态恢复和图表契约；本轮经审查更新 api/client.js 请求重试、charts/options.js 轴名留白和 ga/kline.js 刻度显示，其余基线不变。"
 }

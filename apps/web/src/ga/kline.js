@@ -287,14 +287,18 @@ export function buildKlineOption({ bars, marks, horizon, height = 500,
         axisLine: { lineStyle: { color: AXIS_LINE } },
         axisTick: { show: false },
         axisLabel: i === gridCount - 1
-            ? { color: MUTED, fontSize: 10, rotate: 30, hideOverlap: true }
+            // 日期值与 tooltip 保留完整年月日；刻度只展示月日，避免窄屏和多日窗口挤满斜文字。
+            ? { color: MUTED, fontSize: 10, rotate: 0, hideOverlap: true, margin: 10,
+                formatter: (value) => String(value).slice(5) }
             : { show: false },
     }));
     const yAxis = [
         { scale: true, gridIndex: 0, axisLabel: { color: MUTED, fontSize: 10 }, splitLine: { lineStyle: { color: GRID_LINE } } },
         { gridIndex: 1, axisLabel: { show: false }, splitLine: { show: false } },
     ];
-    if (showMacd) yAxis.push({ gridIndex: 2, scale: true, axisLabel: { color: MUTED, fontSize: 10 }, splitLine: { lineStyle: { color: GRID_LINE } } });
+    // MACD 子图只有约一成半高度，减少刻度分段并隐藏重叠文字；不改变 MACD/DIF/DEA 数值。
+    if (showMacd) yAxis.push({ gridIndex: 2, scale: true, splitNumber: 2,
+        axisLabel: { color: MUTED, fontSize: 10, hideOverlap: true }, splitLine: { lineStyle: { color: GRID_LINE } } });
 
     const maSeries = showMa ? MA_DEFS.map(({ name, color }) => ({
         name, type: 'line', data: indicators.ma[name], smooth: true, showSymbol: false,

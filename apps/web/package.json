@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test src/pages/crawlerMonitor.test.js src/prob/runMonitor.test.js",
+    "test": "node --test src/pages/crawlerMonitor.test.js src/prob/runMonitor.test.js src/theme/theme.test.js src/shared/charts/chartTheme.test.js src/api/requestPolicy.test.js src/api/client.test.js",
     "check:ui": "node ../../tests/check_frontend_rules.mjs"
   },
   "dependencies": {

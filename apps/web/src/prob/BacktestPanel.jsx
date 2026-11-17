@@ -10,10 +10,11 @@ import { asArray, asObject, dateStr, num, pct, signedPct, tone } from './format.
 function NavOption(nav) {
     return {
         tooltip: { trigger: 'axis', valueFormatter: (v) => num(v, 3) },
-        legend: { data: ['策略净值', '全市场等权基准'], bottom: 0, textStyle: { fontSize: 11 } },
-        grid: { left: 56, right: 18, top: 18, bottom: 42 },
+        // 图例与日期刻度分居上下，刻度密度由实际容器宽度决定，避免窄屏硬塞十二个标签。
+        legend: { data: ['策略净值', '全市场等权基准'], type: 'scroll', top: 0, left: 0, right: 0, textStyle: { fontSize: 11 } },
+        grid: { left: 56, right: 18, top: 40, bottom: 32 },
         xAxis: { type: 'category', data: nav.map((r) => dateStr(r.trade_date).slice(5)),
-                 axisLabel: { fontSize: 10, interval: Math.max(1, Math.floor(nav.length / 12)) } },
+                 axisLabel: { fontSize: 10, interval: 'auto', hideOverlap: true, margin: 10 } },
         yAxis: { type: 'value', scale: true, splitLine: { lineStyle: { opacity: 0.35 } } },
         series: [
             { name: '策略净值', type: 'line', data: nav.map((r) => Number(r.nav)), symbol: 'none',
@@ -30,7 +31,8 @@ function DdOption(nav) {
         tooltip: { trigger: 'axis', valueFormatter: (v) => pct(v) },
         grid: { left: 56, right: 18, top: 12, bottom: 32 },
         xAxis: { type: 'category', data: nav.map((r) => dateStr(r.trade_date).slice(5)),
-                 axisLabel: { fontSize: 10, interval: Math.max(1, Math.floor(nav.length / 12)) } },
+                 // 只调整标签避让；日期数据、tooltip 内容和回撤序列完全沿用原值。
+                 axisLabel: { fontSize: 10, interval: 'auto', hideOverlap: true, margin: 10 } },
         yAxis: { type: 'value', axisLabel: { formatter: (v) => `${(v * 100).toFixed(0)}%` },
                  splitLine: { lineStyle: { opacity: 0.35 } } },
         series: [{ name: '回撤', type: 'line', data: nav.map((r) => Number(r.drawdown)), symbol: 'none',

@@ -17,6 +17,8 @@
 
 `stock-fetch` 未纳入工程；旧预测页面依赖的额外 `stock-predict` 服务也未部署。前端构建时应设置 `VITE_ENABLE_LEGACY_FORECAST=false`，参见[配置说明](docs/configuration.md)。
 
+顶栏“系统主题”支持浅色、暗色和跟随系统，默认跟随系统；主题选择会在当前浏览器中保存。主题切换只改变外观，图表的缩放和图例选择保持不变。接口读取采用有界重试，写操作不自动重复提交，见[使用指南](docs/user-guide.md)与[请求排查](docs/troubleshooting.md)。
+
 ## 环境与目录
 
 当前验收基线：Windows PowerShell 5.1、Node.js 24、JDK 21、Maven、Python 3.10.11、MySQL 8.0.35。前端依赖以 `apps/web/package-lock.json` 为准，Python 精确依赖以 `engines/probability/requirements.lock.txt` 为准。其他版本不能直接视为已通过等效性验证。
@@ -86,6 +88,7 @@ npm.cmd run test:deployment
 - [测试说明](docs/testing.md)：离线、隔离数据库和浏览器验证。
 - [常见问题](docs/troubleshooting.md)：任务进度、榜单数量及环境问题。
 - [远端部署规划](docs/remote-deployment-plan.md)：已分析的方案与尚未实施的工作。
+- [Java 引擎迁移评估](docs/java-engine-migration-plan.md)：可行性、数值兼容风险与分阶段验收；本轮仅评估，仍使用 Python 引擎。
 - [资料公开边界](docs/publication-policy.md)：公开源码与仅本地资料的分工。
 - [来源说明](docs/sources.md)：原项目和版本追溯。
 

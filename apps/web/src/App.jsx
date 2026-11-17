@@ -1,7 +1,7 @@
 import workspace from './app/Workspace.module.css';
 import { pageGroup, pageTitle } from './app/navigation.js';
 import ComponentGallery from './dev/ComponentGallery.jsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Sidebar, { StockSearch } from './components/Header.jsx';
 import CurrentStockPicker from './components/CurrentStockPicker.jsx';
@@ -19,6 +19,7 @@ import DataCrawler from './pages/DataCrawler.jsx';
 import GaApp from './ga/GaApp.jsx';
 import QuantApp from './quant/QuantApp.jsx';
 import ProbApp from './prob/ProbApp.jsx';
+import ThemePicker from './theme/ThemePicker.jsx';
 
 
 function NotFound() {
@@ -33,9 +34,24 @@ function NotFound() {
 export default function App() {
     const location = useLocation();
     const { setCurrentStock } = useCurrentStock();
+    const workspaceRef = useRef(null);
+    const topbarRef = useRef(null);
     // 宽屏默认展开侧栏，窄屏默认收起为抽屉
     const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth > 960);
     const title = pageTitle(location.pathname);
+
+    useLayoutEffect(() => {
+        // 顶栏在窄屏、字体缩放或主题控件换行后高度会变化；播报和滚动定位共用实际高度。
+        // 仅更新根节点 CSS 变量，不触发任何行情、任务请求或页面业务状态变化。
+        const measure = () => {
+            if (!topbarRef.current || !workspaceRef.current) return;
+            workspaceRef.current.style.setProperty('--ui-topbar-height', `${Math.ceil(topbarRef.current.getBoundingClientRect().height)}px`);
+        };
+        measure();
+        const observer = new ResizeObserver(measure);
+        observer.observe(topbarRef.current);
+        return () => observer.disconnect();
+    }, []);
 
     // 任何入口（榜单、搜索、涨停播报、直达链接）进入个股详情，都把该股票同步为全站当前股票
     useEffect(() => {
@@ -48,11 +64,11 @@ export default function App() {
     };
 
     return (
-        <div className={`${workspace.root} app${sidebarOpen ? ' sidebar-open' : ''}`}>
+        <div ref={workspaceRef} className={`${workspace.root} app${sidebarOpen ? ' sidebar-open' : ''}`}>
             <Sidebar onNavigate={closeOnMobile}/>
             <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)}/>
             <div className="app-main">
-                <header className="topbar">
+                <header ref={topbarRef} className="topbar">
                     <button
                         type="button"
                         className="icon-btn"
@@ -73,6 +89,7 @@ export default function App() {
                     <div className="topbar-actions">
                         <CurrentStockPicker/>
                         <StockSearch/>
+                        <ThemePicker/>
                         <span className="topbar-badge">仅供研究</span>
                     </div>
                 </header>
